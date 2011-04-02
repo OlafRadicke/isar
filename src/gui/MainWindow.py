@@ -25,6 +25,7 @@ import sys
 import logging
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot
+from VMinfoDB import VMinfoDB 
 
 ## @file MainWindow.py
 # @author Olaf Radicke<briefkasten@olaf-radicke.de>
