@@ -1,0 +1,24 @@
+Moldau is an kvm-gui-tool.
+
+    AUTHORS
+isar code is developed by:
+
+"Olaf Radicke! <briefkasten@olaf-radicke.de>
+
+    VERSION
+
+Beta
+
+    INSTALL
+
+1. make
+2. make install
+
+    LICENSE:
+
+GPL3
+
+    DEPENDENCY
+
+- Python
+- PyQt

@@ -1,0 +1,237 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+
+ ###########################################################################
+ #   Copyright (C) 2011 by Olaf Radicke                                    #
+ #                                                                         #
+ #   This program is free software; you can redistribute it and/or modify  #
+ #   it under the terms of the GNU General Public License as published by  #
+ #   the Free Software Foundation; either version 3 of the License, or     #
+ #   any later version.                                                    #
+ #                                                                         #
+ #   This program is distributed in the hope that it will be useful,       #
+ #   but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+ #   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
+ #   GNU General Public License for more details.                          #
+ #                                                                         #
+ #   You should have received a copy of the GNU General Public License     #
+ #   along with this program; if not, see                                  #
+ #   http:#www.gnu.org/licenses/gpl.txt                                    #
+ #                                                                         #
+ ###########################################################################
+
+import sys
+import logging
+from PyQt4 import QtGui, QtCore
+from PyQt4.QtCore import pyqtSlot
+
+## @file MainWindow.py
+# @author Olaf Radicke<briefkasten@olaf-radicke.de>
+
+## The main window of the GUI
+class MainWindow(QtGui.QMainWindow):
+
+
+    ## Simple List
+    listview = ""
+
+    ## TaskView: This class show the taskt data.
+    taskBox = ""
+
+    ## Minutes of the proceedings as html
+    minutes =  ""
+
+
+    ## This QTextBrowser show the minutes of the proceedings
+    textView = ""
+
+    ## Constructor
+    def __init__(self, *args): 
+        QtGui.QMainWindow.__init__(self, *args)
+
+
+        logging.debug('init main window....')
+
+        self.resize(800,680)
+        self.setWindowTitle('Isar')
+
+
+        #---------- menubar --------------------
+        ## Menue-item for apliction exit
+        menuExit = QtGui.QAction(QtGui.QIcon('icons/exit.png'), 'Exit', self)
+        menuExit.setShortcut('Ctrl+Q')
+        menuExit.setStatusTip('Exit application')
+        self.connect(menuExit, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
+
+
+        ## Menue-item for change the task stetting file.
+        #menuTasksSetting = QtGui.QAction( 'Open task seting', self)
+        #menuTasksSetting.setShortcut('Ctrl+T')
+        #menuTasksSetting.setStatusTip('Open task seting')
+        #self.connect(menuTasksSetting, QtCore.SIGNAL('triggered()'), QtCore.SLOT('selctTasksSettingDialog()'))
+
+
+        menubar = self.menuBar()
+        menuFile = menubar.addMenu('&File')
+        #menuFile.addAction(menuTasksSetting)
+        menuFile.addAction(menuExit)
+
+
+        ## Menue-item for change the task stetting file.
+        menuInfoAbout = QtGui.QAction( 'About', self)
+        menuInfoAbout.setShortcut('Ctrl+I')
+        menuInfoAbout.setStatusTip('About this programm.')
+        self.connect(menuInfoAbout, QtCore.SIGNAL('triggered()'), QtCore.SLOT('about()'))
+
+
+        menuFile = menubar.addMenu('&Info')
+        menuFile.addAction(menuInfoAbout)
+
+        # ------------- menu end ------------
+
+        # ----------- toolbar ---------------------
+        self.toolbar = self.addToolBar('tools')
+        
+        toolNew = QtGui.QAction(QtGui.QIcon('icons/new.png'), 'New VM', self)
+        toolNew.setShortcut('Ctrl+N')
+        self.connect(toolNew, QtCore.SIGNAL('triggered()'), QtCore.SLOT('newVMDialog()'))
+        self.toolbar.addAction(toolNew)
+
+        toolRemove = QtGui.QAction(QtGui.QIcon('icons/remove.png'), 'Delete VM', self)
+        toolNew.setShortcut('Ctrl+X')
+        self.connect(toolRemove, QtCore.SIGNAL('triggered()'), QtCore.SLOT('deleteVM()'))
+        self.toolbar.addAction(toolRemove)
+
+        # ----------- toolbar end ------------------------
+
+
+
+        ## Main Widget
+        centralWidget = QtGui.QWidget()
+        self.setCentralWidget(centralWidget)
+
+        ## Main layout V
+        vMainLayout = QtGui.QVBoxLayout()
+        centralWidget.setLayout(vMainLayout)
+        
+        ## Main layout H
+        hMainLayout = QtGui.QHBoxLayout()
+        vMainLayout.addLayout(hMainLayout)
+
+
+        # ----------- Left box ---------------------------------
+
+        # VBox left with GrouBox-frame
+        listBox = QtGui.QGroupBox("VM list")
+        listBox.setMaximumWidth(800)
+        vListLayoutL = QtGui.QVBoxLayout()
+        listBox.setLayout(vListLayoutL)
+        hMainLayout.addWidget(listBox)
+        
+
+        # -------------- List --------------
+
+        self.listview = QtGui.QListWidget()
+        vListLayoutL.addWidget(self.listview)
+        self.connect(self.listview, QtCore.SIGNAL('itemSelectionChanged()'), QtCore.SLOT('fillTaskView()'))
+
+
+        # ---------- Statusbar ------------
+        self.statusBar().showMessage('Ready')
+        # Item-List
+        self.refreshVMList()
+
+
+    ## A function with qt-slot. it's creade a new vm.
+    @pyqtSlot()
+    def newVMDialog(self):
+        text, ok = QtGui.QInputDialog.getText(self, "New Task", "Task name:", 0)
+        if ok != True :
+          logging.debug("[20110402201848] if: " + str(text) + str(ok))
+          return
+        else:
+          logging.debug("[20110402201848] else: " + str(text) + str(ok))
+          #taskTyp = TaskTyp()
+          #taskTyp.ID = text
+          #self.tasksSettings.addTaskTyp(taskTyp)
+          self.refreshVMList()
+      
+
+        
+    ## Refrash the list of tasks.
+    @pyqtSlot()
+    def refreshVMList(self):
+        pass
+        #self.tasksSettings.reLoad()
+        #self.taskBox.setTasksSettings(self.tasksSettings)
+        #self.listview.clear ()
+        #count = 0
+        #for item in self.tasksSettings.getStoryboard():
+            #print "[debug] ", item
+            #self.listview.insertItem(count, item)
+            #count = count + 1
+
+
+    ## A function with qt-slot. it's fill the TaskView with data. 
+    @pyqtSlot()
+    def fillTaskView(self):
+        pass
+        #todo = ""
+        #for item in self.listview.selectedItems():
+            #print  "[debug] .." , item.text()
+            #todo = item.text()
+
+        #if( todo == "" ):
+            #self.statusBar().showMessage('No ToDo select...')
+        #else:
+          #taskTyp = self.tasksSettings.getTaskTyp(todo)
+          #self.taskBox.setTaskTyp(taskTyp)
+
+
+    ## Function delete a task
+    @pyqtSlot()
+    def deleteVM(self):
+        logging.debug("[20110402201311] deleteVM")
+        #todo = ""
+        #for item in self.listview.selectedItems():
+            #print  ".." , item.text()
+            #todo = item.text()
+
+        #if( todo == "" ):
+            #self.statusBar().showMessage('No ToDo select...')
+        #else:
+          #taskTyp = self.tasksSettings.getTaskTyp(todo)
+          #self.tasksSettings.deleteTask(taskTyp)
+          #self.refreshVMList()
+
+
+        
+    ## Open about-dialog
+    @pyqtSlot()
+    def about(self):
+        pass
+        #msgBox = QtGui.QMssageBox(self)
+        #msgBox.setText("About");
+        #msgBox.setInformativeText("Contact: Olaf Radicke <briefkasten@olaf-radicke.de>");
+        #msgBox.setStandardButtons(QMessageBox.Ok);
+        
+        #msgBox.setDefaultButton(QMessageBox::Save);
+        #int ret = msgBox.exec();
+
+        infotext = "working title: Isar \n"
+        infotext = infotext + "Lizenz: GPL \n"
+        infotext = infotext + "Contact: Olaf Radicke <briefkasten@olaf-radicke.de>"
+
+        QtGui.QMessageBox.information(self, "About",infotext)
+
+
+      
+
+    ## Open about-dialog
+    @pyqtSlot()
+    def savingMinutes(self):
+        print "savingMinutes()"
+        filename = QtGui.QFileDialog.getSaveFileName(self, "Saving minutes", "task_minuts.html","*.html*")
+        minuteFile = open(filename, 'w')
+        minuteFile.write(str(self.textView.toHtml()))
