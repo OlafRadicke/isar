@@ -23,6 +23,7 @@
 
 
 import logging
+import sqlite3
 
 
 ## @file VMinfoDB.py
