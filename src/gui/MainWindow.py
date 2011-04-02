@@ -240,7 +240,8 @@ class MainWindow(QtGui.QMainWindow):
     @pyqtSlot()
     def initDB(self):
         logging.debug("[20110402220213] init db")
-
+        print "[20110402220213] init db"
+        self.vmInfoDB.initDB()
 
 
         
