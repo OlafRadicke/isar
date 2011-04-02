@@ -132,10 +132,14 @@ class MainWindow(QtGui.QMainWindow):
 
         # -------------- List --------------
 
-        self.listview = QtGui.QListWidget()
+        self.listview = QtGui.QTreeWidget()
+        _haderList = ["owner","name","create","best befor","OS"]
+        self.listview.setColumnCount(len(_haderList))
+        self.listview.setHeaderLabels(_haderList)
         vListLayoutL.addWidget(self.listview)
         self.connect(self.listview, QtCore.SIGNAL('itemSelectionChanged()'), QtCore.SLOT('fillTaskView()'))
 
+        self.listview.addTopLevelItem( QtGui.QTreeWidgetItem(["Olaf","CluterTest","2011-03-29","2011-05-31","fedora13"]))
 
         # ---------- Statusbar ------------
         self.statusBar().showMessage('Ready')
