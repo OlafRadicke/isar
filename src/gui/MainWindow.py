@@ -47,6 +47,9 @@ class MainWindow(QtGui.QMainWindow):
     ## This QTextBrowser show the minutes of the proceedings
     textView = ""
 
+    ## Save information about vitual machines
+    vmInfoDB = VMinfoDB()
+
     ## Constructor
     def __init__(self, *args): 
         QtGui.QMainWindow.__init__(self, *args)
