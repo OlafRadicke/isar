@@ -23,19 +23,20 @@
 
 import sys
 import logging
-
+from datetime import datetime, date, time
 from PyQt4 import QtGui, QtCore
-#from MoldauConf import MoldauConf
-#from TasksSettings import TasksSettings
 from gui.MainWindow import MainWindow
 
 
 ## @file GUI.py
 # @author Olaf Radicke<radicke@atix.de>
 
+#LOG_FILENAME = '/tmp/isar.log'
 LOG_FILENAME = 'isar.log'
 logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
-logging.debug('============= Start ===============')
+_startinfo = '============= Start ' + datetime.now().strftime("%d. %B %Y %H:%M") + ' ==============='
+logging.debug(_startinfo)
+
 
 def startGUI():
     app = QtGui.QApplication(sys.argv)

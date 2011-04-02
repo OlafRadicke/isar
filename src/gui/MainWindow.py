@@ -69,16 +69,16 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(menuExit, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
 
 
-        ## Menue-item for change the task stetting file.
-        #menuTasksSetting = QtGui.QAction( 'Open task seting', self)
-        #menuTasksSetting.setShortcut('Ctrl+T')
-        #menuTasksSetting.setStatusTip('Open task seting')
-        #self.connect(menuTasksSetting, QtCore.SIGNAL('triggered()'), QtCore.SLOT('selctTasksSettingDialog()'))
+        # Menue-item for change the task stetting file.
+        menuInitDB = QtGui.QAction( 'Init Database', self)
+        menuInitDB.setShortcut('Ctrl+D')
+        menuInitDB.setStatusTip('Init the SQLite3-Database.')
+        self.connect(menuInitDB, QtCore.SIGNAL('triggered()'), QtCore.SLOT('initDB()'))
 
 
         menubar = self.menuBar()
         menuFile = menubar.addMenu('&File')
-        #menuFile.addAction(menuTasksSetting)
+        menuFile.addAction(menuInitDB)
         menuFile.addAction(menuExit)
 
 
@@ -236,10 +236,11 @@ class MainWindow(QtGui.QMainWindow):
 
       
 
-    ## Open about-dialog
+    ## Slot for init database.
     @pyqtSlot()
-    def savingMinutes(self):
-        print "savingMinutes()"
-        filename = QtGui.QFileDialog.getSaveFileName(self, "Saving minutes", "task_minuts.html","*.html*")
-        minuteFile = open(filename, 'w')
-        minuteFile.write(str(self.textView.toHtml()))
+    def initDB(self):
+        logging.debug("[20110402220213] init db")
+
+
+
+        

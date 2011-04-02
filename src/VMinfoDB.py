@@ -32,10 +32,27 @@ import sqlite3
 ## The main window of the GUI
 class VMinfoDB():
 
+    ## Connection object that represents the database.
+    ## Here the data will be stored in the /tmp/isar.db file
+    __conn = sqlite3.connect('/tmp/isar.db')
+
+    ## A Cursor object call its execute() method to perform SQL commands.
+    __cursor = __conn.cursor()
 
 
     ## Constructor
     def __init__(self, *args):
         logging.debug('init main VMinfoDB....')
     
+
+    def initDB(self):
+
+        # Create table
+        __conn.execute("create table vmachine ( \
+            owner TEXT\
+            name TEXT\
+            create TEXT\
+            best_befor TEXT\
+            OS TEXT\
+            ")
 
