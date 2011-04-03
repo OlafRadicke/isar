@@ -61,6 +61,18 @@ class VMinfoDB():
             owner TEXT, \
             OS TEXT );')
 
+        # Create table
+        self.__conn.execute('CREATE TABLE  user( \
+            nickname TEXT PRIMARY KEY, \
+            homedir TEXT, \
+            mail TEXT, \
+            fullname TEXT, \
+            comment TEXT);')
+
+        # Create table
+        self.__conn.execute('CREATE TABLE  installiso( \
+            name TEXT PRIMARY KEY, \
+            path TEXT);')
 
     ## add V-Machine info in database
     ## @param vminfo a VMinfo-class with info about V-Machine

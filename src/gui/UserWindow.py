@@ -26,109 +26,63 @@ import logging
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot
 from VMinfoDB import VMinfoDB 
-from UserWindow import UserWindow
 
-## @file MainWindow.py
+## @file UserWindow.py
 # @author Olaf Radicke<briefkasten@olaf-radicke.de>
 
-## The main window of the GUI
-class MainWindow(QtGui.QMainWindow):
+## The window view info about users.
+class UserWindow(QtGui.QDialog):
 
 
     ## Simple List
     listview = ""
-
-    ## TaskView: This class show the taskt data.
-    taskBox = ""
-
-    ## Minutes of the proceedings as html
-    minutes =  ""
 
 
     ## This QTextBrowser show the minutes of the proceedings
     textView = ""
 
     ## Save information about vitual machines
-    vmInfoDB = VMinfoDB()
+    #vmInfoDB = VMinfoDB()
 
     ## Constructor
-    def __init__(self, *args): 
-        QtGui.QMainWindow.__init__(self, *args)
+    def __init__(self): 
+        QtGui.QDialog.__init__(self)
+        #super(UserWindow, self).__init__()
+        #self.setupUi(self)
 
 
-        logging.debug('init main window....')
+        logging.debug('init UserWindow....')
 
         self.resize(800,680)
-        self.setWindowTitle('Isar')
+        self.setWindowTitle('Isar::User')
 
 
-        #---------- menubar --------------------
-        
-
-        menubar = self.menuBar()
-        menuFile = menubar.addMenu('&File')        
-
-
-
-        # Menue-item for init the database.
-        menuInitDB = QtGui.QAction( 'Init Database', self)
-        menuInitDB.setShortcut('Ctrl+D')
-        menuInitDB.setStatusTip('Init the SQLite3-Database.')
-        self.connect(menuInitDB, QtCore.SIGNAL('triggered()'), QtCore.SLOT('initDB()'))
-        menuFile.addAction(menuInitDB)
-
-
-        # Menue-item for Edit and configure user info.
-        menuEditUser = QtGui.QAction( 'Edit user', self)
-        menuEditUser.setShortcut('Ctrl+U')
-        menuEditUser.setStatusTip('Edit and configure user info.')
-        self.connect(menuEditUser, QtCore.SIGNAL('triggered()'), QtCore.SLOT('editUser()'))
-        menuFile.addAction(menuEditUser)
-
-        
-        ## Menue-item for apliction exit
-        menuExit = QtGui.QAction(QtGui.QIcon('icons/exit.png'), 'Exit', self)
-        menuExit.setShortcut('Ctrl+Q')
-        menuExit.setStatusTip('Exit application')
-        self.connect(menuExit, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
-        menuFile.addAction(menuExit)
-
-        ## Menue-item for change the task stetting file.
-        menuInfoAbout = QtGui.QAction( 'About', self)
-        menuInfoAbout.setShortcut('Ctrl+I')
-        menuInfoAbout.setStatusTip('About this programm.')
-        self.connect(menuInfoAbout, QtCore.SIGNAL('triggered()'), QtCore.SLOT('about()'))
-
-
-        menuFile = menubar.addMenu('&Info')
-        menuFile.addAction(menuInfoAbout)
-
-        # ------------- menu end ------------
 
         # ----------- toolbar ---------------------
-        self.toolbar = self.addToolBar('tools')
+        #self.toolbar = self.addToolBar('tools')
         
-        toolNew = QtGui.QAction(QtGui.QIcon('../../icons/new.png'), 'New VM', self)
-        toolNew.setShortcut('Ctrl+N')
-        self.connect(toolNew, QtCore.SIGNAL('triggered()'), QtCore.SLOT('newVMDialog()'))
-        self.toolbar.addAction(toolNew)
+        #toolNew = QtGui.QAction(QtGui.QIcon('icons/new.png'), 'New VM', self)
+        #toolNew.setShortcut('Ctrl+N')
+        #self.connect(toolNew, QtCore.SIGNAL('triggered()'), QtCore.SLOT('newVMDialog()'))
+        #self.toolbar.addAction(toolNew)
 
-        toolRemove = QtGui.QAction(QtGui.QIcon('../../icons/remove.png'), 'Delete VM', self)
-        toolNew.setShortcut('Ctrl+X')
-        self.connect(toolRemove, QtCore.SIGNAL('triggered()'), QtCore.SLOT('deleteVM()'))
-        self.toolbar.addAction(toolRemove)
+        #toolRemove = QtGui.QAction(QtGui.QIcon('icons/remove.png'), 'Delete VM', self)
+        #toolNew.setShortcut('Ctrl+X')
+        #self.connect(toolRemove, QtCore.SIGNAL('triggered()'), QtCore.SLOT('deleteVM()'))
+        #self.toolbar.addAction(toolRemove)
 
         # ----------- toolbar end ------------------------
 
 
 
         ## Main Widget
-        centralWidget = QtGui.QWidget()
-        self.setCentralWidget(centralWidget)
+        #centralWidget = QtGui.QWidget()
+        #self.setCentralWidget(centralWidget)
 
         ## Main layout V
         vMainLayout = QtGui.QVBoxLayout()
-        centralWidget.setLayout(vMainLayout)
+        #centralWidget.setLayout(vMainLayout)
+        self.setLayout(vMainLayout)
         
         ## Main layout H
         hMainLayout = QtGui.QHBoxLayout()
@@ -139,7 +93,7 @@ class MainWindow(QtGui.QMainWindow):
 
         # VBox left with GrouBox-frame
         listBox = QtGui.QGroupBox("VM list")
-        listBox.setMaximumWidth(800)
+        listBox.setMaximumWidth(600)
         vListLayoutL = QtGui.QVBoxLayout()
         listBox.setLayout(vListLayoutL)
         hMainLayout.addWidget(listBox)
@@ -148,18 +102,17 @@ class MainWindow(QtGui.QMainWindow):
         # -------------- List --------------
 
         self.listview = QtGui.QTreeWidget()
-        _haderList = ["owner","name","create","best befor","OS"]
+        _haderList = ["nickname","email","realname","home"]
         self.listview.setColumnCount(len(_haderList))
         self.listview.setHeaderLabels(_haderList)
         vListLayoutL.addWidget(self.listview)
         self.connect(self.listview, QtCore.SIGNAL('itemSelectionChanged()'), QtCore.SLOT('fillTaskView()'))
 
-        self.listview.addTopLevelItem( QtGui.QTreeWidgetItem(["Olaf","CluterTest","2011-03-29","2011-05-31","fedora13"]))
+        self.listview.addTopLevelItem( QtGui.QTreeWidgetItem(["OR","olaf@atix.de","Olaf Radicke","/home/or"]))
 
-        # ---------- Statusbar ------------
-        self.statusBar().showMessage('Ready')
-        # Item-List
-        self.refreshVMList()
+        closePushButton = QtGui.QPushButton("Close")
+        self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('close()'))
+        vMainLayout.addWidget(closePushButton)
 
 
     ## A function with qt-slot. it's creade a new vm.
@@ -225,42 +178,7 @@ class MainWindow(QtGui.QMainWindow):
           #self.refreshVMList()
 
 
-        
-    ## Open about-dialog
-    @pyqtSlot()
-    def about(self):
-        pass
-        #msgBox = QtGui.QMssageBox(self)
-        #msgBox.setText("About");
-        #msgBox.setInformativeText("Contact: Olaf Radicke <briefkasten@olaf-radicke.de>");
-        #msgBox.setStandardButtons(QMessageBox.Ok);
-        
-        #msgBox.setDefaultButton(QMessageBox::Save);
-        #int ret = msgBox.exec();
-
-        infotext = "working title: Isar \n"
-        infotext = infotext + "Lizenz: GPL \n"
-        infotext = infotext + "Contact: Olaf Radicke <briefkasten@olaf-radicke.de>"
-
-        QtGui.QMessageBox.information(self, "About",infotext)
 
 
-      
 
-    ## Slot for init database.
-    @pyqtSlot()
-    def initDB(self):
-        logging.debug("[20110402220213] init db")
-        print "[20110402220213] init db"
-        self.vmInfoDB.initDB()
-
-
-    ## Slot for open eding user window.
-    @pyqtSlot()
-    def editUser(self):
-        logging.debug("[20110403172927] editUser")
-        print "[20110403172927] editUser"     
-
-	uw = UserWindow()
-	uw.show()      
         
