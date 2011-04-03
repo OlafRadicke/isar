@@ -108,17 +108,33 @@ class VMinfoDB():
             
     ## @return get back a list of all user as UserInfo list.
     def getAllUser(self):
-	userList = list()
-	rows = self.__conn.execute("select * from user")
-	for row in rows:
-	    print row
-            nickname, homedir, mail, fullname = row
-            userInfo = UserInfo()
-            userInfo.nickname = nickname
-            userInfo.homedir = homedir
-            userInfo.mail = mail
-            userInfo.fullname = fullname
-            userList.append(userInfo)
+        userList = list()
+        rows = self.__conn.execute("SELECT * FROM user")
+        for row in rows:
+            print row
+                nickname, homedir, mail, fullname = row
+                userInfo = UserInfo()
+                userInfo.nickname = nickname
+                userInfo.homedir = homedir
+                userInfo.mail = mail
+                userInfo.fullname = fullname
+                userList.append(userInfo)
+                
+        return userList
+
+
             
-	return userList
-	
+    ## Delete a user.
+    def deleteUser(self, nickname):
+        self.__conn.execute("DELETE FROM user \
+            WHERE nickname = '" + nickname + "';")   
+       
+    ## Update user data.   
+    def updateUser(self, userInfo):
+        self.__conn.execute("UPDATE user  SET \
+            homedir = '" + userInfo.homedir + "' \
+            mail = '" + userInfo.mail + "' \
+            fullname = '" + userInfo.fullname + "' \
+            WHERE nickname = '" + userInfo.nickname + "';)
+                 
+            
