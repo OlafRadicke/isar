@@ -108,12 +108,12 @@ class MainWindow(QtGui.QMainWindow):
         # ----------- toolbar ---------------------
         self.toolbar = self.addToolBar('tools')
         
-        toolNew = QtGui.QAction(QtGui.QIcon('../../icons/new.png'), 'New VM', self)
+        toolNew = QtGui.QAction(QtGui.QIcon('./icons/new.png'), 'New VM', self)
         toolNew.setShortcut('Ctrl+N')
         self.connect(toolNew, QtCore.SIGNAL('triggered()'), QtCore.SLOT('newVMDialog()'))
         self.toolbar.addAction(toolNew)
 
-        toolRemove = QtGui.QAction(QtGui.QIcon('../../icons/remove.png'), 'Delete VM', self)
+        toolRemove = QtGui.QAction(QtGui.QIcon('./icons/remove.png'), 'Delete VM', self)
         toolNew.setShortcut('Ctrl+X')
         self.connect(toolRemove, QtCore.SIGNAL('triggered()'), QtCore.SLOT('deleteVM()'))
         self.toolbar.addAction(toolRemove)

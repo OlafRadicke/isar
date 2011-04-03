@@ -105,3 +105,20 @@ class VMinfoDB():
             ) values ( \
             '" + nickname + "' \
             );")    
+            
+    ## @return get back a list of all user as UserInfo list.
+    def getAllUser(self):
+	userList = list()
+	rows = self.__conn.execute("select * from user")
+	for row in rows:
+	    print row
+            nickname, homedir, mail, fullname = row
+            userInfo = UserInfo()
+            userInfo.nickname = nickname
+            userInfo.homedir = homedir
+            userInfo.mail = mail
+            userInfo.fullname = fullname
+            userList.append(userInfo)
+            
+	return userList
+	

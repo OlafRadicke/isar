@@ -189,6 +189,8 @@ class UserWindow(QtGui.QDialog):
         closePushButton = QtGui.QPushButton("Close")
         self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('close()'))
         hBottomLayout.addWidget(closePushButton)
+        
+        self.refreshVMList()
 
 
     ## A function with qt-slot. it's creade a new vm.
@@ -207,10 +209,7 @@ class UserWindow(QtGui.QDialog):
 	      QtGui.QMessageBox.information(self, "Error",infotext)
 	      return
     
-          self.__userInfo.nickname = text
-          #taskTyp = TaskTyp()
-          #taskTyp.ID = text
-          #self.tasksSettings.addTaskTyp(taskTyp)
+          self.__userInfo.nickname = str(text)
           self.refreshVMList()
       
 
@@ -219,14 +218,12 @@ class UserWindow(QtGui.QDialog):
     @pyqtSlot()
     def refreshVMList(self):
         pass
-        #self.tasksSettings.reLoad()
-        #self.taskBox.setTasksSettings(self.tasksSettings)
-        #self.listview.clear ()
-        #count = 0
-        #for item in self.tasksSettings.getStoryboard():
-            #print "[debug] ", item
-            #self.listview.insertItem(count, item)
-            #count = count + 1
+	userList = self.__vmInfoDB.getAllUser()
+        self.listview.clear()
+        for item in userList:
+	    qStringList = QtCore.QStringList([str(item.nickname), str(item.mail), str(item.fullname), str(item.homedir)])
+	    twItem = QtGui.QTreeWidgetItem(qStringList)
+	    self.listview.addTopLevelItem(twItem)
 
 
     ## A function with qt-slot. it's fill the TaskView with data. 
