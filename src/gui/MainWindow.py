@@ -243,8 +243,6 @@ class MainWindow(QtGui.QMainWindow):
         infotext = infotext + "Contact: Olaf Radicke <briefkasten@olaf-radicke.de>"
 
         QtGui.QMessageBox.information(self, "About",infotext)
-
-
       
 
     ## Slot for init database.
@@ -261,7 +259,7 @@ class MainWindow(QtGui.QMainWindow):
         logging.debug("[20110403172927] editUser")
         print "[20110403172927] editUser"     
 
-	uw = UserWindow()
+	uw = UserWindow(self.vmInfoDB)
 	uw.show()          
 	ret = uw.exec_()
 

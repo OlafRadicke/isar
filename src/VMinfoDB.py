@@ -24,6 +24,7 @@
 
 import logging
 import sqlite3
+from UserInfo import UserInfo
 
 
 ## @file VMinfoDB.py
@@ -66,8 +67,7 @@ class VMinfoDB():
             nickname TEXT PRIMARY KEY, \
             homedir TEXT, \
             mail TEXT, \
-            fullname TEXT, \
-            comment TEXT);')
+            fullname TEXT);')
 
         # Create table
         self.__conn.execute('CREATE TABLE  installiso( \
@@ -97,4 +97,11 @@ class VMinfoDB():
             '" + vminfo.OS + "' \
             );")
 
-            
+    ## add V-Machine info in database
+    ## @param vminfo a VMinfo-class with info about V-Machine
+    def addUser(self, nickname):
+        self.__conn.execute("insert into user( \
+            nickname \
+            ) values ( \
+            '" + nickname + "' \
+            );")    

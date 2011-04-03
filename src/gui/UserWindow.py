@@ -23,30 +23,45 @@
 
 import sys
 import logging
+import sqlite3
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot
 from VMinfoDB import VMinfoDB 
+from UserInfo import UserInfo
+
 
 ## @file UserWindow.py
 # @author Olaf Radicke<briefkasten@olaf-radicke.de>
 
 ## The window view info about users.
 class UserWindow(QtGui.QDialog):
+  
+    ## Database binding.
+    __vmInfoDB = VMinfoDB()
 
+    ## User Infos of selected item
+    __userInfo = UserInfo()
 
     ## Simple List
     listview = ""
 
-
-    ## This QTextBrowser show the minutes of the proceedings
-    textView = ""
-
-    ## Save information about vitual machines
+    ## Full name of user. Is a QLineEdit class.
+    fullnameLineEdit = ""
+   
+    ## Mail-Adress of user. Is a QLineEdit class.   
+    mailLineEdit = ""
+    
+    ## Home dir of user. Is a QLineEdit class.
+    userDirLineEdit = ""
+    
+    ## Save information.
     #vmInfoDB = VMinfoDB()
 
     ## Constructor
-    def __init__(self, parent=None): 
+    def __init__(self, vmInfoDB, parent=None): 
         logging.debug('init UserWindow....')
+        
+        self.__vmInfoDB = vmInfoDB
         QtGui.QDialog.__init__(self, parent)
 
 
@@ -109,20 +124,90 @@ class UserWindow(QtGui.QDialog):
 
         self.listview.addTopLevelItem( QtGui.QTreeWidgetItem(["OR","olaf@atix.de","Olaf Radicke","/home/or"]))
 
+        # ----------- right box ---------------------------------
+
+        # VBox right with GrouBox-frame
+        editBox = QtGui.QGroupBox("Details")
+        editBox.setMaximumWidth(600)
+        vEditLayoutR = QtGui.QVBoxLayout()
+        editBox.setLayout(vEditLayoutR)
+        hMainLayout.addWidget(editBox)
+
+	# Full name
+        hFullnameLayout = QtGui.QHBoxLayout()
+        vEditLayoutR.addLayout(hFullnameLayout)
+        
+        nameLabel = QtGui.QLabel("Full Name:")
+        hFullnameLayout.addWidget(nameLabel)
+        self.fullnameLineEdit = QtGui.QLineEdit()
+        hFullnameLayout.addWidget(self.fullnameLineEdit)        
+        
+	# Mail-address
+        hMailLayout = QtGui.QHBoxLayout()
+        vEditLayoutR.addLayout(hMailLayout)
+        
+        mailLabel = QtGui.QLabel("Mail:")
+        hMailLayout.addWidget(mailLabel)
+        self.mailLineEdit = QtGui.QLineEdit()
+        hMailLayout.addWidget(self.mailLineEdit) 
+        
+        # User dir
+        hLayoutUserDir = QtGui.QHBoxLayout()
+        vEditLayoutR.addLayout(hLayoutUserDir)
+        userDirLabel = QtGui.QLabel("User Dir:")
+        hLayoutUserDir.addWidget(userDirLabel)
+        self.userDirLineEdit = QtGui.QLineEdit()
+        hLayoutUserDir.addWidget(self.userDirLineEdit)
+        userDirPushButton = QtGui.QPushButton("...")
+        self.connect(userDirPushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('selectUserDir()'))
+        hLayoutUserDir.addWidget(userDirPushButton)        
+        
+
+	# comment
+        hSefeLayout = QtGui.QHBoxLayout()
+        vEditLayoutR.addLayout(hSefeLayout)
+        
+        safeButton = QtGui.QPushButton("Safe Edits")
+        self.connect(safeButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('safeEdits()'))
+        hSefeLayout.addWidget(safeButton) 
+        
+	# ---------- Bottom area --------------------
+
+        # Bottom layout H
+        hBottomLayout = QtGui.QHBoxLayout()
+        vMainLayout.addLayout(hBottomLayout)
+        
+
+        closePushButton = QtGui.QPushButton("New")
+        self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('newVMDialog()'))
+        hBottomLayout.addWidget(closePushButton)        
+        
+        closePushButton = QtGui.QPushButton("Delete")
+        self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('close()'))
+        hBottomLayout.addWidget(closePushButton)
+
         closePushButton = QtGui.QPushButton("Close")
         self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('close()'))
-        vMainLayout.addWidget(closePushButton)
+        hBottomLayout.addWidget(closePushButton)
 
 
     ## A function with qt-slot. it's creade a new vm.
     @pyqtSlot()
     def newVMDialog(self):
-        text, ok = QtGui.QInputDialog.getText(self, "New Task", "Task name:", 0)
+        text, ok = QtGui.QInputDialog.getText(self, "New User", "Nickname:", 0)
         if ok != True :
           logging.debug("[20110402201848] if: " + str(text) + str(ok))
           return
         else:
           logging.debug("[20110402201848] else: " + str(text) + str(ok))
+          try:
+	      self.__vmInfoDB.addUser(str(text))
+	  except sqlite3.Error, e:
+	      infotext = "An error occurred:", e.args[0]
+	      QtGui.QMessageBox.information(self, "Error",infotext)
+	      return
+    
+          self.__userInfo.nickname = text
           #taskTyp = TaskTyp()
           #taskTyp.ID = text
           #self.tasksSettings.addTaskTyp(taskTyp)
@@ -177,7 +262,17 @@ class UserWindow(QtGui.QDialog):
           #self.refreshVMList()
 
 
+    ## Slot with file dialog, for selct a dir.
+    @pyqtSlot()
+    def selectUserDir(self):
+        #print "selectUserDir()"
+        dirname = QtGui.QFileDialog.getExistingDirectory(self, "Select home dir", self.userDirLineEdit.text(),QtGui.QFileDialog.ShowDirsOnly)
+        self.userDirLineEdit.setText(dirname)
 
 
-
-        
+    ## Slot for safe edits
+    @pyqtSlot()
+    def safeEdits(self):       
+	print "[safe edits...]"
+	
+	
