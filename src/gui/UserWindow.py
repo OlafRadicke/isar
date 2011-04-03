@@ -45,10 +45,9 @@ class UserWindow(QtGui.QDialog):
     #vmInfoDB = VMinfoDB()
 
     ## Constructor
-    def __init__(self): 
-        QtGui.QDialog.__init__(self)
-        #super(UserWindow, self).__init__()
-        #self.setupUi(self)
+    def __init__(self, parent=None): 
+        logging.debug('init UserWindow....')
+        QtGui.QDialog.__init__(self, parent)
 
 
         logging.debug('init UserWindow....')

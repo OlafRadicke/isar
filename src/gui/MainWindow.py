@@ -262,5 +262,8 @@ class MainWindow(QtGui.QMainWindow):
         print "[20110403172927] editUser"     
 
 	uw = UserWindow()
-	uw.show()      
+	uw.show()          
+	ret = uw.exec_()
+
+        print "[20110403182643] editUser"     
         
