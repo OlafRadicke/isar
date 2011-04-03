@@ -67,7 +67,7 @@ class UserWindow(QtGui.QDialog):
 
         logging.debug('init UserWindow....')
 
-        self.resize(800,680)
+        self.resize(800,480)
         self.setWindowTitle('Isar::User')
 
 
@@ -171,6 +171,9 @@ class UserWindow(QtGui.QDialog):
         self.connect(safeButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('safeEdits()'))
         hSefeLayout.addWidget(safeButton) 
         
+        
+        vEditLayoutR.insertStretch(10000, 0)
+        
 	# ---------- Bottom area --------------------
 
         # Bottom layout H
@@ -217,7 +220,7 @@ class UserWindow(QtGui.QDialog):
     ## Refrash the list of tasks.
     @pyqtSlot()
     def refreshVMList(self):
-        pass
+	print "[refreshVMList]"
 	userList = self.__vmInfoDB.getAllUser()
         self.listview.clear()
         for item in userList:
