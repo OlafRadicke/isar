@@ -164,11 +164,12 @@ class VMinfoDB():
        
     ## Update user data.   
     def updateUser(self, userInfo):
-        self.__conn.execute("UPDATE user  SET \
-            homedir = '" + userInfo.homedir + "' \
-            mail = '" + userInfo.mail + "' \
+        _sql_string = "UPDATE user  SET \
+            homedir = '" + userInfo.homedir + "', \
+            mail = '" + userInfo.mail + "', \
             fullname = '" + userInfo.fullname + "' \
-            WHERE nickname = '" + userInfo.nickname + "';")
+            WHERE nickname = '" + userInfo.nickname + "';"
+        self.__conn.execute(_sql_string)
         self.__conn.commit()
                  
             

@@ -223,9 +223,9 @@ class UserWindow(QtGui.QDialog):
                 return
             else:
                 self.__userInfo = _userInfo    
-                self.userDirLineEdit.setText(str(self.__userInfo.homedir))
-                self.mailLineEdit.setText(str(self.__userInfo.mail))
-                self.fullnameLineEdit.setText(str(self.__userInfo.fullname))
+                self.userDirLineEdit.setText( self.__userInfo.homedir )
+                self.mailLineEdit.setText( self.__userInfo.mail )
+                self.fullnameLineEdit.setText( self.__userInfo.fullname )
           
     ## A function with qt-slot. it's creade a new vm.
     @pyqtSlot()
@@ -251,19 +251,33 @@ class UserWindow(QtGui.QDialog):
     ## Refrash the list of tasks.
     @pyqtSlot()
     def refreshUserList(self):
-	print "[refreshUserList]"
-	userList = self.__vmInfoDB.getAllUser()
+        print "[refreshUserList]"
+        userList = self.__vmInfoDB.getAllUser()
         self.listview.clear()
         for item in userList:
-	    qStringList = QtCore.QStringList([str(item.nickname), str(item.mail), str(item.fullname), str(item.homedir)])
-	    twItem = QtGui.QTreeWidgetItem(qStringList)
-	    self.listview.addTopLevelItem(twItem)
+            qStringList = QtCore.QStringList([ \
+                str(item.nickname),  \
+                str(item.mail),  \
+                str(item.fullname),  \
+                str(item.homedir) \
+            ])
+            twItem = QtGui.QTreeWidgetItem(qStringList)
+            self.listview.addTopLevelItem(twItem)
 
 
     ## Slot for safe edits
     @pyqtSlot()
     def safeEdits(self):       
         print "[safe edits...]"
+        self.__userInfo.homedir =  str(self.userDirLineEdit.text())
+        self.__userInfo.mail =  str(self.mailLineEdit.text())
+        self.__userInfo.fullname =  str(self.fullnameLineEdit.text())
+        try:
+            self.__vmInfoDB.updateUser(self.__userInfo)
+        except sqlite3.Error, e:
+            infotext = "An error occurred:", e.args[0]
+            QtGui.QMessageBox.information(self, "Error",str(infotext))
+            return
 
     ## Slot with file dialog, for selct a dir.
     @pyqtSlot()
