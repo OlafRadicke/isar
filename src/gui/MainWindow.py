@@ -23,6 +23,7 @@
 
 import sys
 import logging
+import sqlite3
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot
 from VMinfoDB import VMinfoDB 
@@ -258,10 +259,13 @@ class MainWindow(QtGui.QMainWindow):
     def editUser(self):
         logging.debug("[20110403172927] editUser")
         print "[20110403172927] editUser"     
-
-	uw = UserWindow(self.vmInfoDB)
-	uw.show()          
-	ret = uw.exec_()
-
+        try:
+            uw = UserWindow(self.vmInfoDB)
+            uw.show()
+            ret = uw.exec_()
+        except sqlite3.Error, e:
+            infotext = "An error occurred:", e.args[0]
+            QtGui.QMessageBox.information(self, "Error", str(infotext))
+            return
         print "[20110403182643] editUser"     
         

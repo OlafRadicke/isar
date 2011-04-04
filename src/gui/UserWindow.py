@@ -71,28 +71,6 @@ class UserWindow(QtGui.QDialog):
         self.setWindowTitle('Isar::User')
 
 
-
-        # ----------- toolbar ---------------------
-        #self.toolbar = self.addToolBar('tools')
-        
-        #toolNew = QtGui.QAction(QtGui.QIcon('icons/new.png'), 'New VM', self)
-        #toolNew.setShortcut('Ctrl+N')
-        #self.connect(toolNew, QtCore.SIGNAL('triggered()'), QtCore.SLOT('newVMDialog()'))
-        #self.toolbar.addAction(toolNew)
-
-        #toolRemove = QtGui.QAction(QtGui.QIcon('icons/remove.png'), 'Delete VM', self)
-        #toolNew.setShortcut('Ctrl+X')
-        #self.connect(toolRemove, QtCore.SIGNAL('triggered()'), QtCore.SLOT('deleteVM()'))
-        #self.toolbar.addAction(toolRemove)
-
-        # ----------- toolbar end ------------------------
-
-
-
-        ## Main Widget
-        #centralWidget = QtGui.QWidget()
-        #self.setCentralWidget(centralWidget)
-
         ## Main layout V
         vMainLayout = QtGui.QVBoxLayout()
         #centralWidget.setLayout(vMainLayout)
@@ -182,23 +160,23 @@ class UserWindow(QtGui.QDialog):
         
 
         closePushButton = QtGui.QPushButton("New")
-        self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('newVMDialog()'))
+        self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('newUserDialog()'))
         hBottomLayout.addWidget(closePushButton)        
         
         closePushButton = QtGui.QPushButton("Delete")
-        self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('close()'))
+        self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('deleteUser()'))
         hBottomLayout.addWidget(closePushButton)
 
         closePushButton = QtGui.QPushButton("Close")
         self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('close()'))
         hBottomLayout.addWidget(closePushButton)
         
-        self.refreshVMList()
+        self.refreshUserList()
 
 
     ## A function with qt-slot. it's creade a new vm.
     @pyqtSlot()
-    def newVMDialog(self):
+    def newUserDialog(self):
         text, ok = QtGui.QInputDialog.getText(self, "New User", "Nickname:", 0)
         if ok != True :
           logging.debug("[20110402201848] if: " + str(text) + str(ok))
@@ -209,40 +187,24 @@ class UserWindow(QtGui.QDialog):
 	      self.__vmInfoDB.addUser(str(text))
 	  except sqlite3.Error, e:
 	      infotext = "An error occurred:", e.args[0]
-	      QtGui.QMessageBox.information(self, "Error",infotext)
+	      QtGui.QMessageBox.information(self, "Error",str(infotext))
 	      return
     
           self.__userInfo.nickname = str(text)
-          self.refreshVMList()
+          self.refreshUserList()
       
 
         
     ## Refrash the list of tasks.
     @pyqtSlot()
-    def refreshVMList(self):
-	print "[refreshVMList]"
+    def refreshUserList(self):
+	print "[refreshUserList]"
 	userList = self.__vmInfoDB.getAllUser()
         self.listview.clear()
         for item in userList:
 	    qStringList = QtCore.QStringList([str(item.nickname), str(item.mail), str(item.fullname), str(item.homedir)])
 	    twItem = QtGui.QTreeWidgetItem(qStringList)
 	    self.listview.addTopLevelItem(twItem)
-
-
-    ## A function with qt-slot. it's fill the TaskView with data. 
-    @pyqtSlot()
-    def fillTaskView(self):
-        pass
-        #todo = ""
-        #for item in self.listview.selectedItems():
-            #print  "[debug] .." , item.text()
-            #todo = item.text()
-
-        #if( todo == "" ):
-            #self.statusBar().showMessage('No ToDo select...')
-        #else:
-          #taskTyp = self.tasksSettings.getTaskTyp(todo)
-          #self.taskBox.setTaskTyp(taskTyp)
 
 
     ## Function delete a task
@@ -259,7 +221,7 @@ class UserWindow(QtGui.QDialog):
         #else:
           #taskTyp = self.tasksSettings.getTaskTyp(todo)
           #self.tasksSettings.deleteTask(taskTyp)
-          #self.refreshVMList()
+          #self.refreshUserList()
 
 
     ## Slot with file dialog, for selct a dir.
@@ -269,10 +231,30 @@ class UserWindow(QtGui.QDialog):
         dirname = QtGui.QFileDialog.getExistingDirectory(self, "Select home dir", self.userDirLineEdit.text(),QtGui.QFileDialog.ShowDirsOnly)
         self.userDirLineEdit.setText(dirname)
 
-
     ## Slot for safe edits
     @pyqtSlot()
     def safeEdits(self):       
 	print "[safe edits...]"
-	
-	
+
+    ## Slot delete user.
+    @pyqtSlot()
+    def deleteUser(self):
+        print "[delete user...]"
+        todo = ""
+        for item in self.listview.selectedItems():
+            print  ".." , item.text(0)
+            todo = item.text(0)
+
+        if todo == "":
+              infotext = "No user select!"
+              QtGui.QMessageBox.information(self, "Error",str(infotext))
+              return
+        else:
+            try:
+                self.__vmInfoDB.deleteUser(str(text))
+            except sqlite3.Error, e:
+                infotext = "An error occurred:", e.args[0]
+                QtGui.QMessageBox.information(self, "Error",str(infotext))
+                return
+
+            self.refreshUserList()

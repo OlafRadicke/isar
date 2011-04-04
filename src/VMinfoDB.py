@@ -111,14 +111,13 @@ class VMinfoDB():
         userList = list()
         rows = self.__conn.execute("SELECT * FROM user")
         for row in rows:
-            print row
-                nickname, homedir, mail, fullname = row
-                userInfo = UserInfo()
-                userInfo.nickname = nickname
-                userInfo.homedir = homedir
-                userInfo.mail = mail
-                userInfo.fullname = fullname
-                userList.append(userInfo)
+            nickname, homedir, mail, fullname = row
+            userInfo = UserInfo()
+            userInfo.nickname = nickname
+            userInfo.homedir = homedir
+            userInfo.mail = mail
+            userInfo.fullname = fullname
+            userList.append(userInfo)
                 
         return userList
 
@@ -135,6 +134,6 @@ class VMinfoDB():
             homedir = '" + userInfo.homedir + "' \
             mail = '" + userInfo.mail + "' \
             fullname = '" + userInfo.fullname + "' \
-            WHERE nickname = '" + userInfo.nickname + "';)
+            WHERE nickname = '" + userInfo.nickname + "';")
                  
             
