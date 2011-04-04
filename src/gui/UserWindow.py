@@ -98,7 +98,7 @@ class UserWindow(QtGui.QDialog):
         self.listview.setColumnCount(len(_haderList))
         self.listview.setHeaderLabels(_haderList)
         vListLayoutL.addWidget(self.listview)
-        self.connect(self.listview, QtCore.SIGNAL('itemSelectionChanged()'), QtCore.SLOT('fillTaskView()'))
+        self.connect(self.listview, QtCore.SIGNAL('itemSelectionChanged()'), QtCore.SLOT('fillDetailView()'))
 
         self.listview.addTopLevelItem( QtGui.QTreeWidgetItem(["OR","olaf@atix.de","Olaf Radicke","/home/or"]))
 
@@ -173,25 +173,78 @@ class UserWindow(QtGui.QDialog):
         
         self.refreshUserList()
 
+    ## Slot delete user.
+    @pyqtSlot()
+    def deleteUser(self):
+        print "[delete user...]"
+        nickname = ""
+        for item in self.listview.selectedItems():
+            print  ".." , item.text(0)
+            nickname = item.text(0)
 
+        if str(nickname) == "":
+              infotext = "No user select!"
+              QtGui.QMessageBox.information(self, "Error",str(infotext))
+              return
+        else:
+            try:
+                self.__vmInfoDB.deleteUser(str(nickname))
+            except sqlite3.Error, e:
+                infotext = "An error occurred:", e.args[0]
+                QtGui.QMessageBox.information(self, "Error",str(infotext))
+                return
+
+            self.refreshUserList()
+          
+    ## Slot delete user.
+    @pyqtSlot()
+    def fillDetailView(self):
+        print "[fillDetailView...]"
+        _userInfo = ""
+        _nickname = ""
+        for item in self.listview.selectedItems():
+            print  ".." , item.text(0)
+            _nickname = item.text(0)
+
+        if str(_nickname) == "":
+              infotext = "No user select!"
+              QtGui.QMessageBox.information(self, "Error",str(infotext))
+              return
+        else:
+            try:
+                _userInfo = self.__vmInfoDB.getUser(str(_nickname))               
+            except sqlite3.Error, e:
+                infotext = "An error occurred:", e.args[0]
+                QtGui.QMessageBox.information(self, "Error",str(infotext))
+                return
+            if _userInfo == -1 or _userInfo == None:
+                infotext = "Nickname not found!"
+                QtGui.QMessageBox.information(self, "Error",str(infotext))
+                return
+            else:
+                self.__userInfo = _userInfo    
+                self.userDirLineEdit.setText(str(self.__userInfo.homedir))
+                self.mailLineEdit.setText(str(self.__userInfo.mail))
+                self.fullnameLineEdit.setText(str(self.__userInfo.fullname))
+          
     ## A function with qt-slot. it's creade a new vm.
     @pyqtSlot()
     def newUserDialog(self):
         text, ok = QtGui.QInputDialog.getText(self, "New User", "Nickname:", 0)
         if ok != True :
-          logging.debug("[20110402201848] if: " + str(text) + str(ok))
-          return
+            logging.debug("[20110402201848] if: " + str(text) + str(ok))
+            return
         else:
-          logging.debug("[20110402201848] else: " + str(text) + str(ok))
-          try:
-	      self.__vmInfoDB.addUser(str(text))
-	  except sqlite3.Error, e:
-	      infotext = "An error occurred:", e.args[0]
-	      QtGui.QMessageBox.information(self, "Error",str(infotext))
-	      return
-    
-          self.__userInfo.nickname = str(text)
-          self.refreshUserList()
+            logging.debug("[20110402201848] else: " + str(text) + str(ok))
+            try:
+                self.__vmInfoDB.addUser(str(text))
+            except sqlite3.Error, e:
+                infotext = "An error occurred:", e.args[0]
+                QtGui.QMessageBox.information(self, "Error",str(infotext))
+                return
+
+            self.__userInfo.nickname = str(text)
+            self.refreshUserList()
       
 
         
@@ -207,22 +260,10 @@ class UserWindow(QtGui.QDialog):
 	    self.listview.addTopLevelItem(twItem)
 
 
-    ## Function delete a task
+    ## Slot for safe edits
     @pyqtSlot()
-    def deleteVM(self):
-        logging.debug("[20110402201311] deleteVM")
-        #todo = ""
-        #for item in self.listview.selectedItems():
-            #print  ".." , item.text()
-            #todo = item.text()
-
-        #if( todo == "" ):
-            #self.statusBar().showMessage('No ToDo select...')
-        #else:
-          #taskTyp = self.tasksSettings.getTaskTyp(todo)
-          #self.tasksSettings.deleteTask(taskTyp)
-          #self.refreshUserList()
-
+    def safeEdits(self):       
+        print "[safe edits...]"
 
     ## Slot with file dialog, for selct a dir.
     @pyqtSlot()
@@ -231,30 +272,4 @@ class UserWindow(QtGui.QDialog):
         dirname = QtGui.QFileDialog.getExistingDirectory(self, "Select home dir", self.userDirLineEdit.text(),QtGui.QFileDialog.ShowDirsOnly)
         self.userDirLineEdit.setText(dirname)
 
-    ## Slot for safe edits
-    @pyqtSlot()
-    def safeEdits(self):       
-	print "[safe edits...]"
-
-    ## Slot delete user.
-    @pyqtSlot()
-    def deleteUser(self):
-        print "[delete user...]"
-        todo = ""
-        for item in self.listview.selectedItems():
-            print  ".." , item.text(0)
-            todo = item.text(0)
-
-        if todo == "":
-              infotext = "No user select!"
-              QtGui.QMessageBox.information(self, "Error",str(infotext))
-              return
-        else:
-            try:
-                self.__vmInfoDB.deleteUser(str(text))
-            except sqlite3.Error, e:
-                infotext = "An error occurred:", e.args[0]
-                QtGui.QMessageBox.information(self, "Error",str(infotext))
-                return
-
-            self.refreshUserList()
+  

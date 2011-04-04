@@ -46,6 +46,10 @@ class VMinfoDB():
     ## Constructor
     def __init__(self):
         logging.debug('init main VMinfoDB....')
+        
+    ## Destructor.
+    def __del__(self):
+        self.__conn.close()
     
     ## Create table
     def initDB(self):
@@ -53,26 +57,27 @@ class VMinfoDB():
         # Create table
         self.__conn.execute('CREATE TABLE  vmachine( \
             id INTEGER PRIMARY KEY, \
-            name TEXT, \
-            createdate TEXT, \
-            livetimedays TEXT, \
-            comment TEXT, \
-            mail TEXT, \
-            image_file TEXT \
-            owner TEXT, \
-            OS TEXT );')
+            name TEXT NOT NULL, \
+            createdate TEXT NOT NULL, \
+            livetimedays TEXT NOT NULL, \
+            comment TEXT NOT NULL, \
+            mail TEXT NOT NULL, \
+            image_file TEXT NOT NULL \
+            owner TEXT NOT NULL, \
+            os TEXT NOT NULL );')
 
         # Create table
         self.__conn.execute('CREATE TABLE  user( \
             nickname TEXT PRIMARY KEY, \
-            homedir TEXT, \
-            mail TEXT, \
-            fullname TEXT);')
+            homedir TEXT NOT NULL, \
+            mail TEXT NOT NULL, \
+            fullname TEXT NOT NULL);')
 
         # Create table
         self.__conn.execute('CREATE TABLE  installiso( \
             name TEXT PRIMARY KEY, \
-            path TEXT);')
+            path TEXT NOT NULL);')
+        self.__conn.commit()
 
     ## add V-Machine info in database
     ## @param vminfo a VMinfo-class with info about V-Machine
@@ -85,7 +90,7 @@ class VMinfoDB():
             mail, \
             image_file, \
             owner, \
-            OS \
+            os \
             ) values ( \
             '" + vminfo.name + "', \
             '" + vminfo.createdate + "', \
@@ -96,15 +101,25 @@ class VMinfoDB():
             '" + vminfo.owner + "', \
             '" + vminfo.OS + "' \
             );")
+        self.__conn.commit()
 
     ## add V-Machine info in database
     ## @param vminfo a VMinfo-class with info about V-Machine
     def addUser(self, nickname):
+        print "[addUser...]"
         self.__conn.execute("insert into user( \
-            nickname \
+            nickname, \
+            homedir, \
+            mail, \
+            fullname \
             ) values ( \
-            '" + nickname + "' \
-            );")    
+            '" + nickname + "', \
+            '', \
+            '', \
+            '' \
+            );")   
+        self.__conn.commit()
+
             
     ## @return get back a list of all user as UserInfo list.
     def getAllUser(self):
@@ -121,12 +136,31 @@ class VMinfoDB():
                 
         return userList
 
-
+    ## @param nickname A nickname of a user.
+    # @return get back a user as UserInfo with set nickname.
+    # if nickname not found in database, is retourn -1
+    def getUser(self, nickname):
+        userList = list()
+        rows = self.__conn.execute("SELECT * FROM user WHERE nickname='" + nickname + "';")
+        for row in rows:
+            nickname, homedir, mail, fullname = row
+            userInfo = UserInfo()
+            userInfo.nickname = nickname
+            userInfo.homedir = homedir
+            userInfo.mail = mail
+            userInfo.fullname = fullname
+            userList.append(userInfo)
+            
+        if  len(userList) < 1:
+            return -1
+        else:
+            return userList[0]
             
     ## Delete a user.
     def deleteUser(self, nickname):
         self.__conn.execute("DELETE FROM user \
-            WHERE nickname = '" + nickname + "';")   
+            WHERE nickname = '" + nickname + "';") 
+        self.__conn.commit()  
        
     ## Update user data.   
     def updateUser(self, userInfo):
@@ -135,5 +169,6 @@ class VMinfoDB():
             mail = '" + userInfo.mail + "' \
             fullname = '" + userInfo.fullname + "' \
             WHERE nickname = '" + userInfo.nickname + "';")
+        self.__conn.commit()
                  
             
