@@ -30,45 +30,38 @@ from VMinfoDB import VMinfoDB
 from UserInfo import UserInfo
 
 
-## @file UserWindow.py
+## @file instalMediaWindow.py
 # @author Olaf Radicke<briefkasten@olaf-radicke.de>
 
 ## The window view info about users.
-class UserWindow(QtGui.QDialog):
+class instalMediaWindow(QtGui.QDialog):
   
     ## Database binding.
     __vmInfoDB = VMinfoDB()
 
-    ## User Infos of selected item
-    __userInfo = UserInfo()
-
     ## Simple List
     listview = ""
-
-    ## Full name of user. Is a QLineEdit class.
-    fullnameLineEdit = ""
-   
-    ## Mail-Adress of user. Is a QLineEdit class.   
-    mailLineEdit = ""
+    
+    __isoPathName = ""
     
     ## Home dir of user. Is a QLineEdit class.
-    userDirLineEdit = ""
+    isoPathLineEdit = ""
     
     ## Save information.
     #vmInfoDB = VMinfoDB()
 
     ## Constructor
     def __init__(self, vmInfoDB, parent=None): 
-        logging.debug('init UserWindow....')
+        logging.debug('init instalMediaWindow....')
         
         self.__vmInfoDB = vmInfoDB
         QtGui.QDialog.__init__(self, parent)
 
 
-        logging.debug('init UserWindow....')
+        logging.debug('init instalMediaWindow....')
 
         self.resize(800,480)
-        self.setWindowTitle('Isar::User')
+        self.setWindowTitle('Isar::Instalations medias')
 
 
         ## Main layout V
@@ -94,7 +87,7 @@ class UserWindow(QtGui.QDialog):
         # -------------- List --------------
 
         self.listview = QtGui.QTreeWidget()
-        _haderList = ["nickname","email","realname","home"]
+        _haderList = ["instalations ISOs"]
         self.listview.setColumnCount(len(_haderList))
         self.listview.setHeaderLabels(_haderList)
         vListLayoutL.addWidget(self.listview)
@@ -109,37 +102,20 @@ class UserWindow(QtGui.QDialog):
         editBox.setLayout(vEditLayoutR)
         hMainLayout.addWidget(editBox)
 
-        # Full name
-        hFullnameLayout = QtGui.QHBoxLayout()
-        vEditLayoutR.addLayout(hFullnameLayout)
-        
-        nameLabel = QtGui.QLabel("Full Name:")
-        hFullnameLayout.addWidget(nameLabel)
-        self.fullnameLineEdit = QtGui.QLineEdit()
-        hFullnameLayout.addWidget(self.fullnameLineEdit)        
-        
-        # Mail-address
-        hMailLayout = QtGui.QHBoxLayout()
-        vEditLayoutR.addLayout(hMailLayout)
-        
-        mailLabel = QtGui.QLabel("Mail:")
-        hMailLayout.addWidget(mailLabel)
-        self.mailLineEdit = QtGui.QLineEdit()
-        hMailLayout.addWidget(self.mailLineEdit) 
-        
-        # User dir
+
+        # ISO path
         hLayoutUserDir = QtGui.QHBoxLayout()
         vEditLayoutR.addLayout(hLayoutUserDir)
-        userDirLabel = QtGui.QLabel("User Dir:")
+        userDirLabel = QtGui.QLabel("Path of install ISO:")
         hLayoutUserDir.addWidget(userDirLabel)
-        self.userDirLineEdit = QtGui.QLineEdit()
-        hLayoutUserDir.addWidget(self.userDirLineEdit)
+        self.isoPathLineEdit = QtGui.QLineEdit()
+        hLayoutUserDir.addWidget(self.isoPathLineEdit)
         userDirPushButton = QtGui.QPushButton("...")
-        self.connect(userDirPushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('selectUserDir()'))
+        self.connect(userDirPushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('selectISOpath()'))
         hLayoutUserDir.addWidget(userDirPushButton)        
         
 
-        # Safe button
+        # Safe buttom
         hSefeLayout = QtGui.QHBoxLayout()
         vEditLayoutR.addLayout(hSefeLayout)
         
@@ -158,11 +134,11 @@ class UserWindow(QtGui.QDialog):
         
 
         closePushButton = QtGui.QPushButton("New")
-        self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('newUserDialog()'))
+        self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('newISOpathDialog()'))
         hBottomLayout.addWidget(closePushButton)        
         
         closePushButton = QtGui.QPushButton("Delete")
-        self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('deleteUser()'))
+        self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('deleteISOpath()'))
         hBottomLayout.addWidget(closePushButton)
 
         closePushButton = QtGui.QPushButton("Close")
@@ -173,20 +149,20 @@ class UserWindow(QtGui.QDialog):
 
     ## Slot delete user.
     @pyqtSlot()
-    def deleteUser(self):
-        print "[delete user...]"
-        nickname = ""
+    def deleteISOpath(self):
+        print "[delete ISO path...]"
+        _name = ""
         for item in self.listview.selectedItems():
             print  ".." , item.text(0)
-            nickname = item.text(0)
+            _name = item.text(0)
 
-        if str(nickname) == "":
+        if str(_name) == "":
               infotext = "No user select!"
               QtGui.QMessageBox.information(self, "Error",str(infotext))
               return
         else:
             try:
-                self.__vmInfoDB.deleteUser(str(nickname))
+                self.__vmInfoDB.deleteISOpath(str(_name))
             except sqlite3.Error, e:
                 infotext = "An error occurred:", e.args[0]
                 QtGui.QMessageBox.information(self, "Error",str(infotext))
@@ -199,49 +175,46 @@ class UserWindow(QtGui.QDialog):
     def fillDetailView(self):
         print "[fillDetailView...]"
         _userInfo = ""
-        _nickname = ""
+        _name = ""
         for item in self.listview.selectedItems():
             print  ".." , item.text(0)
-            _nickname = item.text(0)
+            _name = item.text(0)
 
-        if str(_nickname) == "":
+        if str(_name) == "":
               infotext = "No user select!"
               QtGui.QMessageBox.information(self, "Error",str(infotext))
               return
         else:
             try:
-                _userInfo = self.__vmInfoDB.getUser(str(_nickname))               
+                _path = self.__vmInfoDB.getISOpath(str(_name))               
             except sqlite3.Error, e:
                 infotext = "An error occurred:", e.args[0]
                 QtGui.QMessageBox.information(self, "Error",str(infotext))
                 return
             if _userInfo == -1 or _userInfo == None:
-                infotext = "Nickname not found!"
+                infotext = "ISO name not found!"
                 QtGui.QMessageBox.information(self, "Error",str(infotext))
                 return
             else:
-                self.__userInfo = _userInfo    
-                self.userDirLineEdit.setText( self.__userInfo.homedir )
-                self.mailLineEdit.setText( self.__userInfo.mail )
-                self.fullnameLineEdit.setText( self.__userInfo.fullname )
+                self.isoPathLineEdit.setText( _path )
           
     ## A function with qt-slot. it's creade a new vm.
     @pyqtSlot()
-    def newUserDialog(self):
-        text, ok = QtGui.QInputDialog.getText(self, "New User", "Nickname:", 0)
+    def newISOpathDialog(self):
+        text, ok = QtGui.QInputDialog.getText(self, "New ISO path", "Label name (not path):", 0)
         if ok != True :
-            logging.debug("[20110402201848] if: " + str(text) + str(ok))
+            logging.debug("[201104] if: " + str(text) + str(ok))
             return
         else:
-            logging.debug("[20110402201848] else: " + str(text) + str(ok))
+            logging.debug("[201104] else: " + str(text) + str(ok))
             try:
-                self.__vmInfoDB.addUser(str(text))
+                self.__vmInfoDB.addISOpath(str(text))
             except sqlite3.Error, e:
                 infotext = "An error occurred:", e.args[0]
                 QtGui.QMessageBox.information(self, "Error",str(infotext))
                 return
 
-            self.__userInfo.nickname = str(text)
+            self.__isoPathName = str(text)
             self.refreshUserList()
       
 
@@ -250,15 +223,10 @@ class UserWindow(QtGui.QDialog):
     @pyqtSlot()
     def refreshUserList(self):
         print "[refreshUserList]"
-        userList = self.__vmInfoDB.getAllUser()
+        nameList = self.__vmInfoDB.getAllISOnames()
         self.listview.clear()
-        for item in userList:
-            qStringList = QtCore.QStringList([ \
-                str(item.nickname),  \
-                str(item.mail),  \
-                str(item.fullname),  \
-                str(item.homedir) \
-            ])
+        for item in nameList:
+            qStringList = QtCore.QStringList( [ str(item) ] )
             twItem = QtGui.QTreeWidgetItem(qStringList)
             self.listview.addTopLevelItem(twItem)
 
@@ -267,7 +235,7 @@ class UserWindow(QtGui.QDialog):
     @pyqtSlot()
     def safeEdits(self):       
         print "[safe edits...]"
-        self.__userInfo.homedir =  str(self.userDirLineEdit.text())
+        self.__userInfo.homedir =  str(self.isoPathLineEdit.text())
         self.__userInfo.mail =  str(self.mailLineEdit.text())
         self.__userInfo.fullname =  str(self.fullnameLineEdit.text())
         try:
@@ -279,9 +247,9 @@ class UserWindow(QtGui.QDialog):
 
     ## Slot with file dialog, for selct a dir.
     @pyqtSlot()
-    def selectUserDir(self):
-        #print "selectUserDir()"
-        dirname = QtGui.QFileDialog.getExistingDirectory(self, "Select home dir", self.userDirLineEdit.text(),QtGui.QFileDialog.ShowDirsOnly)
-        self.userDirLineEdit.setText(dirname)
+    def selectISOpath(self):
+        #print "selectISOpath()"
+        dirname = QtGui.QFileDialog.getOpenFileName(self, "Select ISO image", self.isoPathLineEdit.text(),".iso .ISO")
+        self.isoPathLineEdit.setText(dirname)
 
   

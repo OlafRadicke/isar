@@ -119,7 +119,20 @@ class VMinfoDB():
             '' \
             );")   
         self.__conn.commit()
-
+        
+        
+    ## add install ISO path info in database
+    ## @param name name of install ISO
+    def addISOpath(self, name):
+        print "[addISOpath...]"
+        self.__conn.execute("insert into installiso( \
+            name, \
+            path \
+            ) values ( \
+            '" + name + "', \
+            '' \
+            );")   
+        self.__conn.commit()       
             
     ## @return get back a list of all user as UserInfo list.
     def getAllUser(self):
@@ -133,8 +146,32 @@ class VMinfoDB():
             userInfo.mail = mail
             userInfo.fullname = fullname
             userList.append(userInfo)
-                
         return userList
+        
+         
+    ## @return get back a list of all ISO names as strings.
+    def getAllISOnames(self):
+        nameList = list()
+        rows = self.__conn.execute("SELECT name FROM installiso")
+        for row in rows:
+            name = row
+            userList.append(name)
+        return userList  
+        
+         
+    ## @return get back a path of a ISO as string.
+    # @param name of ISO
+    def getISOpath(self, name):
+        _path = ""
+        rows = self.__conn.execute("SELECT path FROM installiso \
+            WHERE name='" + name + "';")
+        for row in rows:
+            _path = row
+        if  len(rows) < 1:
+            return -1
+        else:
+            return _path      
+        
 
     ## @param nickname A nickname of a user.
     # @return get back a user as UserInfo with set nickname.
@@ -161,7 +198,13 @@ class VMinfoDB():
         self.__conn.execute("DELETE FROM user \
             WHERE nickname = '" + nickname + "';") 
         self.__conn.commit()  
-       
+
+    ## Delete a user.
+    def deleteISOpath(self, name):
+        self.__conn.execute("DELETE FROM installiso \
+            WHERE name = '" + nickname + "';") 
+        self.__conn.commit()  
+        
     ## Update user data.   
     def updateUser(self, userInfo):
         _sql_string = "UPDATE user  SET \

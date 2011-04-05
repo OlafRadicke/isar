@@ -86,6 +86,14 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(menuEditUser, QtCore.SIGNAL('triggered()'), QtCore.SLOT('editUser()'))
         menuFile.addAction(menuEditUser)
 
+
+
+        # Menue-item for Edit and configure user info.
+        menuEditUser = QtGui.QAction( 'Edit instal ISOs', self)
+        menuEditUser.setShortcut('Ctrl+U')
+        menuEditUser.setStatusTip('Edit and configure instal media.')
+        self.connect(menuEditUser, QtCore.SIGNAL('triggered()'), QtCore.SLOT('editUser()'))
+        menuFile.addAction(menuEditUser)
         
         ## Menue-item for apliction exit
         menuExit = QtGui.QAction(QtGui.QIcon('icons/exit.png'), 'Exit', self)
