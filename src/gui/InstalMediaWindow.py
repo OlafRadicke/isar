@@ -34,7 +34,7 @@ from UserInfo import UserInfo
 # @author Olaf Radicke<briefkasten@olaf-radicke.de>
 
 ## The window view info about users.
-class instalMediaWindow(QtGui.QDialog):
+class InstalMediaWindow(QtGui.QDialog):
   
     ## Database binding.
     __vmInfoDB = VMinfoDB()

@@ -74,7 +74,7 @@ class VMinfoDB():
             fullname TEXT NOT NULL);')
 
         # Create table
-        self.__conn.execute('CREATE TABLE  installiso( \
+        self.__conn.execute('CREATE TABLE  instaliso( \
             name TEXT PRIMARY KEY, \
             path TEXT NOT NULL);')
         self.__conn.commit()
@@ -125,7 +125,7 @@ class VMinfoDB():
     ## @param name name of install ISO
     def addISOpath(self, name):
         print "[addISOpath...]"
-        self.__conn.execute("insert into installiso( \
+        self.__conn.execute("insert into instaliso( \
             name, \
             path \
             ) values ( \
@@ -152,7 +152,7 @@ class VMinfoDB():
     ## @return get back a list of all ISO names as strings.
     def getAllISOnames(self):
         nameList = list()
-        rows = self.__conn.execute("SELECT name FROM installiso")
+        rows = self.__conn.execute("SELECT name FROM instaliso")
         for row in rows:
             name = row
             userList.append(name)
@@ -163,7 +163,7 @@ class VMinfoDB():
     # @param name of ISO
     def getISOpath(self, name):
         _path = ""
-        rows = self.__conn.execute("SELECT path FROM installiso \
+        rows = self.__conn.execute("SELECT path FROM instaliso \
             WHERE name='" + name + "';")
         for row in rows:
             _path = row
@@ -201,7 +201,7 @@ class VMinfoDB():
 
     ## Delete a user.
     def deleteISOpath(self, name):
-        self.__conn.execute("DELETE FROM installiso \
+        self.__conn.execute("DELETE FROM instaliso \
             WHERE name = '" + nickname + "';") 
         self.__conn.commit()  
         

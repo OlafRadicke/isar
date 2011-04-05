@@ -31,8 +31,8 @@ from gui.MainWindow import MainWindow
 ## @file GUI.py
 # @author Olaf Radicke<radicke@atix.de>
 
-#LOG_FILENAME = '/tmp/isar.log'
-LOG_FILENAME = 'isar.log'
+LOG_FILENAME = '/tmp/isar.log'
+#LOG_FILENAME = 'isar.log'
 logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 _startinfo = '============= Start ' + datetime.now().strftime("%d. %B %Y %H:%M") + ' ==============='
 logging.debug(_startinfo)

@@ -28,6 +28,7 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot
 from VMinfoDB import VMinfoDB 
 from UserWindow import UserWindow
+from InstalMediaWindow import InstalMediaWindow
 
 ## @file MainWindow.py
 # @author Olaf Radicke<briefkasten@olaf-radicke.de>
@@ -89,11 +90,11 @@ class MainWindow(QtGui.QMainWindow):
 
 
         # Menue-item for Edit and configure user info.
-        menuEditUser = QtGui.QAction( 'Edit instal ISOs', self)
-        menuEditUser.setShortcut('Ctrl+U')
-        menuEditUser.setStatusTip('Edit and configure instal media.')
-        self.connect(menuEditUser, QtCore.SIGNAL('triggered()'), QtCore.SLOT('editUser()'))
-        menuFile.addAction(menuEditUser)
+        menuEditISO = QtGui.QAction( 'Edit instal ISOs', self)
+        menuEditISO.setShortcut('Ctrl+U')
+        menuEditISO.setStatusTip('Edit and configure instal media.')
+        self.connect(menuEditISO, QtCore.SIGNAL('triggered()'), QtCore.SLOT('editISOs()'))
+        menuFile.addAction(menuEditISO)
         
         ## Menue-item for apliction exit
         menuExit = QtGui.QAction(QtGui.QIcon('icons/exit.png'), 'Exit', self)
@@ -276,4 +277,18 @@ class MainWindow(QtGui.QMainWindow):
             QtGui.QMessageBox.information(self, "Error", str(infotext))
             return
         print "[20110403182643] editUser"     
-        
+
+
+    ## Slot for open  window for eding instal ISO liste.
+    @pyqtSlot()
+    def editISOs(self):
+        logging.debug("[20110403172927] editISOs")
+        print "[20110403172927] editISOs"
+        try:
+            _imw = InstalMediaWindow(self.vmInfoDB)
+            _imw.show()
+            ret = _imw.exec_()
+        except sqlite3.Error, e:
+            infotext = "An error occurred:", e.args[0]
+            QtGui.QMessageBox.information(self, "Error", str(infotext))
+            return
