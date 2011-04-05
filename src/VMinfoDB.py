@@ -74,7 +74,7 @@ class VMinfoDB():
             fullname TEXT NOT NULL);')
 
         # Create table
-        self.__conn.execute('CREATE TABLE  instaliso( \
+        self.__conn.execute('CREATE TABLE  installiso( \
             name TEXT PRIMARY KEY, \
             path TEXT NOT NULL);')
         self.__conn.commit()
@@ -125,7 +125,7 @@ class VMinfoDB():
     ## @param name name of install ISO
     def addISOpath(self, name):
         print "[addISOpath...]"
-        self.__conn.execute("insert into instaliso( \
+        self.__conn.execute("insert into installiso( \
             name, \
             path \
             ) values ( \
@@ -151,23 +151,25 @@ class VMinfoDB():
          
     ## @return get back a list of all ISO names as strings.
     def getAllISOnames(self):
-        nameList = list()
-        rows = self.__conn.execute("SELECT name FROM instaliso")
-        for row in rows:
-            name = row
-            userList.append(name)
-        return userList  
+        _nameList = list()
+        _rows = self.__conn.execute("SELECT name FROM installiso")
+        for _row in _rows:
+            _name = _row
+            _nameList.append(_name)
+        return _nameList
         
          
     ## @return get back a path of a ISO as string.
     # @param name of ISO
     def getISOpath(self, name):
         _path = ""
-        rows = self.__conn.execute("SELECT path FROM instaliso \
+        _found = False
+        rows = self.__conn.execute("SELECT path FROM installiso \
             WHERE name='" + name + "';")
         for row in rows:
-            _path = row
-        if  len(rows) < 1:
+            _found = True
+            _path = row[0]
+        if  _found == False:
             return -1
         else:
             return _path      
@@ -201,8 +203,8 @@ class VMinfoDB():
 
     ## Delete a user.
     def deleteISOpath(self, name):
-        self.__conn.execute("DELETE FROM instaliso \
-            WHERE name = '" + nickname + "';") 
+        self.__conn.execute("DELETE FROM installiso \
+            WHERE name = '" + name + "';")
         self.__conn.commit()  
         
     ## Update user data.   
@@ -215,4 +217,11 @@ class VMinfoDB():
         self.__conn.execute(_sql_string)
         self.__conn.commit()
                  
-            
+
+    ## Update install ISO path data.
+    def updateISOpath(self, name, path):
+        _sql_string = "UPDATE installiso  SET \
+            path = '" + path + "' \
+            WHERE name = '" + name + "';"
+        self.__conn.execute(_sql_string)
+        self.__conn.commit()           

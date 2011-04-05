@@ -174,7 +174,6 @@ class InstallMediaWindow(QtGui.QDialog):
     @pyqtSlot()
     def fillDetailView(self):
         print "[fillDetailView...]"
-        _userInfo = ""
         _name = ""
         for item in self.listview.selectedItems():
             print  ".." , item.text(0)
@@ -191,11 +190,13 @@ class InstallMediaWindow(QtGui.QDialog):
                 infotext = "An error occurred:", e.args[0]
                 QtGui.QMessageBox.information(self, "Error",str(infotext))
                 return
-            if _userInfo == -1 or _userInfo == None:
+            if _path == -1 or _path == None:
+                print "[20110405234854] _path.' ", _path
                 infotext = "ISO name not found!"
                 QtGui.QMessageBox.information(self, "Error",str(infotext))
                 return
             else:
+                print "[] _path: ", _path
                 self.isoPathLineEdit.setText( _path )
           
     ## A function with qt-slot. it's creade a new vm.
@@ -206,7 +207,8 @@ class InstallMediaWindow(QtGui.QDialog):
             logging.debug("[201104] if: " + str(text) + str(ok))
             return
         else:
-            logging.debug("[201104] else: " + str(text) + str(ok))
+            logging.debug("[20110411] else: " + str(text) + str(ok))
+            print "[2011042] else: " + str(text)
             try:
                 self.__vmInfoDB.addISOpath(str(text))
             except sqlite3.Error, e:
@@ -227,7 +229,8 @@ class InstallMediaWindow(QtGui.QDialog):
         self.listview.clear()
         for item in nameList:
             qStringList = QtCore.QStringList( [ str(item) ] )
-            twItem = QtGui.QTreeWidgetItem(qStringList)
+            #twItem = QtGui.QTreeWidgetItem(qStringList)
+            twItem = QtGui.QTreeWidgetItem(QtCore.QStringList(item))
             self.listview.addTopLevelItem(twItem)
 
 
@@ -235,11 +238,17 @@ class InstallMediaWindow(QtGui.QDialog):
     @pyqtSlot()
     def safeEdits(self):       
         print "[safe edits...]"
-        self.__userInfo.homedir =  str(self.isoPathLineEdit.text())
-        self.__userInfo.mail =  str(self.mailLineEdit.text())
-        self.__userInfo.fullname =  str(self.fullnameLineEdit.text())
+        _name = ""
+        for item in self.listview.selectedItems():
+            print  ".." , item.text(0)
+            _name = item.text(0)
+
+        if str(_name) == "":
+              infotext = "No user select!"
+              QtGui.QMessageBox.information(self, "Error",str(infotext))
+              return
         try:
-            self.__vmInfoDB.updateUser(self.__userInfo)
+            self.__vmInfoDB.updateISOpath(str(_name), str(self.isoPathLineEdit.text()))
         except sqlite3.Error, e:
             infotext = "An error occurred:", e.args[0]
             QtGui.QMessageBox.information(self, "Error",str(infotext))
