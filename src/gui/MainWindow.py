@@ -28,7 +28,7 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot
 from VMinfoDB import VMinfoDB 
 from UserWindow import UserWindow
-from InstalMediaWindow import InstalMediaWindow
+from InstallMediaWindow import InstallMediaWindow
 
 ## @file MainWindow.py
 # @author Olaf Radicke<briefkasten@olaf-radicke.de>
@@ -285,7 +285,7 @@ class MainWindow(QtGui.QMainWindow):
         logging.debug("[20110403172927] editISOs")
         print "[20110403172927] editISOs"
         try:
-            _imw = InstalMediaWindow(self.vmInfoDB)
+            _imw = InstallMediaWindow(self.vmInfoDB)
             _imw.show()
             ret = _imw.exec_()
         except sqlite3.Error, e:

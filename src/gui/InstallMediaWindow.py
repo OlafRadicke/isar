@@ -30,11 +30,11 @@ from VMinfoDB import VMinfoDB
 from UserInfo import UserInfo
 
 
-## @file instalMediaWindow.py
+## @file installMediaWindow.py
 # @author Olaf Radicke<briefkasten@olaf-radicke.de>
 
 ## The window view info about users.
-class InstalMediaWindow(QtGui.QDialog):
+class InstallMediaWindow(QtGui.QDialog):
   
     ## Database binding.
     __vmInfoDB = VMinfoDB()
@@ -52,13 +52,13 @@ class InstalMediaWindow(QtGui.QDialog):
 
     ## Constructor
     def __init__(self, vmInfoDB, parent=None): 
-        logging.debug('init instalMediaWindow....')
+        logging.debug('init installMediaWindow....')
         
         self.__vmInfoDB = vmInfoDB
         QtGui.QDialog.__init__(self, parent)
 
 
-        logging.debug('init instalMediaWindow....')
+        logging.debug('init installMediaWindow....')
 
         self.resize(800,480)
         self.setWindowTitle('Isar::Instalations medias')
@@ -87,7 +87,7 @@ class InstalMediaWindow(QtGui.QDialog):
         # -------------- List --------------
 
         self.listview = QtGui.QTreeWidget()
-        _haderList = ["instalations ISOs"]
+        _haderList = ["installations ISOs"]
         self.listview.setColumnCount(len(_haderList))
         self.listview.setHeaderLabels(_haderList)
         vListLayoutL.addWidget(self.listview)

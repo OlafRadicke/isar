@@ -1,1 +1,2 @@
-__all__ = ["MainWindow","MainWindow","InstalMediaWindow"]
+# -*- coding: utf-8 -*-
+__all__ = ["MainWindow","MainWindow","InstallMediaWindow"]

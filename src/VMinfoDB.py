@@ -62,7 +62,7 @@ class VMinfoDB():
             livetimedays TEXT NOT NULL, \
             comment TEXT NOT NULL, \
             mail TEXT NOT NULL, \
-            image_file TEXT NOT NULL \
+            image_file TEXT NOT NULL, \
             owner TEXT NOT NULL, \
             os TEXT NOT NULL );')
 
