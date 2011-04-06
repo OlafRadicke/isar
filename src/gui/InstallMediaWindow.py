@@ -267,7 +267,7 @@ class InstallMediaWindow(QtGui.QDialog):
     @pyqtSlot()
     def selectISOpath(self):
         #print "selectISOpath()"
-        dirname = QtGui.QFileDialog.getOpenFileName(self, "Select ISO image", self.isoPathLineEdit.text(),".iso .ISO")
+        dirname = QtGui.QFileDialog.getOpenFileName(self, "Select ISO image", "","ISO(*.iso *.ISO);; all(*.*)")
         self.isoPathLineEdit.setText(dirname)
 
   
