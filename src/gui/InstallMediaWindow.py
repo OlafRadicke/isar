@@ -91,7 +91,13 @@ class InstallMediaWindow(QtGui.QDialog):
         self.listview.setColumnCount(len(_haderList))
         self.listview.setHeaderLabels(_haderList)
         vListLayoutL.addWidget(self.listview)
-        self.connect(self.listview, QtCore.SIGNAL('itemSelectionChanged()'), QtCore.SLOT('fillDetailView()'))
+        self.connect \
+        ( \
+            self.listview, \
+            QtCore.SIGNAL('itemSelectionChanged()'), \
+            QtCore.SLOT('fillDetailView()') \
+        )
+        #self.connect(self.listview, QtCore.SIGNAL('clicked()'), QtCore.SLOT('fillDetailView()'))
 
         # ----------- right box ---------------------------------
 
@@ -173,12 +179,15 @@ class InstallMediaWindow(QtGui.QDialog):
     ## Slot delete user.
     @pyqtSlot()
     def fillDetailView(self):
-        print "[fillDetailView...]"
+        #print "[fillDetailView...]"
         _name = ""
+        _listIsEmpty = True
         for item in self.listview.selectedItems():
-            print  ".." , item.text(0)
+            _listIsEmpty = False
+            #print  "[...]" , item.text(0)
             _name = item.text(0)
-
+        if _listIsEmpty:
+            return
         if str(_name) == "":
               infotext = "No user select!"
               QtGui.QMessageBox.information(self, "Error",str(infotext))
