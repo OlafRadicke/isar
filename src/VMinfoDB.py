@@ -83,7 +83,7 @@ class VMinfoDB():
     ## add V-Machine info in database
     ## @param vminfo a VMinfo-class with info about V-Machine
     def addVMinfo(self, vminfo):
-        self.__conn.execute("insert into metatdata ( \
+        self.__conn.execute("insert into vmachine ( \
             name, \
             createdate, \
             livetimedays, \
@@ -119,7 +119,7 @@ class VMinfoDB():
                 image_file, \
                 owner, \
                 os \
-                FROM metatdata;" \
+                FROM vmachine;" \
             )
         for _row in _rows:
             name, createdate, livetimedays, comment, mail, image_file, owner, os = _row
@@ -133,7 +133,7 @@ class VMinfoDB():
             _vmInfo.owner = owner
             _vmInfo.os = os
             _vmList.append(_vmInfo)
-        return userList
+        return _vmList
 
     ## add V-Machine info in database
     ## @param vminfo a VMinfo-class with info about V-Machine

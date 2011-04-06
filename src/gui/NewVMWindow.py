@@ -39,13 +39,12 @@ class NewVMWindow(QtGui.QDialog):
     ## Database binding.
     __vmInfoDB = VMinfoDB()
 
-    ## Simple List
-    listview = ""
-    
-    __isoPathName = ""
     
     ## Home dir of user. Is a QLineEdit class.
     vmNameLineEdit = ""
+
+    ## Combo box for select owener.
+    owenerComboBox = ""
     
     ## Save information.
     #vmInfoDB = VMinfoDB()
@@ -69,40 +68,11 @@ class NewVMWindow(QtGui.QDialog):
         #centralWidget.setLayout(vMainLayout)
         self.setLayout(vMainLayout)
         
-        ## Main layout H
-        #hMainLayout = QtGui.QHBoxLayout()
-        #vMainLayout.addLayout(hMainLayout)
-
-
-        # ----------- Left box ---------------------------------
-
-        # VBox left with GrouBox-frame
-        #listBox = QtGui.QGroupBox("VM list")
-        #listBox.setMaximumWidth(600)
-        #vListLayoutL = QtGui.QVBoxLayout()
-        #listBox.setLayout(vListLayoutL)
-        #hMainLayout.addWidget(listBox)
-        
-
-        # -------------- List --------------
-
-        #self.listview = QtGui.QTreeWidget()
-        #_haderList = ["installations ISOs"]
-        #self.listview.setColumnCount(len(_haderList))
-        #self.listview.setHeaderLabels(_haderList)
-        #vListLayoutL.addWidget(self.listview)
-        #self.connect \
-        #( \
-            #self.listview, \
-            #QtCore.SIGNAL('itemSelectionChanged()'), \
-            #QtCore.SLOT('fillDetailView()') \
-        #)
-        #self.connect(self.listview, QtCore.SIGNAL('clicked()'), QtCore.SLOT('fillDetailView()'))
 
         # ----------- right box ---------------------------------
 
         # VBox right with GrouBox-frame
-        editBox = QtGui.QGroupBox("Installatins data")
+        editBox = QtGui.QGroupBox("Data of new machine")
         editBox.setMaximumWidth(600)
         vEditLayoutR = QtGui.QVBoxLayout()
         editBox.setLayout(vEditLayoutR)
@@ -117,16 +87,25 @@ class NewVMWindow(QtGui.QDialog):
         self.vmNameLineEdit = QtGui.QLineEdit()
         hLayoutVMname.addWidget(self.vmNameLineEdit)
 
-        # Safe buttom
-        #hSefeLayout = QtGui.QHBoxLayout()
-        #vEditLayoutR.addLayout(hSefeLayout)
+        # owner
+
+        # Task stap typ
+        hLayoutOwener = QtGui.QHBoxLayout()
+        vMainLayout.addLayout(hLayoutOwener)
+        owenerLabel = QtGui.QLabel("Owener:")
+        hLayoutOwener.addWidget(owenerLabel)
+        self.owenerComboBox = QtGui.QComboBox()
+        _allUser = self.__vmInfoDB.getAllUser()
+        for _user in _allUser:
+            self.owenerComboBox.addItem(_user.nickname)
+        self.connect(self.owenerComboBox, QtCore.SIGNAL('currentIndexChanged(QString)'), QtCore.SLOT('owenerComboBoxChange(QString)'))
+        hLayoutOwener.addWidget(self.owenerComboBox)
+
         
-        #safeButton = QtGui.QPushButton("Safe Edits")
-        #self.connect(safeButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('safeEdits()'))
-        #hSefeLayout.addWidget(safeButton) 
-        
-        
-        #vEditLayoutR.insertStretch(10000, 0)
+        # os
+
+
+        # comment
         
         # ---------- Bottom area --------------------
 
@@ -137,106 +116,12 @@ class NewVMWindow(QtGui.QDialog):
 
         closePushButton = QtGui.QPushButton("Safe")
         self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('newISOpathDialog()'))
-        hBottomLayout.addWidget(closePushButton)        
-        
-        #closePushButton = QtGui.QPushButton("Delete")
-        #self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('deleteISOpath()'))
-        #hBottomLayout.addWidget(closePushButton)
+        hBottomLayout.addWidget(closePushButton)
 
         closePushButton = QtGui.QPushButton("Cancel")
         self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('close()'))
         hBottomLayout.addWidget(closePushButton)
-        
-        self.refreshUserList()
 
-    ## Slot delete user.
-    @pyqtSlot()
-    def deleteISOpath(self):
-        print "[delete ISO path...]"
-        _name = ""
-        for item in self.listview.selectedItems():
-            print  ".." , item.text(0)
-            _name = item.text(0)
-
-        if str(_name) == "":
-              infotext = "No user select!"
-              QtGui.QMessageBox.information(self, "Error",str(infotext))
-              return
-        else:
-            try:
-                self.__vmInfoDB.deleteISOpath(str(_name))
-            except sqlite3.Error, e:
-                infotext = "An error occurred:", e.args[0]
-                QtGui.QMessageBox.information(self, "Error",str(infotext))
-                return
-
-            self.refreshUserList()
-          
-    ## Slot delete user.
-    @pyqtSlot()
-    def fillDetailView(self):
-        #print "[fillDetailView...]"
-        _name = ""
-        _listIsEmpty = True
-        for item in self.listview.selectedItems():
-            _listIsEmpty = False
-            #print  "[...]" , item.text(0)
-            _name = item.text(0)
-        if _listIsEmpty:
-            return
-        if str(_name) == "":
-              infotext = "No user select!"
-              QtGui.QMessageBox.information(self, "Error",str(infotext))
-              return
-        else:
-            try:
-                _path = self.__vmInfoDB.getISOpath(str(_name))               
-            except sqlite3.Error, e:
-                infotext = "An error occurred:", e.args[0]
-                QtGui.QMessageBox.information(self, "Error",str(infotext))
-                return
-            if _path == -1 or _path == None:
-                print "[20110405234854] _path.' ", _path
-                infotext = "ISO name not found!"
-                QtGui.QMessageBox.information(self, "Error",str(infotext))
-                return
-            else:
-                print "[] _path: ", _path
-                self.vmNameLineEdit.setText( _path )
-          
-    ## A function with qt-slot. it's creade a new vm.
-    @pyqtSlot()
-    def newISOpathDialog(self):
-        text, ok = QtGui.QInputDialog.getText(self, "New ISO path", "Label name (not path):", 0)
-        if ok != True :
-            logging.debug("[201104] if: " + str(text) + str(ok))
-            return
-        else:
-            logging.debug("[20110411] else: " + str(text) + str(ok))
-            print "[2011042] else: " + str(text)
-            try:
-                self.__vmInfoDB.addISOpath(str(text))
-            except sqlite3.Error, e:
-                infotext = "An error occurred:", e.args[0]
-                QtGui.QMessageBox.information(self, "Error",str(infotext))
-                return
-
-            self.__isoPathName = str(text)
-            self.refreshUserList()
-      
-
-        
-    ## Refrash the list of tasks.
-    @pyqtSlot()
-    def refreshUserList(self):
-        print "[refreshUserList]"
-        nameList = self.__vmInfoDB.getAllISOnames()
-        self.listview.clear()
-        for item in nameList:
-            qStringList = QtCore.QStringList( [ str(item) ] )
-            #twItem = QtGui.QTreeWidgetItem(qStringList)
-            twItem = QtGui.QTreeWidgetItem(QtCore.QStringList(item))
-            self.listview.addTopLevelItem(twItem)
 
 
     ## Slot for safe edits
@@ -259,11 +144,17 @@ class NewVMWindow(QtGui.QDialog):
             QtGui.QMessageBox.information(self, "Error",str(infotext))
             return
 
-    ## Slot with file dialog, for selct a dir.
-    @pyqtSlot()
-    def selectISOpath(self):
-        #print "selectISOpath()"
-        dirname = QtGui.QFileDialog.getOpenFileName(self, "Select ISO image", "","ISO(*.iso *.ISO);; all(*.*)")
-        self.vmNameLineEdit.setText(dirname)
 
-  
+    ## it is action if todoTypComboBox change
+    @pyqtSlot(QtCore.QString)
+    def owenerComboBoxChange(self, text):
+        if (text == "bash_command"):
+            self.originalFileLineEdit.setEnabled(False)
+            self.replacementFileLineEdit.setEnabled(False)
+            self.bashCommandLineEdit.setEnabled(True)
+        elif(text == "replacement"):
+            self.originalFileLineEdit.setEnabled(True)
+            self.replacementFileLineEdit.setEnabled(True)
+            self.bashCommandLineEdit.setEnabled(False)
+        else:
+            print "[OR2011_0320_2045]" 

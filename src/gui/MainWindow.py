@@ -192,7 +192,13 @@ class MainWindow(QtGui.QMainWindow):
     ## Refrash the list of tasks.
     @pyqtSlot()
     def refreshVMList(self):
-        userList = self.vmInfoDB.getAllVMinfo()
+        userList = list()
+        try:
+            userList = self.vmInfoDB.getAllVMinfo()
+        except sqlite3.Error, e:
+            infotext = "An error occurred:", e.args[0]
+            QtGui.QMessageBox.information(self, "Error", str(infotext))
+            return            
         self.listview.clear()
         for item in userList:
             qStringList = QtCore.QStringList([ \
