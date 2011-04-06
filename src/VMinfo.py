@@ -51,7 +51,7 @@ class VMinfo():
     image_file = ""
 
     ## Name of owner
-    owner TEXT = ""
+    owner = ""
 
     ## Name of operating system
     OS = ""

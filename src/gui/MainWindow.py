@@ -29,6 +29,7 @@ from PyQt4.QtCore import pyqtSlot
 from VMinfoDB import VMinfoDB 
 from UserWindow import UserWindow
 from InstallMediaWindow import InstallMediaWindow
+from NewVMWindow import NewVMWindow
 
 ## @file MainWindow.py
 # @author Olaf Radicke<briefkasten@olaf-radicke.de>
@@ -158,13 +159,13 @@ class MainWindow(QtGui.QMainWindow):
         # -------------- List --------------
 
         self.listview = QtGui.QTreeWidget()
-        _haderList = ["owner","name","create","best befor","OS"]
+        _haderList = ["owner","name","create","OS"]
         self.listview.setColumnCount(len(_haderList))
         self.listview.setHeaderLabels(_haderList)
         vListLayoutL.addWidget(self.listview)
         self.connect(self.listview, QtCore.SIGNAL('itemSelectionChanged()'), QtCore.SLOT('fillTaskView()'))
 
-        self.listview.addTopLevelItem( QtGui.QTreeWidgetItem(["Olaf","CluterTest","2011-03-29","2011-05-31","fedora13"]))
+        #self.listview.addTopLevelItem( QtGui.QTreeWidgetItem(["Olaf","CluterTest","2011-03-29","2011-05-31","fedora13"]))
 
         # ---------- Statusbar ------------
         self.statusBar().showMessage('Ready')
@@ -175,31 +176,33 @@ class MainWindow(QtGui.QMainWindow):
     ## A function with qt-slot. it's creade a new vm.
     @pyqtSlot()
     def newVMDialog(self):
-        text, ok = QtGui.QInputDialog.getText(self, "New Task", "Task name:", 0)
-        if ok != True :
-          logging.debug("[20110402201848] if: " + str(text) + str(ok))
-          return
-        else:
-          logging.debug("[20110402201848] else: " + str(text) + str(ok))
-          #taskTyp = TaskTyp()
-          #taskTyp.ID = text
-          #self.tasksSettings.addTaskTyp(taskTyp)
-          self.refreshVMList()
+        print "[newVMDialog] editUser"
+        try:
+            nvm = NewVMWindow(self.vmInfoDB)
+            nvm.show()
+            ret = nvm.exec_()
+        except sqlite3.Error, e:
+            infotext = "An error occurred:", e.args[0]
+            QtGui.QMessageBox.information(self, "Error", str(infotext))
+            return
+        self.refreshVMList()
       
 
         
     ## Refrash the list of tasks.
     @pyqtSlot()
     def refreshVMList(self):
-        pass
-        #self.tasksSettings.reLoad()
-        #self.taskBox.setTasksSettings(self.tasksSettings)
-        #self.listview.clear ()
-        #count = 0
-        #for item in self.tasksSettings.getStoryboard():
-            #print "[debug] ", item
-            #self.listview.insertItem(count, item)
-            #count = count + 1
+        userList = self.vmInfoDB.getAllVMinfo()
+        self.listview.clear()
+        for item in userList:
+            qStringList = QtCore.QStringList([ \
+                str(item.owner),  \
+                str(item.name),  \
+                str(item.createdate),  \
+                str(item.os) \
+            ])
+            twItem = QtGui.QTreeWidgetItem(qStringList)
+            self.listview.addTopLevelItem(twItem)
 
 
     ## A function with qt-slot. it's fill the TaskView with data. 

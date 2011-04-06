@@ -25,6 +25,7 @@
 import logging
 import sqlite3
 from UserInfo import UserInfo
+from VMinfo import VMinfo
 
 
 ## @file VMinfoDB.py
@@ -57,7 +58,7 @@ class VMinfoDB():
         # Create table
         self.__conn.execute('CREATE TABLE  vmachine( \
             id INTEGER PRIMARY KEY, \
-            name TEXT NOT NULL, \
+            name TEXT UNIQUE NOT NULL, \
             createdate TEXT NOT NULL, \
             livetimedays TEXT NOT NULL, \
             comment TEXT NOT NULL, \
@@ -102,6 +103,37 @@ class VMinfoDB():
             '" + vminfo.OS + "' \
             );")
         self.__conn.commit()
+        
+
+    ## @return get all virtual machine info as typ VMinfo.
+    def getAllVMinfo(self):
+        _vmList = list()
+        _rows = self.__conn.execute \
+            ( \
+                "SELECT \
+                name, \
+                createdate, \
+                livetimedays, \
+                comment, \
+                mail, \
+                image_file, \
+                owner, \
+                os \
+                FROM metatdata;" \
+            )
+        for _row in _rows:
+            name, createdate, livetimedays, comment, mail, image_file, owner, os = _row
+            _vmInfo = VMinfo()
+            _vmInfo.name = name
+            _vmInfo.createdate = createdate
+            _vmInfo.livetimedays = livetimedays
+            _vmInfo.comment = comment
+            _vmInfo.mail = mail
+            _vmInfo.image_file = image_file
+            _vmInfo.owner = owner
+            _vmInfo.os = os
+            _vmList.append(_vmInfo)
+        return userList
 
     ## add V-Machine info in database
     ## @param vminfo a VMinfo-class with info about V-Machine
