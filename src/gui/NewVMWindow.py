@@ -39,15 +39,25 @@ class NewVMWindow(QtGui.QDialog):
     ## Database binding.
     __vmInfoDB = VMinfoDB()
 
-    
     ## Home dir of user. Is a QLineEdit class.
     vmNameLineEdit = ""
 
     ## Combo box for select owener.
     owenerComboBox = ""
     
-    ## Save information.
-    #vmInfoDB = VMinfoDB()
+    ## Combo box for select install ISO.
+    isoComboBox  = ""   
+    
+    ## Spin box for RAM size.
+    ramSpinBox  = ""   
+    
+    ## Spin box for hart disc size.
+    hdSpinBox  = ""  
+    
+    ## Box for comment.
+    commentNameLabel  = "" 
+    
+
 
     ## Constructor
     def __init__(self, vmInfoDB, parent=None): 
@@ -59,7 +69,7 @@ class NewVMWindow(QtGui.QDialog):
 
         logging.debug('init installMediaWindow....')
 
-        self.resize(500,280)
+        self.resize(500,180)
         self.setWindowTitle('Isar::New virtual machine')
 
 
@@ -89,7 +99,7 @@ class NewVMWindow(QtGui.QDialog):
 
         # owner
 
-        # Task stap typ
+        # Selct owener
         hLayoutOwener = QtGui.QHBoxLayout()
         vMainLayout.addLayout(hLayoutOwener)
         owenerLabel = QtGui.QLabel("Owener:")
@@ -98,14 +108,52 @@ class NewVMWindow(QtGui.QDialog):
         _allUser = self.__vmInfoDB.getAllUser()
         for _user in _allUser:
             self.owenerComboBox.addItem(_user.nickname)
-        self.connect(self.owenerComboBox, QtCore.SIGNAL('currentIndexChanged(QString)'), QtCore.SLOT('owenerComboBoxChange(QString)'))
+        #self.connect(self.owenerComboBox, QtCore.SIGNAL('currentIndexChanged(QString)'), QtCore.SLOT('owenerComboBoxChange(QString)'))
         hLayoutOwener.addWidget(self.owenerComboBox)
 
         
-        # os
-
-
+        # Selkt ISO
+        hLayoutISO = QtGui.QHBoxLayout()
+        vMainLayout.addLayout(hLayoutISO)
+        isoLabel = QtGui.QLabel("Install ISO:")
+        hLayoutISO.addWidget(isoLabel)
+        self.isoComboBox = QtGui.QComboBox()
+        _allUser = self.__vmInfoDB.getAllUser()
+        for _user in _allUser:
+            self.isoComboBox.addItem(_user.nickname)
+        #self.connect(self.isoComboBox, QtCore.SIGNAL('currentIndexChanged(QString)'), QtCore.SLOT('isoComboBoxChange(QString)'))
+        hLayoutISO.addWidget(self.isoComboBox)
+        
+        # RAM
+        hLayoutRAM = QtGui.QHBoxLayout()
+        vMainLayout.addLayout(hLayoutRAM)
+        ramLabel = QtGui.QLabel("RAM:")
+        hLayoutRAM.addWidget(ramLabel)
+        self.ramSpinBox = QtGui.QSpinBox()
+        self.ramSpinBox.setSuffix(" mb")
+        self.ramSpinBox.setRange(256, 50000) 
+        self.ramSpinBox.setValue(1000)
+        hLayoutRAM.addWidget(self.ramSpinBox)
+        
+        # HD
+        hLayoutHD = QtGui.QHBoxLayout()
+        vMainLayout.addLayout(hLayoutHD)
+        hdLabel = QtGui.QLabel("Hart disc:")
+        hLayoutHD.addWidget(hdLabel)
+        self.hdSpinBox = QtGui.QSpinBox()
+        self.hdSpinBox.setSuffix(" Gb")
+        self.hdSpinBox.setRange(1, 1000) 
+        self.hdSpinBox.setValue(10)
+        hLayoutHD.addWidget(self.hdSpinBox)
+        
         # comment
+        hLayoutVMcomment = QtGui.QHBoxLayout()
+        vMainLayout.addLayout(hLayoutVMcomment)
+        commentNameLabel = QtGui.QLabel("Comment:")
+        hLayoutVMcomment.addWidget(commentNameLabel)
+        self.commentNameLineEdit = QtGui.QLineEdit()
+        hLayoutVMcomment.addWidget(self.commentNameLineEdit)
+        
         
         # ---------- Bottom area --------------------
 
@@ -115,7 +163,7 @@ class NewVMWindow(QtGui.QDialog):
         
 
         closePushButton = QtGui.QPushButton("Safe")
-        self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('newISOpathDialog()'))
+        self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('createNewVM()'))
         hBottomLayout.addWidget(closePushButton)
 
         closePushButton = QtGui.QPushButton("Cancel")
@@ -124,37 +172,20 @@ class NewVMWindow(QtGui.QDialog):
 
 
 
-    ## Slot for safe edits
+    ## Slot for create new VM.
     @pyqtSlot()
-    def safeEdits(self):       
-        print "[safe edits...]"
-        _name = ""
-        for item in self.listview.selectedItems():
-            print  ".." , item.text(0)
-            _name = item.text(0)
-
-        if str(_name) == "":
-              infotext = "No user select!"
-              QtGui.QMessageBox.information(self, "Error",str(infotext))
-              return
-        try:
-            self.__vmInfoDB.updateISOpath(str(_name), str(self.vmNameLineEdit.text()))
-        except sqlite3.Error, e:
-            infotext = "An error occurred:", e.args[0]
-            QtGui.QMessageBox.information(self, "Error",str(infotext))
-            return
+    def createNewVM(self):       
+        print "[createNewVM...]"
+        pass
 
 
-    ## it is action if todoTypComboBox change
+    ## it is action if owener Combo Box changes.
     @pyqtSlot(QtCore.QString)
     def owenerComboBoxChange(self, text):
-        if (text == "bash_command"):
-            self.originalFileLineEdit.setEnabled(False)
-            self.replacementFileLineEdit.setEnabled(False)
-            self.bashCommandLineEdit.setEnabled(True)
-        elif(text == "replacement"):
-            self.originalFileLineEdit.setEnabled(True)
-            self.replacementFileLineEdit.setEnabled(True)
-            self.bashCommandLineEdit.setEnabled(False)
-        else:
-            print "[OR2011_0320_2045]" 
+        pass
+ 
+
+    ## it is action if ISO Combo Box changes
+    @pyqtSlot(QtCore.QString)
+    def isoComboBoxChange(self, text):
+        pass           
