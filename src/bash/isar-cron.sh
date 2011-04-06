@@ -1,16 +1,16 @@
 #!/bin/bash
-DATABASEFILE='./workflow.db';
+DATABASEFILE='/tmp/isar.db';
 TIMESTAMP=`date +%s`
 
-NAMES=(`sqlite3 $DATABASEFILE  "select name from metatdata"`)
+NAMES=(`sqlite3 $DATABASEFILE  "select name from vmachine"`)
 echo ${#NAMES[@]} Datenbankeinträge
 
 for i in "${NAMES[@]}"  ; do
     echo $i
     # Date of creating
-    CREATEDATE=`sqlite3 $DATABASEFILE  "select createdate from metatdata WHERE name='${i}'"`
+    CREATEDATE=`sqlite3 $DATABASEFILE  "select createdate from vmachine WHERE name='${i}'"`
     # how long best befor
-    LIVETIMEDAYS=`sqlite3 $DATABASEFILE  "select livetimedays from metatdata WHERE name='${i}'"`
+    LIVETIMEDAYS=`sqlite3 $DATABASEFILE  "select livetimedays from vmachine WHERE name='${i}'"`
     # in seconds
     LIVETIMESEC=`echo $[86400 * ${LIVETIMEDAYS}]`
     # differenc or offset to now
@@ -20,13 +20,13 @@ for i in "${NAMES[@]}"  ; do
     # if exhausted
     if [ $DIFF -gt $LIVETIMESEC ]; then
         # get the mail-address of the owner
-        MAILADDRESS=`sqlite3 $DATABASEFILE  "select mail from metatdata WHERE name='${i}'"`
+        MAILADDRESS=`sqlite3 $DATABASEFILE  "select mail from vmachine WHERE name='${i}'"`
         echo send mail to $MAILADDRESS...
         SUBJECT="Deine virtuelle Maschiene ${i}"
         # Email To ?
         EMAIL="admin@somewhere.com"
         # Email text/message
-        EMAILMESSAGE="/tmp/kvn-emailmessage.txt"
+        EMAILMESSAGE="/tmp/isar-emailmessage.txt"
         echo "Hi!"> $EMAILMESSAGE
         echo "Das verfallsdatum deiner Virtuellen Maschiene ${i} " >>$EMAILMESSAGE
         echo "ist erreicht. Bitte überprüfe ob sie jetzt gelöscht " >>$EMAILMESSAGE
