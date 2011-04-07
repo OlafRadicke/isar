@@ -52,6 +52,7 @@ install:
 	ln -s $(PREFIX)/isar/isar.py $(BINDIR)/isar
 	cp -R ./example $(PREFIX)/isar/
 	cp -R ./icons $(PREFIX)/isar/
+	mkdir /var/isar
 
 # remove program
 uninstall:
