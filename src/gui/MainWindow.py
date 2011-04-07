@@ -61,7 +61,7 @@ class MainWindow(QtGui.QMainWindow):
 
         logging.debug('init main window....')
 
-        self.resize(800,680)
+        self.resize(800,600)
         self.setWindowTitle('Isar')
 
 
@@ -90,7 +90,7 @@ class MainWindow(QtGui.QMainWindow):
 
 
 
-        # Menue-item for Edit and configure user info.
+        # Menue-item for Edit and configure install ISOs.
         menuEditISO = QtGui.QAction( 'Edit instal ISOs', self)
         menuEditISO.setShortcut('Ctrl+U')
         menuEditISO.setStatusTip('Edit and configure instal media.')
@@ -104,7 +104,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(menuExit, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
         menuFile.addAction(menuExit)
 
-        ## Menue-item for change the task stetting file.
+        ## Menue-item for about dialog.
         menuInfoAbout = QtGui.QAction( 'About', self)
         menuInfoAbout.setShortcut('Ctrl+I')
         menuInfoAbout.setStatusTip('About this programm.')
@@ -119,16 +119,27 @@ class MainWindow(QtGui.QMainWindow):
         # ----------- toolbar ---------------------
         self.toolbar = self.addToolBar('tools')
         
-        toolNew = QtGui.QAction(QtGui.QIcon('./icons/new.png'), 'New VM', self)
+        toolNew = QtGui.QAction(QtGui.QIcon('./icons/new.png'), 'Create a new virtual machine', self)
         toolNew.setShortcut('Ctrl+N')
         self.connect(toolNew, QtCore.SIGNAL('triggered()'), QtCore.SLOT('newVMDialog()'))
         self.toolbar.addAction(toolNew)
 
-        toolRemove = QtGui.QAction(QtGui.QIcon('./icons/remove.png'), 'Delete VM', self)
+        toolRemove = QtGui.QAction(QtGui.QIcon('./icons/remove.png'), 'Delete a virtual machine', self)
         toolNew.setShortcut('Ctrl+X')
         self.connect(toolRemove, QtCore.SIGNAL('triggered()'), QtCore.SLOT('deleteVM()'))
         self.toolbar.addAction(toolRemove)
 
+
+        toolInfo = QtGui.QAction(QtGui.QIcon('./icons/info.png'), 'Info of virtual machine', self)
+        toolNew.setShortcut('Ctrl+X')
+        self.connect(toolInfo, QtCore.SIGNAL('triggered()'), QtCore.SLOT('infoVM()'))
+        self.toolbar.addAction(toolInfo)
+
+
+        toolClone = QtGui.QAction(QtGui.QIcon('./icons/clone.png'), 'Info of virtual machine', self)
+        toolNew.setShortcut('Ctrl+X')
+        self.connect(toolClone, QtCore.SIGNAL('triggered()'), QtCore.SLOT('cloneVM()'))
+        self.toolbar.addAction(toolClone)     
         # ----------- toolbar end ------------------------
 
 
@@ -163,8 +174,6 @@ class MainWindow(QtGui.QMainWindow):
         self.listview.setColumnCount(len(_haderList))
         self.listview.setHeaderLabels(_haderList)
         vListLayoutL.addWidget(self.listview)
-        self.connect(self.listview, QtCore.SIGNAL('itemSelectionChanged()'), QtCore.SLOT('fillTaskView()'))
-
         #self.listview.addTopLevelItem( QtGui.QTreeWidgetItem(["Olaf","CluterTest","2011-03-29","2011-05-31","fedora13"]))
 
         # ---------- Statusbar ------------
@@ -211,23 +220,40 @@ class MainWindow(QtGui.QMainWindow):
             self.listview.addTopLevelItem(twItem)
 
 
-    ## A function with qt-slot. it's fill the TaskView with data. 
+
+    ## Function clone a vm
     @pyqtSlot()
-    def fillTaskView(self):
-        pass
+    def cloneVM(self):
+        logging.debug("[20110402201311] deleteVM")
         #todo = ""
         #for item in self.listview.selectedItems():
-            #print  "[debug] .." , item.text()
+            #print  ".." , item.text()
             #todo = item.text()
 
         #if( todo == "" ):
             #self.statusBar().showMessage('No ToDo select...')
         #else:
           #taskTyp = self.tasksSettings.getTaskTyp(todo)
-          #self.taskBox.setTaskTyp(taskTyp)
+          #self.tasksSettings.deleteTask(taskTyp)
+          #self.refreshVMList()
 
+    ## Function show info of vm
+    @pyqtSlot()
+    def infoVM(self):
+        logging.debug("[20110402201311] deleteVM")
+        #todo = ""
+        #for item in self.listview.selectedItems():
+            #print  ".." , item.text()
+            #todo = item.text()
 
-    ## Function delete a task
+        #if( todo == "" ):
+            #self.statusBar().showMessage('No ToDo select...')
+        #else:
+          #taskTyp = self.tasksSettings.getTaskTyp(todo)
+          #self.tasksSettings.deleteTask(taskTyp)
+          #self.refreshVMList()
+
+    ## Function delete a vm
     @pyqtSlot()
     def deleteVM(self):
         logging.debug("[20110402201311] deleteVM")
