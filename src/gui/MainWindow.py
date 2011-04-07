@@ -257,6 +257,18 @@ class MainWindow(QtGui.QMainWindow):
     @pyqtSlot()
     def deleteVM(self):
         logging.debug("[20110402201311] deleteVM")
+
+        ret = QtGui.QMessageBox.warning(self, \
+                            "Warning", \
+                            "Do you want to delete this machine?", \
+                            QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Ok)
+
+        if (ret == QtGui.QMessageBox.Cancel):
+            print "...cencel"
+        elif (ret == QtGui.QMessageBox.Ok):
+            print "...Ok"
+
+
         #todo = ""
         #for item in self.listview.selectedItems():
             #print  ".." , item.text()
