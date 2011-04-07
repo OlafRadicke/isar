@@ -34,7 +34,7 @@ from VMinfo import VMinfo
 ## The class manage the database operations
 class VMinfoDB():
 
-    dbPath = '/tmp/isar.db'
+    dbPath = '/var/isar/isar.db'
 
     ## Connection object that represents the database.
     ## Here the data will be stored in the /tmp/isar.db file

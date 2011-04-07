@@ -176,6 +176,18 @@ class UserWindow(QtGui.QDialog):
     def deleteUser(self):
         print "[delete user...]"
         nickname = ""
+
+        ret = QtGui.QMessageBox.warning(self, \
+                            "Warning", \
+                            "Do you want to delete this user?", \
+                            QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Ok)
+
+        if (ret == QtGui.QMessageBox.Cancel):
+            print "...cencel"
+            return
+        elif (ret == QtGui.QMessageBox.Ok):
+            print "...Ok"
+            
         for item in self.listview.selectedItems():
             print  ".." , item.text(0)
             nickname = item.text(0)
@@ -200,9 +212,13 @@ class UserWindow(QtGui.QDialog):
         print "[fillDetailView...]"
         _userInfo = ""
         _nickname = ""
+        _listIsEmpty = True
         for item in self.listview.selectedItems():
+            _listIsEmpty = False
             print  ".." , item.text(0)
             _nickname = item.text(0)
+        if _listIsEmpty:
+            return
 
         if str(_nickname) == "":
               infotext = "No user select!"

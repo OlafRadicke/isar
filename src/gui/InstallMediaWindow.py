@@ -33,7 +33,7 @@ from UserInfo import UserInfo
 ## @file installMediaWindow.py
 # @author Olaf Radicke<briefkasten@olaf-radicke.de>
 
-## The window view info about users.
+## The window view info about install ISOs.
 class InstallMediaWindow(QtGui.QDialog):
   
     ## Database binding.
@@ -44,7 +44,7 @@ class InstallMediaWindow(QtGui.QDialog):
     
     __isoPathName = ""
     
-    ## Home dir of user. Is a QLineEdit class.
+    ## path of install Media. Is a QLineEdit class.
     isoPathLineEdit = ""
     
     ## Save information.
@@ -112,13 +112,13 @@ class InstallMediaWindow(QtGui.QDialog):
         # ISO path
         hLayoutUserDir = QtGui.QHBoxLayout()
         vEditLayoutR.addLayout(hLayoutUserDir)
-        userDirLabel = QtGui.QLabel("Path of install ISO:")
-        hLayoutUserDir.addWidget(userDirLabel)
+        isoPathLabel = QtGui.QLabel("Path of install ISO:")
+        hLayoutUserDir.addWidget(isoPathLabel)
         self.isoPathLineEdit = QtGui.QLineEdit()
         hLayoutUserDir.addWidget(self.isoPathLineEdit)
-        userDirPushButton = QtGui.QPushButton("...")
-        self.connect(userDirPushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('selectISOpath()'))
-        hLayoutUserDir.addWidget(userDirPushButton)        
+        isoPathPushButton = QtGui.QPushButton("...")
+        self.connect(isoPathPushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('selectISOpath()'))
+        hLayoutUserDir.addWidget(isoPathPushButton)        
         
 
         # Safe buttom
@@ -151,13 +151,25 @@ class InstallMediaWindow(QtGui.QDialog):
         self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('close()'))
         hBottomLayout.addWidget(closePushButton)
         
-        self.refreshUserList()
+        self.refreshISOList()
 
     ## Slot delete user.
     @pyqtSlot()
     def deleteISOpath(self):
         print "[delete ISO path...]"
         _name = ""
+
+        ret = QtGui.QMessageBox.warning(self, \
+                            "Warning", \
+                            "Do you want to delete this entry?", \
+                            QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Ok)
+
+        if (ret == QtGui.QMessageBox.Cancel):
+            print "...cencel"
+            return
+        elif (ret == QtGui.QMessageBox.Ok):
+            print "...Ok"
+        
         for item in self.listview.selectedItems():
             print  ".." , item.text(0)
             _name = item.text(0)
@@ -174,7 +186,7 @@ class InstallMediaWindow(QtGui.QDialog):
                 QtGui.QMessageBox.information(self, "Error",str(infotext))
                 return
 
-            self.refreshUserList()
+            self.refreshISOList()
           
     ## Slot delete user.
     @pyqtSlot()
@@ -189,7 +201,7 @@ class InstallMediaWindow(QtGui.QDialog):
         if _listIsEmpty:
             return
         if str(_name) == "":
-              infotext = "No user select!"
+              infotext = "No entry select!"
               QtGui.QMessageBox.information(self, "Error",str(infotext))
               return
         else:
@@ -226,14 +238,14 @@ class InstallMediaWindow(QtGui.QDialog):
                 return
 
             self.__isoPathName = str(text)
-            self.refreshUserList()
+            self.refreshISOList()
       
 
         
     ## Refrash the list of tasks.
     @pyqtSlot()
-    def refreshUserList(self):
-        print "[refreshUserList]"
+    def refreshISOList(self):
+        print "[refreshISOList]"
         nameList = self.__vmInfoDB.getAllISOnames()
         self.listview.clear()
         for item in nameList:
@@ -253,7 +265,7 @@ class InstallMediaWindow(QtGui.QDialog):
             _name = item.text(0)
 
         if str(_name) == "":
-              infotext = "No user select!"
+              infotext = "No entry select!"
               QtGui.QMessageBox.information(self, "Error",str(infotext))
               return
         try:

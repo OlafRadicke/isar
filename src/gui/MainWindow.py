@@ -265,6 +265,7 @@ class MainWindow(QtGui.QMainWindow):
 
         if (ret == QtGui.QMessageBox.Cancel):
             print "...cencel"
+            return
         elif (ret == QtGui.QMessageBox.Ok):
             print "...Ok"
 
