@@ -194,7 +194,8 @@ class UserWindow(QtGui.QDialog):
 
         if str(nickname) == "":
               infotext = "No user select!"
-              QtGui.QMessageBox.information(self, "Error",str(infotext))
+              #QtGui.QMessageBox.information(self, "Error",str(infotext))
+              QtGui.QMessageBox.critical(self, "Error",str(infotext))
               return
         else:
             try:
@@ -222,18 +223,18 @@ class UserWindow(QtGui.QDialog):
 
         if str(_nickname) == "":
               infotext = "No user select!"
-              QtGui.QMessageBox.information(self, "Error",str(infotext))
+              QtGui.QMessageBox.critical(self, "Error",str(infotext))
               return
         else:
             try:
                 _userInfo = self.__vmInfoDB.getUser(str(_nickname))               
             except sqlite3.Error, e:
                 infotext = "An error occurred:", e.args[0]
-                QtGui.QMessageBox.information(self, "Error",str(infotext))
+                QtGui.QMessageBox.critical(self, "Error",str(infotext))
                 return
             if _userInfo == -1 or _userInfo == None:
                 infotext = "Nickname not found!"
-                QtGui.QMessageBox.information(self, "Error",str(infotext))
+                QtGui.QMessageBox.critical(self, "Error",str(infotext))
                 return
             else:
                 self.__userInfo = _userInfo    
@@ -283,15 +284,38 @@ class UserWindow(QtGui.QDialog):
     @pyqtSlot()
     def safeEdits(self):       
         print "[safe edits...]"
-        self.__userInfo.homedir =  str(self.userDirLineEdit.text())
-        self.__userInfo.mail =  str(self.mailLineEdit.text())
-        self.__userInfo.fullname =  str(self.fullnameLineEdit.text())
-        try:
-            self.__vmInfoDB.updateUser(self.__userInfo)
-        except sqlite3.Error, e:
-            infotext = "An error occurred:", e.args[0]
-            QtGui.QMessageBox.information(self, "Error",str(infotext))
+        _nickname = ""
+        _listIsEmpty = True
+        for item in self.listview.selectedItems():
+            _listIsEmpty = False
+            print  ".." , item.text(0)
+            _nickname = item.text(0)
+        if _listIsEmpty:
+            print "[if _listIsEmpty:]"
+            infotext = "No user select!"
+            QtGui.QMessageBox.critical(self, "Error",str(infotext))
             return
+
+        if str(_nickname) == "":
+            print "[if str(_nickname) == "":]"
+            infotext = "No user select!"
+            QtGui.QMessageBox.critical(self, "Error",str(infotext))
+            print "[return...]"
+            return
+        else:       
+            print "[else:]"
+            self.__userInfo.nickname = str(_nickname)
+            self.__userInfo.homedir =  str(self.userDirLineEdit.text())
+            self.__userInfo.mail =  str(self.mailLineEdit.text())
+            self.__userInfo.fullname =  str(self.fullnameLineEdit.text())
+            try:
+                self.__vmInfoDB.updateUser(self.__userInfo)
+            except sqlite3.Error, e:
+                infotext = "An error occurred:", e.args[0]
+                QtGui.QMessageBox.critical(self, "Error",str(infotext))
+                return
+            infotext = "Ok, safed..."
+            QtGui.QMessageBox.information(self, "OK",str(infotext))
 
     ## Slot with file dialog, for selct a dir.
     @pyqtSlot()

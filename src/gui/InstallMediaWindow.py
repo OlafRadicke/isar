@@ -176,14 +176,14 @@ class InstallMediaWindow(QtGui.QDialog):
 
         if str(_name) == "":
               infotext = "No user select!"
-              QtGui.QMessageBox.information(self, "Error",str(infotext))
+              QtGui.QMessageBox.critical(self, "Error",str(infotext))
               return
         else:
             try:
                 self.__vmInfoDB.deleteISOpath(str(_name))
             except sqlite3.Error, e:
                 infotext = "An error occurred:", e.args[0]
-                QtGui.QMessageBox.information(self, "Error",str(infotext))
+                QtGui.QMessageBox.critical(self, "Error",str(infotext))
                 return
 
             self.refreshISOList()
@@ -202,19 +202,19 @@ class InstallMediaWindow(QtGui.QDialog):
             return
         if str(_name) == "":
               infotext = "No entry select!"
-              QtGui.QMessageBox.information(self, "Error",str(infotext))
+              QtGui.QMessageBox.critical(self, "Error",str(infotext))
               return
         else:
             try:
                 _path = self.__vmInfoDB.getISOpath(str(_name))               
             except sqlite3.Error, e:
                 infotext = "An error occurred:", e.args[0]
-                QtGui.QMessageBox.information(self, "Error",str(infotext))
+                QtGui.QMessageBox.critical(self, "Error",str(infotext))
                 return
             if _path == -1 or _path == None:
                 print "[20110405234854] _path.' ", _path
                 infotext = "ISO name not found!"
-                QtGui.QMessageBox.information(self, "Error",str(infotext))
+                QtGui.QMessageBox.critical(self, "Error",str(infotext))
                 return
             else:
                 print "[] _path: ", _path
@@ -234,7 +234,7 @@ class InstallMediaWindow(QtGui.QDialog):
                 self.__vmInfoDB.addISOpath(str(text))
             except sqlite3.Error, e:
                 infotext = "An error occurred:", e.args[0]
-                QtGui.QMessageBox.information(self, "Error",str(infotext))
+                QtGui.QMessageBox.critical(self, "Error",str(infotext))
                 return
 
             self.__isoPathName = str(text)
@@ -266,14 +266,16 @@ class InstallMediaWindow(QtGui.QDialog):
 
         if str(_name) == "":
               infotext = "No entry select!"
-              QtGui.QMessageBox.information(self, "Error",str(infotext))
+              QtGui.QMessageBox.critical(self, "Error",str(infotext))
               return
         try:
             self.__vmInfoDB.updateISOpath(str(_name), str(self.isoPathLineEdit.text()))
         except sqlite3.Error, e:
             infotext = "An error occurred:", e.args[0]
-            QtGui.QMessageBox.information(self, "Error",str(infotext))
+            QtGui.QMessageBox.critical(self, "Error",str(infotext))
             return
+        infotext = "Ok, safed..."
+        QtGui.QMessageBox.information(self, "OK",str(infotext))
 
     ## Slot with file dialog, for selct a dir.
     @pyqtSlot()

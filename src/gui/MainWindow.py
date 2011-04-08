@@ -196,7 +196,9 @@ class MainWindow(QtGui.QMainWindow):
             QtGui.QMessageBox.information(self, "Error", str(infotext))
             return
         _kvmManager = KVMManager()
-        _kvmManager.commandTest()
+        _out = _kvmManager.commandTest()
+        QtGui.QMessageBox.information(self, "Result", str(_out))
+        return            
         self.refreshVMList()
       
 

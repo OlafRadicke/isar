@@ -23,6 +23,7 @@
 
 
 import os
+import shlex, subprocess
 
 ## @file KVMManager.py
 # @author Olaf Radicke<briefkasten@olaf-radicke.de>
@@ -31,15 +32,35 @@ import os
 class KVMManager():
 
     def commandTest(self):
-        _command = "ls"
-        _ausgabe = os.system(_command)
-        print "[commanttest] 1): ", _ausgabe
-        _command = "cat ./vghvhjg.txt"
-        _ausgabe = os.system(_command)
-        print "[commanttest] 2): ", _ausgabe
-        _command = "ls"
-        _ausgabe = os.popen4(_command)
-        print "[commanttest] 3): ", _ausgabe
-        _command = "cat ./vghvhjg.txt"
-        _ausgabe = os.popen4(_command)
-        print "[commanttest] 4): ", _ausgabe
+        #_command = "ls"
+        #_ausgabe = os.system(_command)
+        #print "[commanttest] 1): ", _ausgabe
+        #_command = "cat ./vghvhjg.txt"
+        #_ausgabe = os.system(_command)
+        #print "[commanttest] 2): ", _ausgabe
+        #_command = "ls"
+        #_ausgabe = os.popen4(_command)
+        #print "[commanttest] 3): ", _ausgabe
+        #_command = "cat ./vghvhjg.txt"
+        #_ausgabe = os.popen4(_command)
+        #print "[commanttest] 4): ", _ausgabe
+        #_command = "ls"
+        #print "[commanttest] 5) check_output: ", subprocess.check_output(_command)
+        #print "[commanttest] 5) check_output: ", subprocess.check_output(["cat", "./vghvhjg.txt"])
+ 
+ 
+        _dummy, _f = os.popen4('ls')
+        _out = ""
+        for _line in _f:
+            print "[commanttest] 5) _line: ", _line
+            _out = _out + _line
+        print "[commanttest] 5) _out: >>" , _out, "<<"
+
+        #_dummy, _f = os.popen4('cat ./vghvhjg.txt')
+        #_out = ""
+        #for _line in _f:
+            #print "[commanttest] 6) _line: ", _line
+            #_out = _out + _line
+        #print "[commanttest] 6) _out: >>" , _out, "<<"
+        
+        return  _out
