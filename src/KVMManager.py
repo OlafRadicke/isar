@@ -22,6 +22,7 @@
  ###########################################################################
 
 
+import os
 
 ## @file KVMManager.py
 # @author Olaf Radicke<briefkasten@olaf-radicke.de>
@@ -29,3 +30,16 @@
 ## Class handling KVM commands.
 class KVMManager():
 
+    def commandTest(self):
+        _command = "ls"
+        _ausgabe = os.system(_command)
+        print "[commanttest] 1): ", _ausgabe
+        _command = "cat ./vghvhjg.txt"
+        _ausgabe = os.system(_command)
+        print "[commanttest] 2): ", _ausgabe
+        _command = "ls"
+        _ausgabe = os.popen4(_command)
+        print "[commanttest] 3): ", _ausgabe
+        _command = "cat ./vghvhjg.txt"
+        _ausgabe = os.popen4(_command)
+        print "[commanttest] 4): ", _ausgabe

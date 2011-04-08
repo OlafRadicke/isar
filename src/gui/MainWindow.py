@@ -30,6 +30,7 @@ from VMinfoDB import VMinfoDB
 from UserWindow import UserWindow
 from InstallMediaWindow import InstallMediaWindow
 from NewVMWindow import NewVMWindow
+from KVMManager import KVMManager
 
 ## @file MainWindow.py
 # @author Olaf Radicke<briefkasten@olaf-radicke.de>
@@ -194,6 +195,8 @@ class MainWindow(QtGui.QMainWindow):
             infotext = "An error occurred:", e.args[0]
             QtGui.QMessageBox.information(self, "Error", str(infotext))
             return
+        _kvmManager = KVMManager()
+        _kvmManager.commandTest()
         self.refreshVMList()
       
 
