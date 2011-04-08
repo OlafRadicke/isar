@@ -178,7 +178,7 @@ class MainWindow(QtGui.QMainWindow):
         #self.listview.addTopLevelItem( QtGui.QTreeWidgetItem(["Olaf","CluterTest","2011-03-29","2011-05-31","fedora13"]))
 
         # ---------- Statusbar ------------
-        self.statusBar().showMessage('Ready')
+        self.statusBar().showMessage('...Ready')
         # Item-List
         self.refreshVMList()
 
@@ -189,6 +189,7 @@ class MainWindow(QtGui.QMainWindow):
         print "[newVMDialog] editUser"
         try:
             nvm = NewVMWindow(self.vmInfoDB)
+            nvm.setModal(True)
             nvm.show()
             ret = nvm.exec_()
         except sqlite3.Error, e:
@@ -315,6 +316,7 @@ class MainWindow(QtGui.QMainWindow):
         print "[20110403172927] editUser"     
         try:
             uw = UserWindow(self.vmInfoDB)
+            uw.setModal(True)
             uw.show()
             ret = uw.exec_()
         except sqlite3.Error, e:
@@ -331,6 +333,7 @@ class MainWindow(QtGui.QMainWindow):
         print "[20110403172927] editISOs"
         try:
             _imw = InstallMediaWindow(self.vmInfoDB)
+            _imw.setModal(True)
             _imw.show()
             ret = _imw.exec_()
         except sqlite3.Error, e:
