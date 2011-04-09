@@ -31,17 +31,12 @@ import shlex, subprocess
 ## Class handling KVM commands.
 class KVMManager():
     
-    ## Nickname of owner
-    __owner = "XX"
     
     ## Nickname of owners home dir
     __ownersHome = "XX"
     
     ## Name of virtual machine
     __vmName = "XX"
-    
-    ## Name of used distribution
-    __distribution = "XX"
     
     ## size of RAM (mb)
     __ram = "1000"
@@ -52,11 +47,6 @@ class KVMManager():
     ## Path of install ISO
     __IsoPath = ""
     
-    ## Set name of machine owner.
-    # @param name name of machine owner.
-    def setOwner(self, name):
-        name = name.replace(" ", "_")
-        self.__owner = name
         
     ## Set home dir of owner.
     def setOwnersHome(self, name):
@@ -67,11 +57,6 @@ class KVMManager():
     def setMachineName(self, name):
         name = name.replace(" ", "_")
         self.__vmName = name    
-        
-    ## Set name of used distribution
-    def setDistribution(self, name):
-        name = name.replace(" ", "_")
-        self.__distri = name
         
     ## Set RAM size.
     def setRAM(self, size):
@@ -96,11 +81,10 @@ class KVMManager():
         
         
     def createNewMachine(self):
-        _vmName = self.__owner + "_" + self.__distri + "_" + self.__vmName
         _command =  "virt-install   --connect=qemu:///system "
-        _command += " --name " + _vmName 
+        _command += " --name " + self.__vmName 
         _command += " --ram " + self.__ram 
-        _command += " --disk path=" + self.__ownersHome + _vmName + ".img,"
+        _command += " --disk path=" + self.__ownersHome + self.__vmName + ".img,"
         _command += "size=" + self.__hdSize + ","
         _command += "bus=virtio,"
         _command += "cache=writeback"

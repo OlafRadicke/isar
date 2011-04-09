@@ -24,6 +24,7 @@
 import sys
 import logging
 import sqlite3
+import time
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot
 from VMinfoDB import VMinfoDB 
@@ -53,6 +54,9 @@ class NewVMWindow(QtGui.QDialog):
     ramSpinBox  = ""   
     
     ## Spin box for hart disc size.
+    hdSpinBox  = ""  
+    
+    ## Spin box for life time.
     hdSpinBox  = ""  
     
     ## Box for comment.
@@ -147,8 +151,19 @@ class NewVMWindow(QtGui.QDialog):
         self.hdSpinBox.setValue(10)
         hLayoutHD.addWidget(self.hdSpinBox)
         
+        # life time
+        hLayoutLifeTime = QtGui.QHBoxLayout()
+        vMainLayout.addLayout(hLayoutLifeTime)
+        lifeTimeLabel = QtGui.QLabel("Life time:")
+        hLayoutLifeTime.addWidget(lifeTimeLabel)
+        self.lifeTimeSpinBox = QtGui.QSpinBox()
+        self.lifeTimeSpinBox.setSuffix(" days")
+        self.lifeTimeSpinBox.setRange(1, 10000) 
+        self.lifeTimeSpinBox.setValue(60)
+        hLayoutLifeTime.addWidget(self.lifeTimeSpinBox)
+        
         # comment
-        hLayoutVMcomment = QtGui.QHBoxLayout()
+        hLayoutVMcomment = QtGui.QVBoxLayout()
         vMainLayout.addLayout(hLayoutVMcomment)
         commentNameLabel = QtGui.QLabel("Comment:")
         hLayoutVMcomment.addWidget(commentNameLabel)
@@ -178,28 +193,46 @@ class NewVMWindow(QtGui.QDialog):
     def createNewVM(self):       
         print "[createNewVM...]"
         _kvmManager = KVMManager()
+        _vmInfo = VMinfo()
         
         _owner = str(self.owenerComboBox.currentText())
         _userInfo = self.__vmInfoDB.getUser(_owner)
         _distName = str(self.isoComboBox.currentText())
+        _distName = _distName.replace(" ", "_")
         _IsoPath = self.__vmInfoDB.getISOpath(_distName)
+        _lifeTime = str(self.lifeTimeSpinBox)
+        _comment = str(self.commentNameLineEdit.text)
+        
+        _vmName = str(self.vmNameLineEdit.text())
+        _vmName = _owner + "_" + _distName + "_" + _vmName
+        
         
         _kvmManager.setOwner(_owner)
         _kvmManager.setOwnersHome(_userInfo.homedir)   
-        _kvmManager.setMachineName(str(self.vmNameLineEdit.text())) 
+        _kvmManager.setMachineName(_vmName) 
         _kvmManager.setDistribution(_distName)
         _kvmManager.setRAM(str(self.ramSpinBox.value()))
         _kvmManager.setHdSize(str(self.hdSpinBox.value()))
         _kvmManager.setIsoPath(_IsoPath)
         
-        _result = _kvmManager.createNewMachine()
-        
         try:
+            _result = _kvmManager.createNewMachine()
             QtGui.QMessageBox.information(self, "Result", _result)
         except sqlite3.Error, e:
             infotext = "An error occurred:", e.args[0]
             QtGui.QMessageBox.critical(self, "Error",str(infotext))
             return            
+            
+        _vmInfo.name = _vmName
+        _vminfo.createdate = str(int(time.time()))
+        _vminfo.livetimedays = _lifeTime
+        _vminfo.comment = _comment
+            #'" + vminfo.mail + "', \
+            #'" + vminfo.image_file + "', \
+            #'" + vminfo.owner + "', \
+            #'" + vminfo.OS + "' \            
+            
+        self.__vmInfoDB.addVMinfo(_vminfo)
 
     ## it is action if owener Combo Box changes.
     @pyqtSlot(QtCore.QString)
