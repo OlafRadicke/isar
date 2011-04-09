@@ -208,7 +208,7 @@ class UserWindow(QtGui.QDialog):
                 self.__vmInfoDB.deleteUser(str(nickname))
             except sqlite3.Error, e:
                 infotext = "An error occurred:", e.args[0]
-                QtGui.QMessageBox.information(self, "Error",str(infotext))
+                QtGui.QMessageBox.critical(self, "Error",str(infotext))
                 return
 
             self.refreshUserList()
@@ -261,7 +261,7 @@ class UserWindow(QtGui.QDialog):
                 self.__vmInfoDB.addUser(str(text))
             except sqlite3.Error, e:
                 infotext = "An error occurred:", e.args[0]
-                QtGui.QMessageBox.information(self, "Error",str(infotext))
+                QtGui.QMessageBox.critical(self, "Error",str(infotext))
                 return
 
             self.__userInfo.nickname = str(text)

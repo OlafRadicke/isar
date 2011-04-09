@@ -30,37 +30,89 @@ import shlex, subprocess
 
 ## Class handling KVM commands.
 class KVMManager():
+    
+    ## Nickname of owner
+    __owner = "XX"
+    
+    ## Nickname of owners home dir
+    __ownersHome = "XX"
+    
+    ## Name of virtual machine
+    __vmName = "XX"
+    
+    ## Name of used distribution
+    __distribution = "XX"
+    
+    ## size of RAM (mb)
+    __ram = "1000"
+    
+    ## size of hard disc (Gb).
+    __hdSize = "1000"
+    
+    ## Path of install ISO
+    __IsoPath = ""
+    
+    ## Set name of machine owner.
+    # @param name name of machine owner.
+    def setOwner(self, name):
+        name = name.replace(" ", "_")
+        self.__owner = name
+        
+    ## Set home dir of owner.
+    def setOwnersHome(self, name):
+        name = name.replace(" ", "_")
+        self.__ownersHome = name        
+        
+    ## Set name of Machine
+    def setMachineName(self, name):
+        name = name.replace(" ", "_")
+        self.__vmName = name    
+        
+    ## Set name of used distribution
+    def setDistribution(self, name):
+        name = name.replace(" ", "_")
+        self.__distri = name
+        
+    ## Set RAM size.
+    def setRAM(self, size):
+        self.__ram = str(size)
+        
+    ## Set hard disc size.
+    def setHdSize(self, size):   
+        self.__hdSize = str(size)
 
-    def commandTest(self):
-        #_command = "ls"
-        #_ausgabe = os.system(_command)
-        #print "[commanttest] 1): ", _ausgabe
-        #_command = "cat ./vghvhjg.txt"
-        #_ausgabe = os.system(_command)
-        #print "[commanttest] 2): ", _ausgabe
-        #_command = "ls"
-        #_ausgabe = os.popen4(_command)
-        #print "[commanttest] 3): ", _ausgabe
-        #_command = "cat ./vghvhjg.txt"
-        #_ausgabe = os.popen4(_command)
-        #print "[commanttest] 4): ", _ausgabe
-        #_command = "ls"
-        #print "[commanttest] 5) check_output: ", subprocess.check_output(_command)
-        #print "[commanttest] 5) check_output: ", subprocess.check_output(["cat", "./vghvhjg.txt"])
- 
- 
-        _dummy, _f = os.popen4('ls')
-        _out = ""
-        for _line in _f:
-            print "[commanttest] 5) _line: ", _line
-            _out = _out + _line
-        print "[commanttest] 5) _out: >>" , _out, "<<"
-
-        #_dummy, _f = os.popen4('cat ./vghvhjg.txt')
+    ## Set the path of ISO.
+    def setIsoPath(self, path):        
+        self.__IsoPath = path
+        
+    #def commandTest(self):
+        #_dummy, _f = os.popen4('ls')
         #_out = ""
         #for _line in _f:
-            #print "[commanttest] 6) _line: ", _line
+            #print "[commanttest] 5) _line: ", _line
             #_out = _out + _line
-        #print "[commanttest] 6) _out: >>" , _out, "<<"
+        #print "[commanttest] 5) _out: >>" , _out, "<<"
+        #return  _out
         
-        return  _out
+        
+    def createNewMachine(self):
+        _vmName = self.__owner + "_" + self.__distri + "_" + self.__vmName
+        _command =  "virt-install   --connect=qemu:///system "
+        _command += " --name " + _vmName 
+        _command += " --ram " + self.__ram 
+        _command += " --disk path=" + self.__ownersHome + _vmName + ".img,"
+        _command += "size=" + self.__hdSize + ","
+        _command += "bus=virtio,"
+        _command += "cache=writeback"
+        _command += " --cdrom " + self.__IsoPath                                                            
+        _command += " --accelerate "                                                                                                              
+        _command += " --network bridge=externqabr0 "
+        
+        print "[Command]:",_command
+        _dummy, _f = os.popen4(_command)
+        _out = ""
+#        print "[_dummy]", _dummy
+        for _line in _f:
+            _out = _out + _line
+#        print "[commanttest] 5) _out: >>" , _out, "<<"
+        return  _out        

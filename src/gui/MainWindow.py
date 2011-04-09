@@ -31,7 +31,6 @@ from VMinfoDB import VMinfoDB
 from UserWindow import UserWindow
 from InstallMediaWindow import InstallMediaWindow
 from NewVMWindow import NewVMWindow
-from KVMManager import KVMManager
 from BASEDIR import BASEDIR, ICONDIR
 
 ## @file MainWindow.py
@@ -232,13 +231,10 @@ class MainWindow(QtGui.QMainWindow):
             nvm.setModal(True)
             nvm.show()
             ret = nvm.exec_()
-        except sqlite3.Error, e:
+        except sqlite3.Error, e: 
             infotext = "An error occurred:", e.args[0]
-            QtGui.QMessageBox.information(self, "Error", str(infotext))
+            QtGui.QMessageBox.critical(self, "Error", str(infotext))
             return
-        _kvmManager = KVMManager()
-        _out = _kvmManager.commandTest()
-        QtGui.QMessageBox.information(self, "Result", str(_out))
         return            
         self.refreshVMList()
       
@@ -252,7 +248,7 @@ class MainWindow(QtGui.QMainWindow):
             userList = self.vmInfoDB.getAllVMinfo()
         except sqlite3.Error, e:
             infotext = "An error occurred:", e.args[0]
-            QtGui.QMessageBox.information(self, "Error", str(infotext))
+            QtGui.QMessageBox.critical(self, "Error", str(infotext))
             return            
         self.listview.clear()
         for item in userList:
@@ -361,7 +357,7 @@ class MainWindow(QtGui.QMainWindow):
             ret = uw.exec_()
         except sqlite3.Error, e:
             infotext = "An error occurred:", e.args[0]
-            QtGui.QMessageBox.information(self, "Error", str(infotext))
+            QtGui.QMessageBox.critical(self, "Error", str(infotext))
             return
         print "[20110403182643] editUser"     
 
@@ -378,5 +374,5 @@ class MainWindow(QtGui.QMainWindow):
             ret = _imw.exec_()
         except sqlite3.Error, e:
             infotext = "An error occurred:", e.args[0]
-            QtGui.QMessageBox.information(self, "Error", str(infotext))
+            QtGui.QMessageBox.critical(self, "Error", str(infotext))
             return

@@ -28,6 +28,7 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot
 from VMinfoDB import VMinfoDB 
 from UserInfo import UserInfo
+from KVMManager import KVMManager
 
 
 ## @file NewVMWindow.py
@@ -118,9 +119,9 @@ class NewVMWindow(QtGui.QDialog):
         isoLabel = QtGui.QLabel("Install ISO:")
         hLayoutISO.addWidget(isoLabel)
         self.isoComboBox = QtGui.QComboBox()
-        _allUser = self.__vmInfoDB.getAllUser()
-        for _user in _allUser:
-            self.isoComboBox.addItem(_user.nickname)
+        _allISOs = self.__vmInfoDB.getAllISOnames()
+        for _isoName in _allISOs:
+            self.isoComboBox.addItem(_isoName)
         #self.connect(self.isoComboBox, QtCore.SIGNAL('currentIndexChanged(QString)'), QtCore.SLOT('isoComboBoxChange(QString)'))
         hLayoutISO.addWidget(self.isoComboBox)
         
@@ -176,8 +177,29 @@ class NewVMWindow(QtGui.QDialog):
     @pyqtSlot()
     def createNewVM(self):       
         print "[createNewVM...]"
-        pass
-
+        _kvmManager = KVMManager()
+        
+        _owner = str(self.owenerComboBox.currentText())
+        _userInfo = self.__vmInfoDB.getUser(_owner)
+        _distName = str(self.isoComboBox.currentText())
+        _IsoPath = self.__vmInfoDB.getISOpath(_distName)
+        
+        _kvmManager.setOwner(_owner)
+        _kvmManager.setOwnersHome(_userInfo.homedir)   
+        _kvmManager.setMachineName(str(self.vmNameLineEdit.text())) 
+        _kvmManager.setDistribution(_distName)
+        _kvmManager.setRAM(str(self.ramSpinBox.value()))
+        _kvmManager.setHdSize(str(self.hdSpinBox.value()))
+        _kvmManager.setIsoPath(_IsoPath)
+        
+        _result = _kvmManager.createNewMachine()
+        
+        try:
+            QtGui.QMessageBox.information(self, "Result", _result)
+        except sqlite3.Error, e:
+            infotext = "An error occurred:", e.args[0]
+            QtGui.QMessageBox.critical(self, "Error",str(infotext))
+            return            
 
     ## it is action if owener Combo Box changes.
     @pyqtSlot(QtCore.QString)

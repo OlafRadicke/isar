@@ -186,7 +186,7 @@ class VMinfoDB():
         _nameList = list()
         _rows = self.__conn.execute("SELECT name FROM installiso")
         for _row in _rows:
-            _name = _row
+            _name = _row[0]
             _nameList.append(_name)
         return _nameList
         
