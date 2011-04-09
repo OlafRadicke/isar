@@ -134,7 +134,10 @@ class UserWindow(QtGui.QDialog):
         hLayoutUserDir.addWidget(userDirLabel)
         self.userDirLineEdit = QtGui.QLineEdit()
         hLayoutUserDir.addWidget(self.userDirLineEdit)
-        userDirPushButton = QtGui.QPushButton("...")
+        userDirPushButton = QtGui.QPushButton()
+        userDirPushButton.setIcon(QtGui.QIcon('icons/search.png'))
+        userDirPushButton.resize(1,1)
+
         self.connect(userDirPushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('selectUserDir()'))
         hLayoutUserDir.addWidget(userDirPushButton)        
         
