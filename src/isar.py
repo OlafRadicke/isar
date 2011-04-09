@@ -38,6 +38,7 @@ _startinfo = '============= Start ' + datetime.now().strftime("%d. %B %Y %H:%M")
 logging.debug(_startinfo)
 
 
+
 def startGUI():
     app = QtGui.QApplication(sys.argv)
     w = MainWindow()

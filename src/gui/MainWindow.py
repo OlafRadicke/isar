@@ -24,6 +24,7 @@
 import sys
 import logging
 import sqlite3
+import os.path
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot
 from VMinfoDB import VMinfoDB 
@@ -31,13 +32,13 @@ from UserWindow import UserWindow
 from InstallMediaWindow import InstallMediaWindow
 from NewVMWindow import NewVMWindow
 from KVMManager import KVMManager
+from BASEDIR import BASEDIR, ICONDIR
 
 ## @file MainWindow.py
 # @author Olaf Radicke<briefkasten@olaf-radicke.de>
 
 ## The main window of the GUI
 class MainWindow(QtGui.QMainWindow):
-
 
     ## Simple List
     listview = ""
@@ -68,11 +69,10 @@ class MainWindow(QtGui.QMainWindow):
 
         #---------- menubar --------------------
         
+        #---------- file menu ---------------------
 
         menubar = self.menuBar()
         menuFile = menubar.addMenu('&File')        
-
-
 
         # Menue-item for init the database.
         menuInitDB = QtGui.QAction( 'Init Database', self)
@@ -81,15 +81,12 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(menuInitDB, QtCore.SIGNAL('triggered()'), QtCore.SLOT('initDB()'))
         menuFile.addAction(menuInitDB)
 
-
         # Menue-item for Edit and configure user info.
         menuEditUser = QtGui.QAction( 'Edit user', self)
         menuEditUser.setShortcut('Ctrl+U')
         menuEditUser.setStatusTip('Edit and configure user info.')
         self.connect(menuEditUser, QtCore.SIGNAL('triggered()'), QtCore.SLOT('editUser()'))
         menuFile.addAction(menuEditUser)
-
-
 
         # Menue-item for Edit and configure install ISOs.
         menuEditISO = QtGui.QAction( 'Edit instal ISOs', self)
@@ -99,48 +96,91 @@ class MainWindow(QtGui.QMainWindow):
         menuFile.addAction(menuEditISO)
         
         ## Menue-item for apliction exit
-        menuExit = QtGui.QAction(QtGui.QIcon('icons/exit.png'), 'Exit', self)
+        _icon = QtGui.QIcon(os.path.join(ICONDIR + 'exit.png'))
+        menuExit = QtGui.QAction(_icon, 'Exit', self)
         menuExit.setShortcut('Ctrl+Q')
         menuExit.setStatusTip('Exit application')
         self.connect(menuExit, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
         menuFile.addAction(menuExit)
+        
+        # ----------- virtual machine menue
+        menuMachine = menubar.addMenu('Machines')          
+
+        # Create a new virtual machine.
+        menuMachineNew = QtGui.QAction( 'New', self)
+        menuMachineNew.setShortcut('Ctrl+N')
+        menuMachineNew.setStatusTip('Create a new virtual machine.')
+        self.connect(menuMachineNew, QtCore.SIGNAL('triggered()'), QtCore.SLOT('newVMDialog()'))
+        menuMachine.addAction(menuMachineNew)
+        
+        # Delete a virtual machine
+        menuMachineDelete = QtGui.QAction( 'Delete', self)
+        menuMachineDelete.setShortcut('Ctrl+X')
+        menuMachineDelete.setStatusTip('Delete a virtual machine')
+        self.connect(menuMachineDelete, QtCore.SIGNAL('triggered()'), QtCore.SLOT('deleteVM()'))
+        menuMachine.addAction(menuMachineDelete)
+
+        # --------- info menu ---------------
+
+        menuInfo = menubar.addMenu('&Info')        
 
         ## Menue-item for about dialog.
         menuInfoAbout = QtGui.QAction( 'About', self)
         menuInfoAbout.setShortcut('Ctrl+I')
         menuInfoAbout.setStatusTip('About this programm.')
         self.connect(menuInfoAbout, QtCore.SIGNAL('triggered()'), QtCore.SLOT('about()'))
-
-
-        menuFile = menubar.addMenu('&Info')
-        menuFile.addAction(menuInfoAbout)
+        menuInfo.addAction(menuInfoAbout)
 
         # ------------- menu end ------------
 
         # ----------- toolbar ---------------------
         self.toolbar = self.addToolBar('tools')
-        
-        toolNew = QtGui.QAction(QtGui.QIcon('./icons/new.png'), 'Create a new virtual machine', self)
+
+        # Tool button new virtual machine
+        _icon = QtGui.QIcon(os.path.join(ICONDIR + 'new.png'))
+        toolNew = QtGui.QAction(_icon, 'Create a new virtual machine', self)
         toolNew.setShortcut('Ctrl+N')
         self.connect(toolNew, QtCore.SIGNAL('triggered()'), QtCore.SLOT('newVMDialog()'))
         self.toolbar.addAction(toolNew)
 
-        toolRemove = QtGui.QAction(QtGui.QIcon('./icons/remove.png'), 'Delete a virtual machine', self)
+        # Tool button delete a virtual machine
+        _icon = QtGui.QIcon(os.path.join(ICONDIR + 'remove.png'))
+        toolRemove = QtGui.QAction(_icon, 'Delete a virtual machine', self)
         toolNew.setShortcut('Ctrl+X')
         self.connect(toolRemove, QtCore.SIGNAL('triggered()'), QtCore.SLOT('deleteVM()'))
         self.toolbar.addAction(toolRemove)
 
-
-        toolInfo = QtGui.QAction(QtGui.QIcon('./icons/info.png'), 'Info of virtual machine', self)
+        # Tool button info of virtual machine
+        _icon = QtGui.QIcon(os.path.join(ICONDIR + 'info.png'))
+        toolInfo = QtGui.QAction(_icon, 'Info of virtual machine', self)
         toolNew.setShortcut('Ctrl+X')
         self.connect(toolInfo, QtCore.SIGNAL('triggered()'), QtCore.SLOT('infoVM()'))
         self.toolbar.addAction(toolInfo)
 
-
-        toolClone = QtGui.QAction(QtGui.QIcon('./icons/clone.png'), 'Info of virtual machine', self)
+        # Tool button clone a virtual machine
+        _icon = QtGui.QIcon(os.path.join(ICONDIR + 'clone.png'))
+        toolClone = QtGui.QAction(_icon, 'Clone a virtual machine', self)
         toolNew.setShortcut('Ctrl+X')
         self.connect(toolClone, QtCore.SIGNAL('triggered()'), QtCore.SLOT('cloneVM()'))
-        self.toolbar.addAction(toolClone)     
+        self.toolbar.addAction(toolClone)
+        
+        # Separator
+        self.toolbar.addSeparator()
+
+        # Tool button Edit user
+        _icon = QtGui.QIcon(os.path.join(ICONDIR + 'user.png'))
+        toolUser = QtGui.QAction(_icon, 'Edit user', self)
+        toolNew.setShortcut('Ctrl+X')
+        self.connect(toolUser, QtCore.SIGNAL('triggered()'), QtCore.SLOT('editUser()'))
+        self.toolbar.addAction(toolUser)
+
+        # Tool button
+        _icon = QtGui.QIcon(os.path.join(ICONDIR + 'isoinfo.png'))
+        toolISOs = QtGui.QAction(_icon, 'Edit and configure instal media.', self)
+        toolISOs.setShortcut('Ctrl+X')
+        self.connect(toolISOs, QtCore.SIGNAL('triggered()'), QtCore.SLOT('editISOs()'))
+        self.toolbar.addAction(toolISOs)        
+        
         # ----------- toolbar end ------------------------
 
 

@@ -24,10 +24,12 @@
 import sys
 import logging
 import sqlite3
+import os.path
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot
 from VMinfoDB import VMinfoDB 
 from UserInfo import UserInfo
+from BASEDIR import BASEDIR, ICONDIR
 
 
 ## @file UserWindow.py
@@ -135,7 +137,8 @@ class UserWindow(QtGui.QDialog):
         self.userDirLineEdit = QtGui.QLineEdit()
         hLayoutUserDir.addWidget(self.userDirLineEdit)
         userDirPushButton = QtGui.QPushButton()
-        userDirPushButton.setIcon(QtGui.QIcon('icons/search.png'))
+        _icon = QtGui.QIcon(os.path.join(ICONDIR + 'search.png'))        
+        userDirPushButton.setIcon(_icon)
         userDirPushButton.resize(1,1)
 
         self.connect(userDirPushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('selectUserDir()'))
