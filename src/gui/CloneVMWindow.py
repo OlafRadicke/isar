@@ -34,11 +34,11 @@ from KVMManager import KVMManager
 from VMinfo import VMinfo
 
 
-## @file NewVMWindow.py
+## @file CloneVMWindow.py
 # @author Olaf Radicke<briefkasten@olaf-radicke.de>
 
-## This window is for create a new virtual machine.
-class NewVMWindow(QtGui.QDialog):
+## This window is for cloneing a virtual machine.
+class CloneVMWindow(QtGui.QDialog):
   
     ## Database binding.
     __vmInfoDB = VMinfoDB()

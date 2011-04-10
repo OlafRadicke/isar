@@ -24,10 +24,12 @@
 import sys
 import logging
 import sqlite3
+import os.path
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot
 from VMinfoDB import VMinfoDB 
 from UserInfo import UserInfo
+from BASEDIR import ICONDIR
 
 
 ## @file installMediaWindow.py
@@ -116,7 +118,9 @@ class InstallMediaWindow(QtGui.QDialog):
         hLayoutUserDir.addWidget(isoPathLabel)
         self.isoPathLineEdit = QtGui.QLineEdit()
         hLayoutUserDir.addWidget(self.isoPathLineEdit)
-        isoPathPushButton = QtGui.QPushButton("...")
+        isoPathPushButton = QtGui.QPushButton() #":/")
+        _icon = QtGui.QIcon(os.path.join(ICONDIR + 'search.png'))        
+        isoPathPushButton.setIcon(_icon)
         self.connect(isoPathPushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('selectISOpath()'))
         hLayoutUserDir.addWidget(isoPathPushButton)        
         

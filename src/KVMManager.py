@@ -69,17 +69,7 @@ class KVMManager():
     ## Set the path of ISO.
     def setIsoPath(self, path):        
         self.__IsoPath = path
-        
-    #def commandTest(self):
-        #_dummy, _f = os.popen4('ls')
-        #_out = ""
-        #for _line in _f:
-            #print "[commanttest] 5) _line: ", _line
-            #_out = _out + _line
-        #print "[commanttest] 5) _out: >>" , _out, "<<"
-        #return  _out
-        
-        
+    
     def createNewMachine(self):
         _command =  "virt-install   --connect=qemu:///system "
         _command += " --name " + self.__vmName 

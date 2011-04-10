@@ -25,8 +25,10 @@ import sys
 import logging
 import sqlite3
 import os.path
+from datetime import date
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot
+
 from VMinfoDB import VMinfoDB 
 from UserWindow import UserWindow
 from InstallMediaWindow import InstallMediaWindow
@@ -40,20 +42,20 @@ from BASEDIR import BASEDIR, ICONDIR
 class MainWindow(QtGui.QMainWindow):
 
     ## Simple List
-    listview = ""
+    __listview = ""
 
-    ## TaskView: This class show the taskt data.
-    taskBox = ""
+    ### TaskView: This class show the taskt data.
+    #taskBox = ""
 
-    ## Minutes of the proceedings as html
-    minutes =  ""
+    ### Minutes of the proceedings as html
+    #minutes =  ""
 
 
-    ## This QTextBrowser show the minutes of the proceedings
-    textView = ""
+    ### This QTextBrowser show the minutes of the proceedings
+    #textView = ""
 
     ## Save information about vitual machines
-    vmInfoDB = VMinfoDB()
+    __vmInfoDB = VMinfoDB()
 
     ## Constructor
     def __init__(self, *args): 
@@ -209,13 +211,15 @@ class MainWindow(QtGui.QMainWindow):
 
         # -------------- List --------------
 
-        self.listview = QtGui.QTreeWidget()
+        self.__listview = QtGui.QTreeWidget()
         _haderList = ["owner","name","create","OS"]
-        self.listview.setColumnCount(len(_haderList))
-        self.listview.setHeaderLabels(_haderList)
-        vListLayoutL.addWidget(self.listview)
-        #self.listview.addTopLevelItem( QtGui.QTreeWidgetItem(["Olaf","CluterTest","2011-03-29","2011-05-31","fedora13"]))
-
+        self.__listview.setColumnCount(len(_haderList))
+        (self.__listview.header()).resizeSection(0, 130) 
+        (self.__listview.header()).resizeSection(1, 190) 
+        (self.__listview.header()).resizeSection(2, 130) 
+        (self.__listview.header()).resizeSection(3, 130) 
+        self.__listview.setHeaderLabels(_haderList)
+        vListLayoutL.addWidget(self.__listview)
         # ---------- Statusbar ------------
         self.statusBar().showMessage('...Ready')
         # Item-List
@@ -227,7 +231,7 @@ class MainWindow(QtGui.QMainWindow):
     def newVMDialog(self):
         print "[newVMDialog] editUser"
         try:
-            nvm = NewVMWindow(self.vmInfoDB)
+            nvm = NewVMWindow(self.__vmInfoDB)
             nvm.setModal(True)
             nvm.show()
             ret = nvm.exec_()
@@ -245,21 +249,22 @@ class MainWindow(QtGui.QMainWindow):
     def refreshVMList(self):
         userList = list()
         try:
-            userList = self.vmInfoDB.getAllVMinfo()
+            userList = self.__vmInfoDB.getAllVMinfo()
         except sqlite3.Error, e:
             infotext = "An error occurred:", e.args[0]
             QtGui.QMessageBox.critical(self, "Error", str(infotext))
             return            
-        self.listview.clear()
+        self.__listview.clear()
         for item in userList:
+            _date = d = date.fromtimestamp(int(item.createdate))
             qStringList = QtCore.QStringList([ \
                 str(item.owner),  \
                 str(item.name),  \
-                str(item.createdate),  \
+                str(_date.strftime("%d.%m.%Y")),  \
                 str(item.os) \
             ])
             twItem = QtGui.QTreeWidgetItem(qStringList)
-            self.listview.addTopLevelItem(twItem)
+            self.__listview.addTopLevelItem(twItem)
 
 
 
@@ -268,7 +273,7 @@ class MainWindow(QtGui.QMainWindow):
     def cloneVM(self):
         logging.debug("[20110402201311] deleteVM")
         #todo = ""
-        #for item in self.listview.selectedItems():
+        #for item in self.__listview.selectedItems():
             #print  ".." , item.text()
             #todo = item.text()
 
@@ -283,46 +288,49 @@ class MainWindow(QtGui.QMainWindow):
     @pyqtSlot()
     def infoVM(self):
         logging.debug("[20110402201311] deleteVM")
-        #todo = ""
-        #for item in self.listview.selectedItems():
-            #print  ".." , item.text()
-            #todo = item.text()
+        _vmName = ""
+        for item in self.__listview.selectedItems():
+            print  ".." , item.text()
+            _vmName = item.text()
 
-        #if( todo == "" ):
-            #self.statusBar().showMessage('No ToDo select...')
-        #else:
-          #taskTyp = self.tasksSettings.getTaskTyp(todo)
-          #self.tasksSettings.deleteTask(taskTyp)
-          #self.refreshVMList()
+        if( _vmName == "" ):
+            self.statusBar().showMessage('No virtual machine select...')
+        else:
+            print "[_vmName]", _vmName
+            self.refreshVMList()
 
     ## Function delete a vm
     @pyqtSlot()
     def deleteVM(self):
         logging.debug("[20110402201311] deleteVM")
-
+        _infotext = "Do you want to delete this machine? \n"
+        _infotext += "Has only effect for isar data base. Not for Libvirt."
         ret = QtGui.QMessageBox.warning(self, \
                             "Warning", \
-                            "Do you want to delete this machine?", \
+                            _infotext, \
                             QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Ok)
 
         if (ret == QtGui.QMessageBox.Cancel):
-            print "...cencel"
             return
-        elif (ret == QtGui.QMessageBox.Ok):
-            print "...Ok"
 
+        _vmName = ""
+        for item in self.__listview.selectedItems():
+            print  ".." , item.text(1)
+            _vmName = str(item.text(1))
 
-        #todo = ""
-        #for item in self.listview.selectedItems():
-            #print  ".." , item.text()
-            #todo = item.text()
-
-        #if( todo == "" ):
-            #self.statusBar().showMessage('No ToDo select...')
-        #else:
-          #taskTyp = self.tasksSettings.getTaskTyp(todo)
-          #self.tasksSettings.deleteTask(taskTyp)
-          #self.refreshVMList()
+        if( _vmName == "" ):
+            self.statusBar().showMessage('No ToDo select...')
+            QtGui.QMessageBox.information(self, "Abort",'No virtual machine select!')
+            return
+        
+        print "[_vmName]", _vmName
+        try:              
+            self.__vmInfoDB.deleteVMinfo(_vmName)
+        except sqlite3.Error, e:
+            infotext = "An error occurred:", e.args[0]
+            QtGui.QMessageBox.critical(self, "Error",str(infotext))
+            return  
+        self.refreshVMList()
 
 
         
@@ -342,7 +350,7 @@ class MainWindow(QtGui.QMainWindow):
     def initDB(self):
         logging.debug("[20110402220213] init db")
         print "[20110402220213] init db"
-        self.vmInfoDB.initDB()
+        self.__vmInfoDB.initDB()
 
 
     ## Slot for open eding user window.
@@ -351,7 +359,7 @@ class MainWindow(QtGui.QMainWindow):
         logging.debug("[20110403172927] editUser")
         print "[20110403172927] editUser"     
         try:
-            uw = UserWindow(self.vmInfoDB)
+            uw = UserWindow(self.__vmInfoDB)
             uw.setModal(True)
             uw.show()
             ret = uw.exec_()
@@ -368,7 +376,7 @@ class MainWindow(QtGui.QMainWindow):
         logging.debug("[20110403172927] editISOs")
         print "[20110403172927] editISOs"
         try:
-            _imw = InstallMediaWindow(self.vmInfoDB)
+            _imw = InstallMediaWindow(self.__vmInfoDB)
             _imw.setModal(True)
             _imw.show()
             ret = _imw.exec_()

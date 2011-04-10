@@ -238,6 +238,15 @@ class VMinfoDB():
         self.__conn.execute("DELETE FROM installiso \
             WHERE name = '" + name + "';")
         self.__conn.commit()  
+
+    ## Delete virtual machine info in data base.
+    # Delet not in Libvirt.
+    def deleteVMinfo(self, name):
+        self.__conn.execute("DELETE FROM vmachine \
+            WHERE name = '" + name + "';")
+        self.__conn.commit()          
+        
+        
         
     ## Update user data.   
     def updateUser(self, userInfo):
