@@ -84,13 +84,13 @@ class KVMManager():
         _command =  "virt-install   --connect=qemu:///system "
         _command += " --name " + self.__vmName 
         _command += " --ram " + self.__ram 
-        _command += " --disk path=" + self.__ownersHome + self.__vmName + ".img,"
+        _command += " --disk path=" + self.__ownersHome + "/" + self.__vmName + ".img,"
         _command += "size=" + self.__hdSize + ","
         _command += "bus=virtio,"
         _command += "cache=writeback"
         _command += " --cdrom " + self.__IsoPath                                                            
         _command += " --accelerate "                                                                                                              
-        _command += " --network bridge=externqabr0 "
+#        _command += " --network bridge=externqabr0 "
         
         print "[Command]:",_command
         _f = subprocess.check_output(_command.split(),stderr=subprocess.STDOUT)

@@ -230,7 +230,7 @@ class NewVMWindow(QtGui.QDialog):
             _result = _kvmManager.createNewMachine()
             QtGui.QMessageBox.information(self, "Result", _result) 
         except subprocess.CalledProcessError, e:
-            infotext = "An error occurred:", e.output
+            infotext = "An error occurred:", (e.output.replace('\n',' ')).replace('\r',' ')
             QtGui.QMessageBox.critical(self, "Error",str(infotext))
             return  
         except OSError, e:
@@ -255,7 +255,8 @@ class NewVMWindow(QtGui.QDialog):
             return  
         _infotext = "Ok, new virtual machine is created, \n \
                     and meta data is safed..."
-        QtGui.QMessageBox.information(self, "OK",str(infotext))
+        QtGui.QMessageBox.information(self, "OK",str(_infotext))
+        self.close()
 
     ## it is action if owener Combo Box changes.
     @pyqtSlot(QtCore.QString)
