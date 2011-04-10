@@ -25,11 +25,13 @@ import sys
 import logging
 import sqlite3
 import time
+import subprocess
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot
 from VMinfoDB import VMinfoDB 
 from UserInfo import UserInfo
 from KVMManager import KVMManager
+from VMinfo import VMinfo
 
 
 ## @file NewVMWindow.py
@@ -192,47 +194,68 @@ class NewVMWindow(QtGui.QDialog):
     @pyqtSlot()
     def createNewVM(self):       
         print "[createNewVM...]"
+        _result = ""
         _kvmManager = KVMManager()
         _vmInfo = VMinfo()
         
         _owner = str(self.owenerComboBox.currentText())
         _userInfo = self.__vmInfoDB.getUser(_owner)
-        _distName = str(self.isoComboBox.currentText())
-        _distName = _distName.replace(" ", "_")
-        _IsoPath = self.__vmInfoDB.getISOpath(_distName)
+        _rawDistName = str(self.isoComboBox.currentText())
+        _distName = _rawDistName.replace(" ", "_")
+        _IsoPath = self.__vmInfoDB.getISOpath(_rawDistName)
+        print "[_IsoPath]: ", _IsoPath
+        if _IsoPath == -1:
+            QtGui.QMessageBox.critical(self, "Error","No Paht of ISO found!")
+            return
         _lifeTime = str(self.lifeTimeSpinBox)
-        _comment = str(self.commentNameLineEdit.text)
+        _comment = unicode(self.commentNameLineEdit.text)
         
-        _vmName = str(self.vmNameLineEdit.text())
+        _vmName = unicode(self.vmNameLineEdit.text())
+        _vmName = _vmName.replace(unicode("ü", "utf-8"), "ue")
+        _vmName = _vmName.replace(unicode("Ü", "utf-8"), "Ue")
+        _vmName = _vmName.replace(unicode("ö", "utf-8"), "oe")
+        _vmName = _vmName.replace(unicode("Ö", "utf-8"), "Oe")
+        _vmName = _vmName.replace(unicode("ä", "utf-8"), "ae")
+        _vmName = _vmName.replace(unicode("Ä", "utf-8"), "Ae")
+        _vmName = _vmName.replace(unicode("ß", "utf-8"), "ss")
         _vmName = _owner + "_" + _distName + "_" + _vmName
         
-        
-        _kvmManager.setOwner(_owner)
         _kvmManager.setOwnersHome(_userInfo.homedir)   
         _kvmManager.setMachineName(_vmName) 
-        _kvmManager.setDistribution(_distName)
         _kvmManager.setRAM(str(self.ramSpinBox.value()))
         _kvmManager.setHdSize(str(self.hdSpinBox.value()))
         _kvmManager.setIsoPath(_IsoPath)
         
-        try:
+        try:  
             _result = _kvmManager.createNewMachine()
-            QtGui.QMessageBox.information(self, "Result", _result)
+            QtGui.QMessageBox.information(self, "Result", _result) 
+        except subprocess.CalledProcessError, e:
+            infotext = "An error occurred:", e.output
+            QtGui.QMessageBox.critical(self, "Error",str(infotext))
+            return  
+        except OSError, e:
+            infotext = "An error occurred:", e.args[0]
+            QtGui.QMessageBox.critical(self, "Error",str(infotext))
+            return  
+            
+        _vmInfo.name = _vmName
+        _vmInfo.createdate = str(int(time.time()))
+        _vmInfo.livetimedays = _lifeTime
+        _vmInfo.comment = _comment
+        _vmInfo.mail = _userInfo.mail
+        _vmInfo.image_file = _IsoPath
+        _vmInfo.owner = _userInfo.fullname + "(" + _userInfo.fullname + ")"
+        _vmInfo.OS = _rawDistName
+     
+        try:     
+            self.__vmInfoDB.addVMinfo(_vmInfo)
         except sqlite3.Error, e:
             infotext = "An error occurred:", e.args[0]
             QtGui.QMessageBox.critical(self, "Error",str(infotext))
-            return            
-            
-        _vmInfo.name = _vmName
-        _vminfo.createdate = str(int(time.time()))
-        _vminfo.livetimedays = _lifeTime
-        _vminfo.comment = _comment
-            #'" + vminfo.mail + "', \
-            #'" + vminfo.image_file + "', \
-            #'" + vminfo.owner + "', \
-            #'" + vminfo.OS + "' \            
-            
-        self.__vmInfoDB.addVMinfo(_vminfo)
+            return  
+        _infotext = "Ok, new virtual machine is created, \n \
+                    and meta data is safed..."
+        QtGui.QMessageBox.information(self, "OK",str(infotext))
 
     ## it is action if owener Combo Box changes.
     @pyqtSlot(QtCore.QString)

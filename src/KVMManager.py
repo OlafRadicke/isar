@@ -93,9 +93,9 @@ class KVMManager():
         _command += " --network bridge=externqabr0 "
         
         print "[Command]:",_command
-        _dummy, _f = os.popen4(_command)
+        _f = subprocess.check_output(_command.split(),stderr=subprocess.STDOUT)
         _out = ""
-#        print "[_dummy]", _dummy
+        print "[_f]", _f
         for _line in _f:
             _out = _out + _line
 #        print "[commanttest] 5) _out: >>" , _out, "<<"
