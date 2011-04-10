@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-
  ###########################################################################
  #   Copyright (C) 2011 by Olaf Radicke                                    #
  #                                                                         #
@@ -20,8 +19,6 @@
  #   http:#www.gnu.org/licenses/gpl.txt                                    #
  #                                                                         #
  ###########################################################################
-
-
 
 ## @file VMinfo.py
 # @author Olaf Radicke<briefkasten@olaf-radicke.de>

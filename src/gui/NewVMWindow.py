@@ -58,9 +58,6 @@ class NewVMWindow(QtGui.QDialog):
     ## Spin box for hart disc size.
     hdSpinBox  = ""  
     
-    ## Spin box for life time.
-    hdSpinBox  = ""  
-    
     ## Box for comment.
     commentNameLabel  = "" 
     
@@ -243,7 +240,7 @@ class NewVMWindow(QtGui.QDialog):
         _vmInfo.livetimedays = _lifeTime
         _vmInfo.comment = _comment
         _vmInfo.mail = _userInfo.mail
-        _vmInfo.image_file = _IsoPath
+        _vmInfo.image_file = _kvmManager.getImagePath()
         _vmInfo.owner = _userInfo.fullname + "(" + _userInfo.nickname + ")"
         _vmInfo.OS = _rawDistName
      

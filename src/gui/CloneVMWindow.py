@@ -49,26 +49,18 @@ class CloneVMWindow(QtGui.QDialog):
     ## Combo box for select owener.
     owenerComboBox = ""
     
-    ## Combo box for select install ISO.
-    isoComboBox  = ""   
-    
-    ## Spin box for RAM size.
-    ramSpinBox  = ""   
-    
-    ## Spin box for hart disc size.
-    hdSpinBox  = ""  
-    
-    ## Spin box for life time.
-    hdSpinBox  = ""  
-    
     ## Box for comment.
     commentNameLabel  = "" 
     
-
+    ## Name of original virtual machine
+    __originalVM = ""
+    
+    ## Name of OS
+    _distName = ""
 
     ## Constructor
     def __init__(self, vmInfoDB, parent=None): 
-        logging.debug('init installMediaWindow....')
+        logging.debug('init clone vm....')
         
         self.__vmInfoDB = vmInfoDB
         QtGui.QDialog.__init__(self, parent)
@@ -77,7 +69,7 @@ class CloneVMWindow(QtGui.QDialog):
         logging.debug('init installMediaWindow....')
 
         self.resize(500,180)
-        self.setWindowTitle('Isar::New virtual machine')
+        self.setWindowTitle('Isar::Clone a virtual machine')
 
 
         ## Main layout V
@@ -89,7 +81,7 @@ class CloneVMWindow(QtGui.QDialog):
         # ----------- right box ---------------------------------
 
         # VBox right with GrouBox-frame
-        editBox = QtGui.QGroupBox("Data of new machine")
+        editBox = QtGui.QGroupBox("Set data of Clone")
         editBox.setMaximumWidth(600)
         vEditLayoutR = QtGui.QVBoxLayout()
         editBox.setLayout(vEditLayoutR)
@@ -99,7 +91,7 @@ class CloneVMWindow(QtGui.QDialog):
         # Name
         hLayoutVMname = QtGui.QHBoxLayout()
         vMainLayout.addLayout(hLayoutVMname)
-        vmNameLabel = QtGui.QLabel("Name of machine:")
+        vmNameLabel = QtGui.QLabel("Name of clone machine:")
         hLayoutVMname.addWidget(vmNameLabel)
         self.vmNameLineEdit = QtGui.QLineEdit()
         hLayoutVMname.addWidget(self.vmNameLineEdit)
@@ -115,43 +107,7 @@ class CloneVMWindow(QtGui.QDialog):
         _allUser = self.__vmInfoDB.getAllUser()
         for _user in _allUser:
             self.owenerComboBox.addItem(_user.nickname)
-        #self.connect(self.owenerComboBox, QtCore.SIGNAL('currentIndexChanged(QString)'), QtCore.SLOT('owenerComboBoxChange(QString)'))
         hLayoutOwener.addWidget(self.owenerComboBox)
-
-        
-        # Selkt ISO
-        hLayoutISO = QtGui.QHBoxLayout()
-        vMainLayout.addLayout(hLayoutISO)
-        isoLabel = QtGui.QLabel("Install ISO:")
-        hLayoutISO.addWidget(isoLabel)
-        self.isoComboBox = QtGui.QComboBox()
-        _allISOs = self.__vmInfoDB.getAllISOnames()
-        for _isoName in _allISOs:
-            self.isoComboBox.addItem(_isoName)
-        #self.connect(self.isoComboBox, QtCore.SIGNAL('currentIndexChanged(QString)'), QtCore.SLOT('isoComboBoxChange(QString)'))
-        hLayoutISO.addWidget(self.isoComboBox)
-        
-        # RAM
-        hLayoutRAM = QtGui.QHBoxLayout()
-        vMainLayout.addLayout(hLayoutRAM)
-        ramLabel = QtGui.QLabel("RAM:")
-        hLayoutRAM.addWidget(ramLabel)
-        self.ramSpinBox = QtGui.QSpinBox()
-        self.ramSpinBox.setSuffix(" mb")
-        self.ramSpinBox.setRange(256, 50000) 
-        self.ramSpinBox.setValue(1000)
-        hLayoutRAM.addWidget(self.ramSpinBox)
-        
-        # HD
-        hLayoutHD = QtGui.QHBoxLayout()
-        vMainLayout.addLayout(hLayoutHD)
-        hdLabel = QtGui.QLabel("Hart disc:")
-        hLayoutHD.addWidget(hdLabel)
-        self.hdSpinBox = QtGui.QSpinBox()
-        self.hdSpinBox.setSuffix(" Gb")
-        self.hdSpinBox.setRange(1, 1000) 
-        self.hdSpinBox.setValue(10)
-        hLayoutHD.addWidget(self.hdSpinBox)
         
         # life time
         hLayoutLifeTime = QtGui.QHBoxLayout()
@@ -180,8 +136,8 @@ class CloneVMWindow(QtGui.QDialog):
         vMainLayout.addLayout(hBottomLayout)
         
 
-        closePushButton = QtGui.QPushButton("Safe")
-        self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('createNewVM()'))
+        closePushButton = QtGui.QPushButton("Clone now")
+        self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('cloneVM()'))
         hBottomLayout.addWidget(closePushButton)
 
         closePushButton = QtGui.QPushButton("Cancel")
@@ -192,21 +148,14 @@ class CloneVMWindow(QtGui.QDialog):
 
     ## Slot for create new VM.
     @pyqtSlot()
-    def createNewVM(self):       
-        print "[createNewVM...]"
+    def cloneVM(self):
+        print "[cloneVM...]"
         _result = ""
         _kvmManager = KVMManager()
         _vmInfo = VMinfo()
         
         _owner = str(self.owenerComboBox.currentText())
         _userInfo = self.__vmInfoDB.getUser(_owner)
-        _rawDistName = str(self.isoComboBox.currentText())
-        _distName = _rawDistName.replace(" ", "_")
-        _IsoPath = self.__vmInfoDB.getISOpath(_rawDistName)
-        print "[_IsoPath]: ", _IsoPath
-        if _IsoPath == -1:
-            QtGui.QMessageBox.critical(self, "Error","No Paht of ISO found!")
-            return
         _lifeTime = str(self.lifeTimeSpinBox)
         _comment = unicode(self.commentNameLineEdit.text)
         
@@ -218,16 +167,14 @@ class CloneVMWindow(QtGui.QDialog):
         _vmName = _vmName.replace(unicode("ä", "utf-8"), "ae")
         _vmName = _vmName.replace(unicode("Ä", "utf-8"), "Ae")
         _vmName = _vmName.replace(unicode("ß", "utf-8"), "ss")
-        _vmName = _owner + "_" + _distName + "_" + _vmName
+        _vmName = _owner + "_" + self._distName + "_" + _vmName
         
         _kvmManager.setOwnersHome(_userInfo.homedir)   
         _kvmManager.setMachineName(_vmName) 
-        _kvmManager.setRAM(str(self.ramSpinBox.value()))
-        _kvmManager.setHdSize(str(self.hdSpinBox.value()))
-        _kvmManager.setIsoPath(_IsoPath)
+        _kvmManager.setOriginalVM(self.__originalVM) 
         
         try:  
-            _result = _kvmManager.createNewMachine()
+            _result = _kvmManager.cloneMachine()
             QtGui.QMessageBox.information(self, "Result", _result) 
         except subprocess.CalledProcessError, e:
             infotext = "An error occurred:", (e.output.replace('\n',' ')).replace('\r',' ')
@@ -243,9 +190,9 @@ class CloneVMWindow(QtGui.QDialog):
         _vmInfo.livetimedays = _lifeTime
         _vmInfo.comment = _comment
         _vmInfo.mail = _userInfo.mail
-        _vmInfo.image_file = _IsoPath
+        _vmInfo.image_file = _kvmManager.getImagePath()
         _vmInfo.owner = _userInfo.fullname + "(" + _userInfo.nickname + ")"
-        _vmInfo.OS = _rawDistName
+        _vmInfo.OS = self._distName
      
         try:     
             self.__vmInfoDB.addVMinfo(_vmInfo)
@@ -263,8 +210,10 @@ class CloneVMWindow(QtGui.QDialog):
     def owenerComboBoxChange(self, text):
         pass
  
-
-    ## it is action if ISO Combo Box changes
-    @pyqtSlot(QtCore.QString)
-    def isoComboBoxChange(self, text):
-        pass           
+    ## Set name of original virtual machine.
+    def setOriginalVM(self, name):
+        self.__originalVM = name
+        
+    ## Set Distribution of Clone.    
+    def setDistName(self, name):
+        self._distName = name

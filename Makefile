@@ -26,6 +26,7 @@ clean:
 	$(RM)  $(wildcard $(OUTPUT_DIST))
 	$(RM) -r $(wildcard $(OUTPUT_BUILD))
 	$(RM) -r $(wildcard $(DOXYDIR))
+	$(RM) -r $(OUTPUT_BUILD)/isar
 
 
 # create distrebut-build

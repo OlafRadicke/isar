@@ -33,6 +33,7 @@ from VMinfoDB import VMinfoDB
 from UserWindow import UserWindow
 from InstallMediaWindow import InstallMediaWindow
 from NewVMWindow import NewVMWindow
+from CloneVMWindow import CloneVMWindow
 from BASEDIR import BASEDIR, ICONDIR
 
 ## @file MainWindow.py
@@ -162,7 +163,7 @@ class MainWindow(QtGui.QMainWindow):
         _icon = QtGui.QIcon(os.path.join(ICONDIR + 'clone.png'))
         toolClone = QtGui.QAction(_icon, 'Clone a virtual machine', self)
         toolNew.setShortcut('Ctrl+X')
-        self.connect(toolClone, QtCore.SIGNAL('triggered()'), QtCore.SLOT('cloneVM()'))
+        self.connect(toolClone, QtCore.SIGNAL('triggered()'), QtCore.SLOT('cloneVMDialog()'))
         self.toolbar.addAction(toolClone)
         
         # Separator
@@ -238,8 +239,7 @@ class MainWindow(QtGui.QMainWindow):
         except sqlite3.Error, e: 
             infotext = "An error occurred:", e.args[0]
             QtGui.QMessageBox.critical(self, "Error", str(infotext))
-            return
-        return            
+            return        
         self.refreshVMList()
       
 
@@ -270,8 +270,35 @@ class MainWindow(QtGui.QMainWindow):
 
     ## Function clone a vm
     @pyqtSlot()
-    def cloneVM(self):
-        logging.debug("[20110402201311] deleteVM")
+    def cloneVMDialog(self):
+        logging.debug("[201104101758] cloneVMDialog")
+        _vmName = ""
+        for item in self.__listview.selectedItems():
+            print  ".." , item.text(1)
+            _vmName = str(item.text(1))
+            _distName = str(item.text(3))
+
+        if( _vmName == "" ):
+            self.statusBar().showMessage('No ToDo select...')
+            QtGui.QMessageBox.information(self, "Abort",'No virtual machine select!')
+            return
+        
+        print "[_vmName]", _vmName
+
+        try:
+            _cvm = CloneVMWindow(self.__vmInfoDB)
+            _cvm.setOriginalVM(_vmName)
+            _cvm.setDistName(_distName)
+            _cvm.setModal(True)
+            _cvm.show()
+            ret = _cvm.exec_()
+        except sqlite3.Error, e: 
+            infotext = "An error occurred:", e.args[0]
+            QtGui.QMessageBox.critical(self, "Error", str(infotext))
+            return
+        return            
+        self.refreshVMList()        
+        
         #todo = ""
         #for item in self.__listview.selectedItems():
             #print  ".." , item.text()
