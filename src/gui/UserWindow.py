@@ -118,6 +118,7 @@ class UserWindow(QtGui.QDialog):
         nameLabel = QtGui.QLabel("Full Name:")
         hFullnameLayout.addWidget(nameLabel)
         self.fullnameLineEdit = QtGui.QLineEdit()
+        self.fullnameLineEdit.setReadOnly(True)
         hFullnameLayout.addWidget(self.fullnameLineEdit)        
         
         # Mail-address
@@ -127,6 +128,7 @@ class UserWindow(QtGui.QDialog):
         mailLabel = QtGui.QLabel("Mail:")
         hMailLayout.addWidget(mailLabel)
         self.mailLineEdit = QtGui.QLineEdit()
+        self.mailLineEdit.setReadOnly(True)
         hMailLayout.addWidget(self.mailLineEdit) 
         
         # User dir
@@ -135,6 +137,7 @@ class UserWindow(QtGui.QDialog):
         userDirLabel = QtGui.QLabel("User Dir:")
         hLayoutUserDir.addWidget(userDirLabel)
         self.userDirLineEdit = QtGui.QLineEdit()
+        self.userDirLineEdit.setReadOnly(True)
         hLayoutUserDir.addWidget(self.userDirLineEdit)
         userDirPushButton = QtGui.QPushButton()
         _icon = QtGui.QIcon(os.path.join(ICONDIR + 'search.png'))        
@@ -247,6 +250,10 @@ class UserWindow(QtGui.QDialog):
                 self.userDirLineEdit.setText( self.__userInfo.homedir )
                 self.mailLineEdit.setText( self.__userInfo.mail )
                 self.fullnameLineEdit.setText( self.__userInfo.fullname )
+                
+                self.userDirLineEdit.setReadOnly(False)
+                self.mailLineEdit.setReadOnly(False)
+                self.fullnameLineEdit.setReadOnly(False)
           
     ## A function with qt-slot. it's creade a new vm.
     @pyqtSlot()
@@ -284,7 +291,9 @@ class UserWindow(QtGui.QDialog):
             ])
             twItem = QtGui.QTreeWidgetItem(qStringList)
             self.listview.addTopLevelItem(twItem)
-
+        self.userDirLineEdit.setReadOnly(True)
+        self.mailLineEdit.setReadOnly(True)
+        self.fullnameLineEdit.setReadOnly(True)        
 
     ## Slot for safe edits
     @pyqtSlot()

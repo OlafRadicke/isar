@@ -117,6 +117,7 @@ class InstallMediaWindow(QtGui.QDialog):
         isoPathLabel = QtGui.QLabel("Path of install ISO:")
         hLayoutUserDir.addWidget(isoPathLabel)
         self.isoPathLineEdit = QtGui.QLineEdit()
+        self.isoPathLineEdit.setReadOnly(True)
         hLayoutUserDir.addWidget(self.isoPathLineEdit)
         isoPathPushButton = QtGui.QPushButton() #":/")
         _icon = QtGui.QIcon(os.path.join(ICONDIR + 'search.png'))        
@@ -223,6 +224,7 @@ class InstallMediaWindow(QtGui.QDialog):
             else:
                 print "[] _path: ", _path
                 self.isoPathLineEdit.setText( _path )
+                self.isoPathLineEdit.setReadOnly(False)
           
     ## A function with qt-slot. it's creade a new vm.
     @pyqtSlot()
@@ -257,6 +259,8 @@ class InstallMediaWindow(QtGui.QDialog):
             #twItem = QtGui.QTreeWidgetItem(qStringList)
             twItem = QtGui.QTreeWidgetItem(QtCore.QStringList(item))
             self.listview.addTopLevelItem(twItem)
+            
+        self.isoPathLineEdit.setReadOnly(True)
 
 
     ## Slot for safe edits
