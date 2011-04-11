@@ -36,6 +36,8 @@ dist: doxygen
 	cp ./README.txt  $(OUTPUT_BUILD)
 	mkdir $(OUTPUT_BUILD)/src
 	cp ./src/*.py  $(OUTPUT_BUILD)/src/
+	mkdir $(OUTPUT_BUILD)/src/gui
+	cp ./src/gui/*.py  $(OUTPUT_BUILD)/src/gui/
 	mkdir ./$(OUTPUT_BUILD)/icons
 	cp ./icons/*  $(OUTPUT_BUILD)/icons/
 	cp -R ./example  $(OUTPUT_BUILD)
@@ -59,8 +61,6 @@ install:
 uninstall:
 	$(RM) -r $(PREFIX)/isar
 	$(RM) $(BINDIR)/isar
-	
-
 
 # build doxygen-docs
 doxygen:
