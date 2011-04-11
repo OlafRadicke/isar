@@ -58,6 +58,7 @@ install:
 uninstall:
 	$(RM) -r $(PREFIX)/isar
 	$(RM) $(BINDIR)/isar
+	$(RM) /usr/local/bin/isar
 
 # build doxygen-docs
 doxygen:
