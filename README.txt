@@ -1,7 +1,7 @@
-Moldau is an kvm-gui-tool.
+"isar" is a front end for KVM Libvirt.
 
     AUTHORS
-isar code is developed by:
+Moldau  code is developed by:
 
 "Olaf Radicke! <briefkasten@olaf-radicke.de>
 
@@ -14,11 +14,17 @@ Beta
 1. make
 2. make install
 
+    UNINSTALL
+
+make uninstall
+
     LICENSE:
 
 GPL3
+
 
     DEPENDENCY
 
 - Python
 - PyQt
+- SQLite3
