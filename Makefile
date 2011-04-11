@@ -58,6 +58,7 @@ install:
 # remove program
 uninstall:
 	$(RM) -r $(PREFIX)/isar
+	$(RM) $(BINDIR)/isar
 	
 
 
