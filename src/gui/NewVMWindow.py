@@ -40,14 +40,29 @@ from VMinfo import VMinfo
 ## This window is for create a new virtual machine.
 class NewVMWindow(QtGui.QDialog):
   
+    ## Frame style
+    __owneFramStyleSheet = "QGroupBox \
+        { \
+            border:2px solid gray; \
+            border-radius:7px; \
+            margin-top:  \
+            1ex; \
+        } \
+        QGroupBox::title \
+        { \
+            subcontrol-origin: margin; \
+            subcontrol-position:top center; \
+            padding:0 3px; \
+        } "
+  
     ## Database binding.
     __vmInfoDB = VMinfoDB()
 
     ## Home dir of user. Is a QLineEdit class.
     vmNameLineEdit = ""
 
-    ## Combo box for select owener.
-    owenerComboBox = ""
+    ## Combo box for select owner.
+    ownerComboBox = ""
     
     ## Combo box for select install ISO.
     isoComboBox  = ""   
@@ -64,6 +79,7 @@ class NewVMWindow(QtGui.QDialog):
 
 
     ## Constructor
+    # @param vmInfoDB a VMinfoDB class objekt.
     def __init__(self, vmInfoDB, parent=None): 
         logging.debug('init installMediaWindow....')
         
@@ -75,6 +91,7 @@ class NewVMWindow(QtGui.QDialog):
 
         self.resize(500,180)
         self.setWindowTitle('Isar::New virtual machine')
+        self.setStyleSheet(self.__owneFramStyleSheet)
 
 
         ## Main layout V
@@ -95,7 +112,7 @@ class NewVMWindow(QtGui.QDialog):
 
         # Name
         hLayoutVMname = QtGui.QHBoxLayout()
-        vMainLayout.addLayout(hLayoutVMname)
+        vEditLayoutR.addLayout(hLayoutVMname)
         vmNameLabel = QtGui.QLabel("Name of machine:")
         hLayoutVMname.addWidget(vmNameLabel)
         self.vmNameLineEdit = QtGui.QLineEdit()
@@ -103,22 +120,22 @@ class NewVMWindow(QtGui.QDialog):
 
         # owner
 
-        # Selct owener
-        hLayoutOwener = QtGui.QHBoxLayout()
-        vMainLayout.addLayout(hLayoutOwener)
-        owenerLabel = QtGui.QLabel("Owener:")
-        hLayoutOwener.addWidget(owenerLabel)
-        self.owenerComboBox = QtGui.QComboBox()
+        # Selct owner
+        hLayoutOwner = QtGui.QHBoxLayout()
+        vEditLayoutR.addLayout(hLayoutOwner)
+        ownerLabel = QtGui.QLabel("Owner:")
+        hLayoutOwner.addWidget(ownerLabel)
+        self.ownerComboBox = QtGui.QComboBox()
         _allUser = self.__vmInfoDB.getAllUser()
         for _user in _allUser:
-            self.owenerComboBox.addItem(_user.nickname)
-        #self.connect(self.owenerComboBox, QtCore.SIGNAL('currentIndexChanged(QString)'), QtCore.SLOT('owenerComboBoxChange(QString)'))
-        hLayoutOwener.addWidget(self.owenerComboBox)
+            self.ownerComboBox.addItem(_user.nickname)
+        #self.connect(self.ownerComboBox, QtCore.SIGNAL('currentIndexChanged(QString)'), QtCore.SLOT('ownerComboBoxChange(QString)'))
+        hLayoutOwner.addWidget(self.ownerComboBox)
 
         
         # Selkt ISO
         hLayoutISO = QtGui.QHBoxLayout()
-        vMainLayout.addLayout(hLayoutISO)
+        vEditLayoutR.addLayout(hLayoutISO)
         isoLabel = QtGui.QLabel("Install ISO:")
         hLayoutISO.addWidget(isoLabel)
         self.isoComboBox = QtGui.QComboBox()
@@ -130,7 +147,7 @@ class NewVMWindow(QtGui.QDialog):
         
         # RAM
         hLayoutRAM = QtGui.QHBoxLayout()
-        vMainLayout.addLayout(hLayoutRAM)
+        vEditLayoutR.addLayout(hLayoutRAM)
         ramLabel = QtGui.QLabel("RAM:")
         hLayoutRAM.addWidget(ramLabel)
         self.ramSpinBox = QtGui.QSpinBox()
@@ -141,7 +158,7 @@ class NewVMWindow(QtGui.QDialog):
         
         # HD
         hLayoutHD = QtGui.QHBoxLayout()
-        vMainLayout.addLayout(hLayoutHD)
+        vEditLayoutR.addLayout(hLayoutHD)
         hdLabel = QtGui.QLabel("Hart disc:")
         hLayoutHD.addWidget(hdLabel)
         self.hdSpinBox = QtGui.QSpinBox()
@@ -152,7 +169,7 @@ class NewVMWindow(QtGui.QDialog):
         
         # life time
         hLayoutLifeTime = QtGui.QHBoxLayout()
-        vMainLayout.addLayout(hLayoutLifeTime)
+        vEditLayoutR.addLayout(hLayoutLifeTime)
         lifeTimeLabel = QtGui.QLabel("Life time:")
         hLayoutLifeTime.addWidget(lifeTimeLabel)
         self.lifeTimeSpinBox = QtGui.QSpinBox()
@@ -163,11 +180,11 @@ class NewVMWindow(QtGui.QDialog):
         
         # comment
         hLayoutVMcomment = QtGui.QVBoxLayout()
-        vMainLayout.addLayout(hLayoutVMcomment)
+        vEditLayoutR.addLayout(hLayoutVMcomment)
         commentNameLabel = QtGui.QLabel("Comment:")
         hLayoutVMcomment.addWidget(commentNameLabel)
-        self.commentNameLineEdit = QtGui.QLineEdit()
-        hLayoutVMcomment.addWidget(self.commentNameLineEdit)
+        self.commentLineEdit = QtGui.QLineEdit()
+        hLayoutVMcomment.addWidget(self.commentLineEdit)
         
         
         # ---------- Bottom area --------------------
@@ -195,7 +212,7 @@ class NewVMWindow(QtGui.QDialog):
         _kvmManager = KVMManager()
         _vmInfo = VMinfo()
         
-        _owner = str(self.owenerComboBox.currentText())
+        _owner = str(self.ownerComboBox.currentText())
         _userInfo = self.__vmInfoDB.getUser(_owner)
         _rawDistName = str(self.isoComboBox.currentText())
         _distName = _rawDistName.replace(" ", "_")
@@ -204,8 +221,8 @@ class NewVMWindow(QtGui.QDialog):
         if _IsoPath == -1:
             QtGui.QMessageBox.critical(self, "Error","No Paht of ISO found!")
             return
-        _lifeTime = str(self.lifeTimeSpinBox)
-        _comment = unicode(self.commentNameLineEdit.text)
+        _lifeTime = str(self.lifeTimeSpinBox.value() )
+        _comment = unicode(self.commentLineEdit.text())
         
         _vmName = unicode(self.vmNameLineEdit.text())
         _vmName = _vmName.replace(unicode("ü", "utf-8"), "ue")
@@ -237,7 +254,7 @@ class NewVMWindow(QtGui.QDialog):
             
         _vmInfo.name = _vmName
         _vmInfo.createdate = str(int(time.time()))
-        _vmInfo.livetimedays = _lifeTime
+        _vmInfo.lifetimedays = _lifeTime
         _vmInfo.comment = _comment
         _vmInfo.mail = _userInfo.mail
         _vmInfo.image_file = _kvmManager.getImagePath()
@@ -255,9 +272,9 @@ class NewVMWindow(QtGui.QDialog):
         QtGui.QMessageBox.information(self, "OK",str(_infotext))
         self.close()
 
-    ## it is action if owener Combo Box changes.
+    ## it is action if owner Combo Box changes.
     @pyqtSlot(QtCore.QString)
-    def owenerComboBoxChange(self, text):
+    def ownerComboBoxChange(self, text):
         pass
  
 

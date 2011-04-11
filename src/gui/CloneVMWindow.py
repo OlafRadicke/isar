@@ -40,6 +40,21 @@ from VMinfo import VMinfo
 ## This window is for cloneing a virtual machine.
 class CloneVMWindow(QtGui.QDialog):
   
+    ## Frame style
+    __owneFramStyleSheet = "QGroupBox \
+        { \
+            border:2px solid gray; \
+            border-radius:7px; \
+            margin-top:  \
+            1ex; \
+        } \
+        QGroupBox::title \
+        { \
+            subcontrol-origin: margin; \
+            subcontrol-position:top center; \
+            padding:0 3px; \
+        } "
+  
     ## Database binding.
     __vmInfoDB = VMinfoDB()
 
@@ -70,6 +85,7 @@ class CloneVMWindow(QtGui.QDialog):
 
         self.resize(500,180)
         self.setWindowTitle('Isar::Clone a virtual machine')
+        self.setStyleSheet(self.__owneFramStyleSheet)
 
 
         ## Main layout V
@@ -90,7 +106,7 @@ class CloneVMWindow(QtGui.QDialog):
 
         # Name
         hLayoutVMname = QtGui.QHBoxLayout()
-        vMainLayout.addLayout(hLayoutVMname)
+        vEditLayoutR.addLayout(hLayoutVMname)
         vmNameLabel = QtGui.QLabel("Name of clone machine:")
         hLayoutVMname.addWidget(vmNameLabel)
         self.vmNameLineEdit = QtGui.QLineEdit()
@@ -100,7 +116,7 @@ class CloneVMWindow(QtGui.QDialog):
 
         # Selct owener
         hLayoutOwener = QtGui.QHBoxLayout()
-        vMainLayout.addLayout(hLayoutOwener)
+        vEditLayoutR.addLayout(hLayoutOwener)
         owenerLabel = QtGui.QLabel("Owener:")
         hLayoutOwener.addWidget(owenerLabel)
         self.owenerComboBox = QtGui.QComboBox()
@@ -111,7 +127,7 @@ class CloneVMWindow(QtGui.QDialog):
         
         # life time
         hLayoutLifeTime = QtGui.QHBoxLayout()
-        vMainLayout.addLayout(hLayoutLifeTime)
+        vEditLayoutR.addLayout(hLayoutLifeTime)
         lifeTimeLabel = QtGui.QLabel("Life time:")
         hLayoutLifeTime.addWidget(lifeTimeLabel)
         self.lifeTimeSpinBox = QtGui.QSpinBox()
@@ -122,7 +138,7 @@ class CloneVMWindow(QtGui.QDialog):
         
         # comment
         hLayoutVMcomment = QtGui.QVBoxLayout()
-        vMainLayout.addLayout(hLayoutVMcomment)
+        vEditLayoutR.addLayout(hLayoutVMcomment)
         commentNameLabel = QtGui.QLabel("Comment:")
         hLayoutVMcomment.addWidget(commentNameLabel)
         self.commentNameLineEdit = QtGui.QLineEdit()
@@ -187,7 +203,7 @@ class CloneVMWindow(QtGui.QDialog):
             
         _vmInfo.name = _vmName
         _vmInfo.createdate = str(int(time.time()))
-        _vmInfo.livetimedays = _lifeTime
+        _vmInfo.lifetimedays = _lifeTime
         _vmInfo.comment = _comment
         _vmInfo.mail = _userInfo.mail
         _vmInfo.image_file = _kvmManager.getImagePath()

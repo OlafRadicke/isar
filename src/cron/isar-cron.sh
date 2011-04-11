@@ -10,7 +10,7 @@ for i in "${NAMES[@]}"  ; do
     # Date of creating
     CREATEDATE=`sqlite3 $DATABASEFILE  "select createdate from vmachine WHERE name='${i}'"`
     # how long best befor
-    LIVETIMEDAYS=`sqlite3 $DATABASEFILE  "select livetimedays from vmachine WHERE name='${i}'"`
+    LIVETIMEDAYS=`sqlite3 $DATABASEFILE  "select lifetimedays from vmachine WHERE name='${i}'"`
     # in seconds
     LIVETIMESEC=`echo $[86400 * ${LIVETIMEDAYS}]`
     # differenc or offset to now

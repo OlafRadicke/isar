@@ -59,7 +59,7 @@ class VMinfoDB():
             id INTEGER PRIMARY KEY, \
             name TEXT UNIQUE NOT NULL, \
             createdate TEXT NOT NULL, \
-            livetimedays TEXT NOT NULL, \
+            lifetimedays TEXT NOT NULL, \
             comment TEXT NOT NULL, \
             mail TEXT NOT NULL, \
             image_file TEXT NOT NULL, \
@@ -85,7 +85,7 @@ class VMinfoDB():
         self.__conn.execute("insert into vmachine ( \
             name, \
             createdate, \
-            livetimedays, \
+            lifetimedays, \
             comment, \
             mail, \
             image_file, \
@@ -94,7 +94,7 @@ class VMinfoDB():
             ) values ( \
             '" + vminfo.name + "', \
             '" + vminfo.createdate + "', \
-            '" + vminfo.livetimedays + "', \
+            '" + vminfo.lifetimedays + "', \
             '" + vminfo.comment + "', \
             '" + vminfo.mail + "', \
             '" + vminfo.image_file + "', \
@@ -112,7 +112,7 @@ class VMinfoDB():
                 "SELECT \
                 name, \
                 createdate, \
-                livetimedays, \
+                lifetimedays, \
                 comment, \
                 mail, \
                 image_file, \
@@ -121,11 +121,11 @@ class VMinfoDB():
                 FROM vmachine;" \
             )
         for _row in _rows:
-            name, createdate, livetimedays, comment, mail, image_file, owner, os = _row
+            name, createdate, lifetimedays, comment, mail, image_file, owner, os = _row
             _vmInfo = VMinfo()
             _vmInfo.name = name
             _vmInfo.createdate = createdate
-            _vmInfo.livetimedays = livetimedays
+            _vmInfo.lifetimedays = lifetimedays
             _vmInfo.comment = comment
             _vmInfo.mail = mail
             _vmInfo.image_file = image_file
@@ -133,6 +133,40 @@ class VMinfoDB():
             _vmInfo.os = os
             _vmList.append(_vmInfo)
         return _vmList
+        
+
+    ## @return a virtual machine info as typ VMinfo.
+    # @param name name of a virtual machine.
+    def getVMinfo(self, name):
+        _vmList = list()
+        _rows = self.__conn.execute \
+            ( \
+                "SELECT \
+                name, \
+                createdate, \
+                lifetimedays, \
+                comment, \
+                mail, \
+                image_file, \
+                owner, \
+                os \
+                FROM vmachine \
+                WHERE \
+                name = '" + name + "';" \
+            )
+        for _row in _rows:
+            name, createdate, lifetimedays, comment, mail, image_file, owner, os = _row
+            _vmInfo = VMinfo()
+            _vmInfo.name = name
+            _vmInfo.createdate = createdate
+            _vmInfo.lifetimedays = lifetimedays
+            _vmInfo.comment = comment
+            _vmInfo.mail = mail
+            _vmInfo.image_file = image_file
+            _vmInfo.owner = owner
+            _vmInfo.os = os
+            _vmList.append(_vmInfo)
+        return _vmList[0]
 
     ## add a user
     ## @param nickname of the new user.

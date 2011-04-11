@@ -35,8 +35,8 @@ class VMinfo():
     ## Date of creation
     createdate = ""
 
-    ## Day of live in days
-    livetimedays = ""
+    ## Day of life in days
+    lifetimedays = ""
 
     ## A comment
     comment = ""

@@ -38,6 +38,22 @@ from BASEDIR import ICONDIR
 ## The window view info about install ISOs.
 class InstallMediaWindow(QtGui.QDialog):
   
+    ## Frame style
+    __owneFramStyleSheet = "QGroupBox \
+        { \
+            border:2px solid gray; \
+            border-radius:7px; \
+            margin-top:  \
+            1ex; \
+        } \
+        QGroupBox::title \
+        { \
+            subcontrol-origin: margin; \
+            subcontrol-position:top center; \
+            padding:0 3px; \
+        } "
+  
+  
     ## Database binding.
     __vmInfoDB = VMinfoDB()
 
@@ -64,7 +80,7 @@ class InstallMediaWindow(QtGui.QDialog):
 
         self.resize(800,480)
         self.setWindowTitle('Isar::Instalations medias')
-
+        self.setStyleSheet(self.__owneFramStyleSheet)
 
         ## Main layout V
         vMainLayout = QtGui.QVBoxLayout()

@@ -34,6 +34,7 @@ from UserWindow import UserWindow
 from InstallMediaWindow import InstallMediaWindow
 from NewVMWindow import NewVMWindow
 from CloneVMWindow import CloneVMWindow
+from ConfigVMWindow import ConfigVMWindow
 from BASEDIR import BASEDIR, ICONDIR
 
 ## @file MainWindow.py
@@ -42,18 +43,23 @@ from BASEDIR import BASEDIR, ICONDIR
 ## The main window of the GUI
 class MainWindow(QtGui.QMainWindow):
 
+    ## Frame style
+    __owneFramStyleSheet = "QGroupBox \
+        { \
+            border:2px solid gray; \
+            border-radius:7px; \
+            margin-top:  \
+            1ex; \
+        } \
+        QGroupBox::title \
+        { \
+            subcontrol-origin: margin; \
+            subcontrol-position:top center; \
+            padding:0 3px; \
+        } "
+
     ## Simple List
     __listview = ""
-
-    ### TaskView: This class show the taskt data.
-    #taskBox = ""
-
-    ### Minutes of the proceedings as html
-    #minutes =  ""
-
-
-    ### This QTextBrowser show the minutes of the proceedings
-    #textView = ""
 
     ## Save information about vitual machines
     __vmInfoDB = VMinfoDB()
@@ -67,6 +73,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.resize(800,600)
         self.setWindowTitle('Isar')
+        self.setStyleSheet(self.__owneFramStyleSheet)
 
 
         #---------- menubar --------------------
@@ -274,7 +281,7 @@ class MainWindow(QtGui.QMainWindow):
         logging.debug("[201104101758] cloneVMDialog")
         _vmName = ""
         for item in self.__listview.selectedItems():
-            print  ".." , item.text(1)
+            print  "[...]" , item.text(1)
             _vmName = str(item.text(1))
             _distName = str(item.text(3))
 
@@ -298,18 +305,6 @@ class MainWindow(QtGui.QMainWindow):
             return
         return            
         self.refreshVMList()        
-        
-        #todo = ""
-        #for item in self.__listview.selectedItems():
-            #print  ".." , item.text()
-            #todo = item.text()
-
-        #if( todo == "" ):
-            #self.statusBar().showMessage('No ToDo select...')
-        #else:
-          #taskTyp = self.tasksSettings.getTaskTyp(todo)
-          #self.tasksSettings.deleteTask(taskTyp)
-          #self.refreshVMList()
 
     ## Function show info of vm
     @pyqtSlot()
@@ -317,13 +312,24 @@ class MainWindow(QtGui.QMainWindow):
         logging.debug("[20110402201311] deleteVM")
         _vmName = ""
         for item in self.__listview.selectedItems():
-            print  ".." , item.text()
-            _vmName = item.text()
+            print  "[...]" , item.text(1)
+            _vmName = str(item.text(1))
 
         if( _vmName == "" ):
             self.statusBar().showMessage('No virtual machine select...')
         else:
             print "[_vmName]", _vmName
+            try:
+                _cvm = ConfigVMWindow(self.__vmInfoDB, _vmName)
+                _cvm.setModal(True)
+                _cvm.show()
+                ret = _cvm.exec_()
+            except sqlite3.Error, e: 
+                infotext = "An error occurred:", e.args[0]
+                QtGui.QMessageBox.critical(self, "Error", str(infotext))
+                return
+            return               
+            
             self.refreshVMList()
 
     ## Function delete a vm
