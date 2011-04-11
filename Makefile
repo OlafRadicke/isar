@@ -13,9 +13,7 @@ BINDIR       = /usr/local/bin
 ############  Rules  ############
 
 # make build
-all: $(wildcard $(OUTPUT_DIST)) $(wildcard $(OUTPUT_BUILD)) doxygen
-	mkdir $(OUTPUT_BUILD)
-	cp ./src/*.py  $(OUTPUT_BUILD)
+all: dist
 
 # check dependency
 check:
