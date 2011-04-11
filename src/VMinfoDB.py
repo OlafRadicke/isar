@@ -134,8 +134,8 @@ class VMinfoDB():
             _vmList.append(_vmInfo)
         return _vmList
 
-    ## add V-Machine info in database
-    ## @param vminfo a VMinfo-class with info about V-Machine
+    ## add a user
+    ## @param nickname of the new user.
     def addUser(self, nickname):
         print "[addUser...]"
         self.__conn.execute("insert into user( \
