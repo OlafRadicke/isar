@@ -38,7 +38,6 @@ dist: doxygen
 	cp ./src/gui/*.py  $(OUTPUT_BUILD)/src/gui/
 	mkdir ./$(OUTPUT_BUILD)/icons
 	cp ./icons/*  $(OUTPUT_BUILD)/icons/
-	cp -R ./example  $(OUTPUT_BUILD)
 	mkdir $(OUTPUT_BUILD)/docs
 	cp -R ./docs/*  $(OUTPUT_BUILD)/docs/
 	ln -s $(OUTPUT_BUILD)/src/isar.py $(OUTPUT_BUILD)/isar
