@@ -168,6 +168,21 @@ class VMinfoDB():
             _vmList.append(_vmInfo)
         return _vmList[0]
 
+
+    ## Change info about a virtual machine..
+    # @param _vmInfo a VMinfo object with info about a virtual machine.
+    def updateVMinfo(self, _vmInfo):
+        _sql_string = "UPDATE vmachine SET \
+                lifetimedays = '" + _vmInfo.lifetimedays + "' , \
+                comment = '" + _vmInfo.comment + "' , \
+                mail = '" + _vmInfo.mail + "' , \
+                owner = '" + _vmInfo.owner + "' \
+                WHERE \
+                name = '" + _vmInfo.name + "';"
+        self.__conn.execute(_sql_string)
+        self.__conn.commit()
+
+
     ## add a user
     ## @param nickname of the new user.
     def addUser(self, nickname):
