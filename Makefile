@@ -51,14 +51,13 @@ install:
 	mkdir $(PREFIX)/isar
 	cp -r $(OUTPUT_BUILD)/* $(PREFIX)/isar/
 	cp -R ./icons $(PREFIX)/isar/
-	ln -s $(PREFIX)/isar/usr/isar.py /usr/local/bin/isar
+	ln -s $(PREFIX)/isar/usr/isar.py $(BINDIR)/isar
 	mkdir /var/isar
 
 # remove program
 uninstall:
 	$(RM) -r $(PREFIX)/isar
 	$(RM) $(BINDIR)/isar
-	$(RM) /usr/local/bin/isar
 
 # build doxygen-docs
 doxygen:
