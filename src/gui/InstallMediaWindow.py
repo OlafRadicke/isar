@@ -64,6 +64,9 @@ class InstallMediaWindow(QtGui.QDialog):
     
     ## path of install Media. Is a QLineEdit class.
     isoPathLineEdit = ""
+
+    ## Button for select a path
+    isoPathPushButton = ""
     
     ## Save information.
     #vmInfoDB = VMinfoDB()
@@ -135,11 +138,12 @@ class InstallMediaWindow(QtGui.QDialog):
         self.isoPathLineEdit = QtGui.QLineEdit()
         self.isoPathLineEdit.setReadOnly(True)
         hLayoutUserDir.addWidget(self.isoPathLineEdit)
-        isoPathPushButton = QtGui.QPushButton() #":/")
+        self.isoPathPushButton = QtGui.QPushButton() #":/")
         _icon = QtGui.QIcon(os.path.join(ICONDIR + 'search.png'))        
-        isoPathPushButton.setIcon(_icon)
-        self.connect(isoPathPushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('selectISOpath()'))
-        hLayoutUserDir.addWidget(isoPathPushButton)        
+        self.isoPathPushButton.setIcon(_icon)
+        # self.isoPathPushButton.setReadOnly(True)
+        self.connect(self.isoPathPushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('selectISOpath()'))
+        hLayoutUserDir.addWidget(self.isoPathPushButton)        
         
 
         # Safe buttom
@@ -241,6 +245,9 @@ class InstallMediaWindow(QtGui.QDialog):
                 print "[] _path: ", _path
                 self.isoPathLineEdit.setText( _path )
                 self.isoPathLineEdit.setReadOnly(False)
+
+            self.isoPathLineEdit.setReadOnly(False)
+            # self.isoPathPushButton.setReadOnly(False)
           
     ## A function with qt-slot. it's creade a new vm.
     @pyqtSlot()
@@ -277,6 +284,7 @@ class InstallMediaWindow(QtGui.QDialog):
             self.listview.addTopLevelItem(twItem)
             
         self.isoPathLineEdit.setReadOnly(True)
+        # self.isoPathPushButton.setReadOnly(True)
 
 
     ## Slot for safe edits
