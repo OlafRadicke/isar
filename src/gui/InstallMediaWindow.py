@@ -98,7 +98,7 @@ class InstallMediaWindow(QtGui.QDialog):
         # ----------- Left box ---------------------------------
 
         # VBox left with GrouBox-frame
-        listBox = QtGui.QGroupBox("VM list")
+        listBox = QtGui.QGroupBox("list of install medias")
         listBox.setMaximumWidth(600)
         vListLayoutL = QtGui.QVBoxLayout()
         listBox.setLayout(vListLayoutL)
@@ -108,7 +108,7 @@ class InstallMediaWindow(QtGui.QDialog):
         # -------------- List --------------
 
         self.listview = QtGui.QTreeWidget()
-        _haderList = ["installations ISOs"]
+        _haderList = ["ISOs"]
         self.listview.setColumnCount(len(_haderList))
         self.listview.setHeaderLabels(_haderList)
         vListLayoutL.addWidget(self.listview)
