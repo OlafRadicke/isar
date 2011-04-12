@@ -50,8 +50,8 @@ tar: dist
 install:
 	mkdir $(PREFIX)/isar
 	cp -r $(OUTPUT_BUILD)/* $(PREFIX)/isar/
-	ln -s $(PREFIX)/isar/isar.py /usr/local/bin/isar
 	cp -R ./icons $(PREFIX)/isar/
+	ln -s $(PREFIX)/isar/usr/isar.py /usr/local/bin/isar
 	mkdir /var/isar
 
 # remove program
