@@ -51,7 +51,7 @@ install:
 	mkdir $(PREFIX)/isar
 	cp -r $(OUTPUT_BUILD)/* $(PREFIX)/isar/
 	cp -R ./icons $(PREFIX)/isar/
-	ln -s $(PREFIX)/isar/usr/isar.py $(BINDIR)/isar
+	ln -s $(PREFIX)/isar/src/isar.py $(BINDIR)/isar
 	mkdir /var/isar
 
 # remove program
