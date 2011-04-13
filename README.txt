@@ -13,7 +13,7 @@ Beta
 
 1. make
 2. make install
-3. start wieth command 'isar'
+3. start wieth command 'isar'.
 4. ignore error window, with data base error.
 5. init the database over window menu.
 

@@ -40,7 +40,6 @@ dist: doxygen
 	cp ./icons/*  $(OUTPUT_BUILD)/icons/
 	mkdir $(OUTPUT_BUILD)/docs
 	cp -R ./docs/*  $(OUTPUT_BUILD)/docs/
-	ln -s $(OUTPUT_BUILD)/src/isar.py 
 
 # create tar-file
 tar: dist
