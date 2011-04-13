@@ -29,7 +29,7 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot
 from VMinfoDB import VMinfoDB 
 from UserInfo import UserInfo
-from BASEDIR import ICONDIR
+from GLOBALS import ICONDIR, FRAM_STYLE_SHEET
 
 
 ## @file installMediaWindow.py
@@ -39,20 +39,8 @@ from BASEDIR import ICONDIR
 class InstallMediaWindow(QtGui.QDialog):
   
     ## Frame style
-    __owneFramStyleSheet = "QGroupBox \
-        { \
-            border:2px solid gray; \
-            border-radius:7px; \
-            margin-top:  \
-            1ex; \
-        } \
-        QGroupBox::title \
-        { \
-            subcontrol-origin: margin; \
-            subcontrol-position:top center; \
-            padding:0 3px; \
-        } "
-  
+    __owneFramStyleSheet = FRAM_STYLE_SHEET    
+
   
     ## Database binding.
     __vmInfoDB = VMinfoDB()

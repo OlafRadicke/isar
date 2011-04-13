@@ -306,7 +306,7 @@ class VMinfoDB():
     def setConfiValue(self, key, value):
         _value = ""
         _found = False
-        rows = self.__conn.execute("UPDATE config SET 
+        rows = self.__conn.execute("UPDATE config SET \
             value='" + value + "' \
             WHERE key='" + key + "';")
         for row in rows:

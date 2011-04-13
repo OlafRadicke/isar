@@ -34,11 +34,11 @@ from UserInfo import UserInfo
 from VMinfo import VMinfo
 
 
-## @file ConfigVMWindow.py
+## @file MainConfigWindow.py
 # @author Olaf Radicke<briefkasten@olaf-radicke.de>
 
-## This window is for configure data of a exist virtual machine.
-class ConfigVMWindow(QtGui.QDialog):
+## This window is for configure the aplication.
+class MainConfigWindow(QtGui.QDialog):
   
     ## Frame style
     __owneFramStyleSheet = GLOBALS.FRAM_STYLE_SHEET
@@ -46,23 +46,20 @@ class ConfigVMWindow(QtGui.QDialog):
     ## Database binding.
     __vmInfoDB = VMinfoDB()
     
-    ## Infos about a virtual machine as VMinfo object.
-    __vmData = ""
 
-    ## Home dir of user. Is a QLineEdit class.
+    ## Address from KVM-Server. Is a QLineEdit class.
     __sshAddressLineEdit = ""
     
-    ## LineEdit widget for name of owner.
+    ## Rame of ssh user.
     __sshUserLineEdit = ""
     
-    ## Typ: CheckBox.  Is stoped before execute task, if "True"
+    ## Typ: CheckBox.  Using ssh, if checked.
     __useSshCheckBox = ""
 
     ## Constructor
     # @param vmInfoDB a VMinfoDB class objekt.
-    # @param vmName name of a virtual machine.
-    def __init__(self, vmInfoDB, vmName): 
-        logging.debug('init ConfigVMWindow....')
+    def __init__(self, vmInfoDB): 
+        logging.debug('init MainConfigWindow....')
         
         self.__vmInfoDB = vmInfoDB
         QtGui.QDialog.__init__(self, None)
@@ -91,7 +88,7 @@ class ConfigVMWindow(QtGui.QDialog):
 
         # Stop before execute task
         self.__useSshCheckBox = QtGui.QCheckBox("use ssh")
-        vListLayoutR3.addWidget(self.__useSshCheckBox)
+        vSshLayout.addWidget(self.__useSshCheckBox)
 
         # Name (ReadOnly)
         hLayoutSshAddress = QtGui.QHBoxLayout()
@@ -99,8 +96,7 @@ class ConfigVMWindow(QtGui.QDialog):
         sshAddressLabel = QtGui.QLabel("Address:")
         hLayoutSshAddress.addWidget(sshAddressLabel)
         self.__sshAddressLineEdit = QtGui.QLineEdit()
-        self.__sshAddressLineEdit.setText(self.__vmData.name)
-        self.__sshAddressLineEdit.setReadOnly(True)
+        #self.__sshAddressLineEdit.setText("")
         hLayoutSshAddress.addWidget(self.__sshAddressLineEdit)
 
         # owener 
@@ -109,7 +105,7 @@ class ConfigVMWindow(QtGui.QDialog):
         sshUserLabel = QtGui.QLabel("ssh user:")
         hLayoutSshUser.addWidget(sshUserLabel)
         self.__sshUserLineEdit = QtGui.QLineEdit()
-        self.__sshUserLineEdit.setText(self.__vmData.owner)
+        #self.__sshUserLineEdit.setText("")
         hLayoutSshUser.addWidget(self.__sshUserLineEdit)
 
 

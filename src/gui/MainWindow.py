@@ -34,8 +34,9 @@ from UserWindow import UserWindow
 from InstallMediaWindow import InstallMediaWindow
 from NewVMWindow import NewVMWindow
 from CloneVMWindow import CloneVMWindow
+from MainConfigWindow import MainConfigWindow
 from ConfigVMWindow import ConfigVMWindow
-from BASEDIR import BASEDIR, ICONDIR
+from GLOBALS import BASEDIR, ICONDIR, FRAM_STYLE_SHEET
 
 ## @file MainWindow.py
 # @author Olaf Radicke<briefkasten@olaf-radicke.de>
@@ -44,19 +45,7 @@ from BASEDIR import BASEDIR, ICONDIR
 class MainWindow(QtGui.QMainWindow):
 
     ## Frame style
-    __owneFramStyleSheet = "QGroupBox \
-        { \
-            border:2px solid gray; \
-            border-radius:7px; \
-            margin-top:  \
-            1ex; \
-        } \
-        QGroupBox::title \
-        { \
-            subcontrol-origin: margin; \
-            subcontrol-position:top center; \
-            padding:0 3px; \
-        } "
+    __owneFramStyleSheet = FRAM_STYLE_SHEET    
 
     ## Simple List
     __listview = ""
@@ -84,7 +73,7 @@ class MainWindow(QtGui.QMainWindow):
         menuFile = menubar.addMenu('&File')        
 
         # Menue-item for init the database.
-        menuInitDB = QtGui.QAction( 'Init Database', self)
+        menuInitDB = QtGui.QAction( 'Create Database', self)
         menuInitDB.setShortcut('Ctrl+D')
         menuInitDB.setStatusTip('Init the SQLite3-Database.')
         self.connect(menuInitDB, QtCore.SIGNAL('triggered()'), QtCore.SLOT('initDB()'))
@@ -99,10 +88,19 @@ class MainWindow(QtGui.QMainWindow):
 
         # Menue-item for Edit and configure install ISOs.
         menuEditISO = QtGui.QAction( 'Edit instal ISOs', self)
-        menuEditISO.setShortcut('Ctrl+U')
+        menuEditISO.setShortcut('Ctrl+M')
         menuEditISO.setStatusTip('Edit and configure instal media.')
         self.connect(menuEditISO, QtCore.SIGNAL('triggered()'), QtCore.SLOT('editISOs()'))
         menuFile.addAction(menuEditISO)
+        
+        menuFile.addSeparator()
+
+        # Menue-item for main config.
+        menuEditConf = QtGui.QAction( 'Settings', self)
+        menuEditConf.setShortcut('Ctrl+C')
+        menuEditConf.setStatusTip('Edit and configure instal media.')
+        self.connect(menuEditConf, QtCore.SIGNAL('triggered()'), QtCore.SLOT('mainConfig()'))
+        menuFile.addAction(menuEditConf)        
         
         ## Menue-item for apliction exit
         _icon = QtGui.QIcon(os.path.join(ICONDIR + 'exit.png'))
@@ -417,3 +415,19 @@ class MainWindow(QtGui.QMainWindow):
             infotext = "An error occurred:", e.args[0]
             QtGui.QMessageBox.critical(self, "Error", str(infotext))
             return
+
+    ## Slot for open  window for eding main config.
+    @pyqtSlot()
+    def mainConfig(self):
+        logging.debug("[mainConfig]")
+        print "[mainConfig]"
+        try:
+            _mcw = MainConfigWindow(self.__vmInfoDB)
+            _mcw.setModal(True)
+            _mcw.show()
+            ret = _mcw.exec_()
+        except sqlite3.Error, e:
+            infotext = "An error occurred:", e.args[0]
+            QtGui.QMessageBox.critical(self, "Error", str(infotext))
+            return    
+    
