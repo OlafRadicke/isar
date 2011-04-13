@@ -45,7 +45,7 @@ class BashSshExecution:
         _commantList.append("ssh")
         _commantList.append("-Y")
         _commantList.append("self.sshUser + "@" + self.address")
-        _commantList.append(" \"" + _command + "\"")
+        _commantList.append(" \'" + _command + "\'")
         #_command = " -Y " + self.sshUser + "@" + self.address \
             #+ " \"" + _command + "\""
         print "[ssh Command]:", _commantList
