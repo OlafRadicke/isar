@@ -96,6 +96,7 @@ class KVMManager():
     def createNewMachine(self):
         self.__imagePath = self.__ownersHome + "/" + self.__vmName + ".img"
         _command =  "virt-install   --connect=qemu:///system "
+        _command += " --force "
         _command += " --name " + self.__vmName 
         _command += " --ram " + self.__ram 
         _command += " --disk path=" + self.__imagePath + ","
@@ -122,6 +123,7 @@ class KVMManager():
     def cloneMachine(self):
         self.__imagePath = self.__ownersHome + "/" + self.__vmName + ".img"
         _command =  "virt-clone "
+        _command += " --force "
         _command += " --original " + self.__originalVM
         _command += " --name " + self.__vmName 
         _command += " --file " + self.__imagePath
