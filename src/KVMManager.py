@@ -109,7 +109,7 @@ class KVMManager():
 #        _command += " --network bridge=externqabr0 "
 
         if self.__isSSH:
-            __sshExe.do(_command)
+            self.___sshExe.do(_command)
         else:
             print "[Command]:",_command
             _f = subprocess.check_output(_command.split(),stderr=subprocess.STDOUT)
@@ -129,7 +129,7 @@ class KVMManager():
         _command += " --file " + self.__imagePath
         
         if self.__isSSH:
-            __sshExe.do(_command)
+            self.___sshExe.do(_command)
         else:        
             print "[Command]:",_command
             _f = subprocess.check_output(_command.split(),stderr=subprocess.STDOUT)
