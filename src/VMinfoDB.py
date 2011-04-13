@@ -77,6 +77,35 @@ class VMinfoDB():
         self.__conn.execute('CREATE TABLE  installiso( \
             name TEXT PRIMARY KEY, \
             path TEXT NOT NULL);')
+
+        # Config table
+        self.__conn.execute('CREATE TABLE config( \
+            id INTEGER PRIMARY KEY, \
+            key TEXT UNIQUE NOT NULL, \
+            value TEXT NOT NULL);')   
+            
+        self.__conn.execute("insert into config( \
+            key, value \
+            ) values ( \
+            'ssh_address', '' \
+            );")     
+            
+        self.__conn.execute("insert into config( \
+            key, \
+            value \
+            ) values ( \
+            'ssh_user', \
+            'root' \
+            );")
+            
+        self.__conn.execute("insert into config( \
+            key, \
+            value \
+            ) values ( \
+            'ssh_conact', \
+            'False' \
+            );")            
+       
         self.__conn.commit()
 
     ## add V-Machine info in database
@@ -252,7 +281,41 @@ class VMinfoDB():
         if  _found == False:
             return -1
         else:
-            return _path      
+            return _path   
+            
+         
+    ## @return get value of config.
+    # @param key A key of config value
+    def getConfiValue(self, key):
+        _value = ""
+        _found = False
+        rows = self.__conn.execute("SELECT value FROM config \
+            WHERE key='" + key + "';")
+        for row in rows:
+            _found = True
+            _value = row[0]
+        if  _found == False:
+            return -1
+        else:
+            return _value      
+            
+         
+    ## @return get value of config.
+    # @param key A key of config value
+    # @param value A Value.
+    def setConfiValue(self, key, value):
+        _value = ""
+        _found = False
+        rows = self.__conn.execute("UPDATE config SET 
+            value='" + value + "' \
+            WHERE key='" + key + "';")
+        for row in rows:
+            _found = True
+            _value = row[0]
+        if  _found == False:
+            return -1
+        else:
+            return _value               
         
 
     ## @param nickname A nickname of a user.
