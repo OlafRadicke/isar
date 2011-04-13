@@ -60,7 +60,7 @@ class KVMManager():
     __sshExe = BashSshExecution()
 
     ## set ssh support on and off
-    isSSH = True
+    __isSSH = True
 
     def __init__(self):
         self.__sshExe.address = ""
@@ -108,7 +108,7 @@ class KVMManager():
         # set the divice of this network bridge...
 #        _command += " --network bridge=externqabr0 "
 
-        if isSSH:
+        if self.__isSSH:
             __sshExe.do(_command)
         else:
             print "[Command]:",_command
@@ -128,7 +128,7 @@ class KVMManager():
         _command += " --name " + self.__vmName 
         _command += " --file " + self.__imagePath
         
-        if isSSH:
+        if self.__isSSH:
             __sshExe.do(_command)
         else:        
             print "[Command]:",_command
