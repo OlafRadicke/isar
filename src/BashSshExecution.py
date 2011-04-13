@@ -29,6 +29,7 @@ class BashSshExecution:
 
     ## Constructor.
     def __init__(self):
+        pass
 
     ## execute a bash command.
     # @return Return result.
