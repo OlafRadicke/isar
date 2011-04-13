@@ -68,7 +68,7 @@ class InstallMediaWindow(QtGui.QDialog):
     ## Button for select a path
     isoPathPushButton = ""
     
-    ## Save information.
+    ## Safe information.
     #vmInfoDB = VMinfoDB()
 
     ## Constructor

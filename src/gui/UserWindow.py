@@ -71,7 +71,7 @@ class UserWindow(QtGui.QDialog):
     ## Home dir of user. Is a QLineEdit class.
     userDirLineEdit = ""
     
-    ## Save information.
+    ## Safe information.
     #vmInfoDB = VMinfoDB()
 
     ## Constructor
