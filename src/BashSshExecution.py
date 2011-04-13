@@ -41,11 +41,15 @@ class BashSshExecution:
     # @return Return result.
     # except: subprocess.CalledProcessError
     def do(self, _command):
-        
-        _command = " -Y " + self.sshUser + "@" + self.address \
-            + " \"" + _command + "\""
-        print "[ssh Command]:", "ssh",_command
-        _f = subprocess.check_output(["ssh",_command],stderr=subprocess.STDOUT)
+        _commantList = list()
+        _commantList.append("ssh")
+        _commantList.append("-Y")
+        _commantList.append("self.sshUser + "@" + self.address")
+        _commantList.append(" \"" + _command + "\"")
+        #_command = " -Y " + self.sshUser + "@" + self.address \
+            #+ " \"" + _command + "\""
+        print "[ssh Command]:", _commantList
+        _f = subprocess.check_output(_commantList,stderr=subprocess.STDOUT)
         _out = ""
         print "[_f]", _f
         for _line in _f:
