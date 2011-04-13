@@ -24,6 +24,7 @@
 
 import os
 import shlex, subprocess
+from BashSshExecution import BashSshExecution
 
 ## @file KVMManager.py
 # @author Olaf Radicke<briefkasten@olaf-radicke.de>
@@ -55,6 +56,15 @@ class KVMManager():
     ## Path of virtual machine image. 
     __imagePath = ""
     
+    ## ssh support.
+    __sshExe = BashSshExecution()
+
+    ## set ssh support on and off
+    isSSH = True
+
+    def __init__(self):
+        self.__sshExe.address = ""
+        self.__sshExe.sshUser = "root"
         
     ## Set name of original virtual machine. For clone command.
     def setOriginalVM(self, name):
@@ -96,14 +106,17 @@ class KVMManager():
         _command += " --accelerate "
         # set the divice of this network bridge...
 #        _command += " --network bridge=externqabr0 "
-        
-        print "[Command]:",_command
-        _f = subprocess.check_output(_command.split(),stderr=subprocess.STDOUT)
-        _out = ""
-        print "[_f]", _f
-        for _line in _f:
-            _out = _out + _line
-        return  _out      
+
+        if isSSH:
+            __sshExe.do(_command)
+        else:
+            print "[Command]:",_command
+            _f = subprocess.check_output(_command.split(),stderr=subprocess.STDOUT)
+            _out = ""
+            print "[_f]", _f
+            for _line in _f:
+                _out = _out + _line
+            return  _out
         
     ## Clone a virtual machine....
     def cloneMachine(self):
@@ -113,13 +126,16 @@ class KVMManager():
         _command += " --name " + self.__vmName 
         _command += " --file " + self.__imagePath
         
-        print "[Command]:",_command
-        _f = subprocess.check_output(_command.split(),stderr=subprocess.STDOUT)
-        _out = ""
-        print "[_f]", _f
-        for _line in _f:
-            _out = _out + _line
-        return  _out  
+        if isSSH:
+            __sshExe.do(_command)
+        else:        
+            print "[Command]:",_command
+            _f = subprocess.check_output(_command.split(),stderr=subprocess.STDOUT)
+            _out = ""
+            print "[_f]", _f
+            for _line in _f:
+                _out = _out + _line
+            return  _out
         
     def getImagePath(self):
         return self.__imagePath
