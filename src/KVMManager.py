@@ -93,6 +93,7 @@ class KVMManager():
 
     ## Create a new virual machine.
     def createNewMachine(self):
+        _out = ""
         self.__imagePath = self.__ownersHome + "/" + self.__vmName + ".img"
         _command =  "virt-install   --connect=qemu:///system "
         _command += " --force "
@@ -108,7 +109,7 @@ class KVMManager():
 #        _command += " --network bridge=externqabr0 "
 
         if self.__isSSH:
-            self.__sshExe.do(_command)
+            _out = self.__sshExe.do(_command)
         else:
             print "[Command]:",_command
             _f = subprocess.check_output(_command.split(),stderr=subprocess.STDOUT)
@@ -116,10 +117,11 @@ class KVMManager():
             print "[_f]", _f
             for _line in _f:
                 _out = _out + _line
-            return  _out
+        return  _out
         
     ## Clone a virtual machine....
     def cloneMachine(self):
+        _out = ""
         self.__imagePath = self.__ownersHome + "/" + self.__vmName + ".img"
         _command =  "virt-clone "
         _command += " --force "
@@ -128,7 +130,7 @@ class KVMManager():
         _command += " --file " + self.__imagePath
         
         if self.__isSSH:
-            self.__sshExe.do(_command)
+            _out = self.__sshExe.do(_command)
         else:        
             print "[Command]:",_command
             _f = subprocess.check_output(_command.split(),stderr=subprocess.STDOUT)
@@ -136,7 +138,7 @@ class KVMManager():
             print "[_f]", _f
             for _line in _f:
                 _out = _out + _line
-            return  _out
+        return  _out
         
     def getImagePath(self):
         return self.__imagePath
