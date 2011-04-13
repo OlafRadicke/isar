@@ -18,6 +18,12 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import os
+import shlex, subprocess
+
+## @file BashSshExecution.py
+# @author Olaf Radicke<briefkasten@olaf-radicke.de>
+
 ## Class for execute commands in a ssh.
 class BashSshExecution:
 
