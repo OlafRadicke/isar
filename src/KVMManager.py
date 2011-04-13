@@ -47,7 +47,6 @@ class KVMManager():
     
     ## Path of install ISO
     __IsoPath = ""
-    
 
     ## Name of original virtual machine
     # For clone command.
@@ -109,7 +108,7 @@ class KVMManager():
 #        _command += " --network bridge=externqabr0 "
 
         if self.__isSSH:
-            self.___sshExe.do(_command)
+            self.__sshExe.do(_command)
         else:
             print "[Command]:",_command
             _f = subprocess.check_output(_command.split(),stderr=subprocess.STDOUT)
@@ -129,7 +128,7 @@ class KVMManager():
         _command += " --file " + self.__imagePath
         
         if self.__isSSH:
-            self.___sshExe.do(_command)
+            self.__sshExe.do(_command)
         else:        
             print "[Command]:",_command
             _f = subprocess.check_output(_command.split(),stderr=subprocess.STDOUT)
