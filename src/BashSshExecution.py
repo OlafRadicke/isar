@@ -36,7 +36,7 @@ class BashSshExecution:
     # except: subprocess.CalledProcessError
     def do(self, _command):
         print "[Command]:",_command
-        _command = "ssh -Y " + sshUser + "@" + address \
+        _command = "ssh -Y " + self.sshUser + "@" + self.address \
             + " \"" + _command + "\""
             
         _f = subprocess.check_output(_command.split(),stderr=subprocess.STDOUT)
