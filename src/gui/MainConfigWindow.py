@@ -27,7 +27,7 @@ import sqlite3
 import GLOBALS
 #import time
 #import subprocess
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui, QtCore, Qt
 from PyQt4.QtCore import pyqtSlot
 from VMinfoDB import VMinfoDB 
 from UserInfo import UserInfo
@@ -125,33 +125,57 @@ class MainConfigWindow(QtGui.QDialog):
         self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('close()'))
         hBottomLayout.addWidget(closePushButton)
 
+        self.fillData()
 
+    ## Read date from data base and set in form.
+    def fillData(self):
+        print "[fillData]"
+        _isSsh = ""
+        _sshAddress = ""
+        _sshUser = ""
+        
+        try:
+            _isSsh = self.__vmInfoDB.getConfiValue("ssh_conact")
+            _sshAddress = self.__vmInfoDB.getConfiValue("ssh_address")
+            _sshUser = self.__vmInfoDB.getConfiValue("ssh_user")
+        except sqlite3.Error, e:
+            infotext = "An error occurred:", e.args[0]
+            QtGui.QMessageBox.critical(self, "Error",str(infotext))
+
+
+        print "[_isSsh]", _isSsh
+        print "[_sshAddress]", _sshAddress
+        print "[_sshUser]", _sshUser
+
+        
+        if _isSsh == "True":
+            self.__useSshCheckBox.setCheckState(QtCore.Qt.Checked)
+        else:
+            self.__useSshCheckBox.setCheckState(QtCore.Qt.Unchecked)
+        self.__sshAddressLineEdit.setText(_sshAddress)
+        self.__sshUserLineEdit.setText(_sshUser)
+        return
 
     ## Slot for safe config.
     @pyqtSlot()
     def safeConfig(self):       
         print "[safeConfig...]"
-        
-        return
-        
-        _result = ""
-        _vmInfo = VMinfo()
-        
-        _owner = str(self.owenerComboBox.currentText())
-        _userInfo = self.__vmInfoDB.getUser(_owner)
-        _lifeTime = str(self.lifeTimeSpinBox.value())
-        _comment = unicode(self.commentLineEdit.text())
-        
-        _vmName = unicode(self.__sshAddressLineEdit.text())
-             
-        _vmInfo.name = _vmName
-        _vmInfo.lifetimedays = _lifeTime
-        _vmInfo.comment = _comment
-        _vmInfo.mail = _userInfo.mail
-        _vmInfo.owner = _userInfo.fullname + "(" + _userInfo.nickname + ")"
-     
-        try:     
-            self.__vmInfoDB.updateVMinfo(_vmInfo)
+        print "[self.__useSshCheckBox.checkState()]", self.__useSshCheckBox.checkState()
+        if self.__useSshCheckBox.checkState():
+            _isSsh = "True"
+        else:
+            _isSsh = "False"
+        _sshAddress = str(self.__sshAddressLineEdit.text())
+        _sshUser = str(self.__sshUserLineEdit.text())
+
+
+        print "[2_isSsh]", _isSsh
+        print "[2_sshAddress]", _sshAddress
+        print "[2_sshUser]", _sshUser     
+        try:
+            self.__vmInfoDB.setConfiValue("ssh_conact", _isSsh)
+            self.__vmInfoDB.setConfiValue("ssh_address", _sshAddress)
+            self.__vmInfoDB.setConfiValue("ssh_user", _sshUser)
         except sqlite3.Error, e:
             infotext = "An error occurred:", e.args[0]
             QtGui.QMessageBox.critical(self, "Error",str(infotext))
