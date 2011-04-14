@@ -24,9 +24,8 @@
 import sys
 import logging
 import sqlite3
+
 import GLOBALS
-#import time
-#import subprocess
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot
 from VMinfoDB import VMinfoDB 
@@ -41,8 +40,8 @@ from VMinfo import VMinfo
 class ConfigVMWindow(QtGui.QDialog):
   
     ## Frame style
-    __owneFramStyleSheet = GLOBALS.FRAM_STYLE_SHEET
-
+    __owneFramStyleSheet = GLOBALS.FRAM_STYLE_SHEET 
+  
     ## Database binding.
     __vmInfoDB = VMinfoDB()
     
@@ -50,26 +49,48 @@ class ConfigVMWindow(QtGui.QDialog):
     __vmData = ""
 
     ## Home dir of user. Is a QLineEdit class.
-    __sshAddressLineEdit = ""
+    vmNameLineEdit = ""
+
+    ## Combo box for select owener.
+    owenerComboBox = ""
     
     ## LineEdit widget for name of owner.
-    __sshUserLineEdit = ""
+    __vmOwnerLineEdit = ""
     
-    ## Typ: CheckBox.  Is stoped before execute task, if "True"
-    __useSshCheckBox = ""
+    ## LineEdit widget for mail address of owner.
+    mailLineEdit = ""
+    
+    ## LineEdit widget for image file of virtual machine
+    vmImageLineEdit= ""
+    
+    ## Combo box for select install ISO.
+    isoComboBox  = ""   
+    
+    ## Spin box for RAM size.
+    ramSpinBox  = ""   
+    
+    ## Spin box for hart disc size.
+    hdSpinBox  = ""  
+    
+    ## Box for comment.
+    commentNameLabel  = "" 
+    
+
 
     ## Constructor
     # @param vmInfoDB a VMinfoDB class objekt.
     # @param vmName name of a virtual machine.
     def __init__(self, vmInfoDB, vmName): 
-        logging.debug('init ConfigVMWindow....')
+        logging.debug('init installMediaWindow....')
         
         self.__vmInfoDB = vmInfoDB
         QtGui.QDialog.__init__(self, None)
 
+        self.__vmData = self.__vmInfoDB.getVMinfo(vmName)
+        logging.debug('init installMediaWindow....')
 
         self.resize(500,180)
-        self.setWindowTitle('Isar::Config')
+        self.setWindowTitle('Isar::New virtual machine')
         self.setStyleSheet(self.__owneFramStyleSheet)
 
 
@@ -82,37 +103,72 @@ class ConfigVMWindow(QtGui.QDialog):
         # ----------- right box ---------------------------------
 
         # VBox right with GrouBox-frame
-        sshBox = QtGui.QGroupBox("ssh config")
-        sshBox.setMaximumWidth(600)
-        vSshLayout = QtGui.QVBoxLayout()
-        sshBox.setLayout(vSshLayout)
-        vMainLayout.addWidget(sshBox)
+        editBox = QtGui.QGroupBox("Data of machine")
+        editBox.setMaximumWidth(600)
+        vEditLayoutR = QtGui.QVBoxLayout()
+        editBox.setLayout(vEditLayoutR)
+        vMainLayout.addWidget(editBox)
 
-
-        # Stop before execute task
-        self.__useSshCheckBox = QtGui.QCheckBox("use ssh")
-        vListLayoutR3.addWidget(self.__useSshCheckBox)
 
         # Name (ReadOnly)
-        hLayoutSshAddress = QtGui.QHBoxLayout()
-        vSshLayout.addLayout(hLayoutSshAddress)
-        sshAddressLabel = QtGui.QLabel("Address:")
-        hLayoutSshAddress.addWidget(sshAddressLabel)
-        self.__sshAddressLineEdit = QtGui.QLineEdit()
-        self.__sshAddressLineEdit.setText(self.__vmData.name)
-        self.__sshAddressLineEdit.setReadOnly(True)
-        hLayoutSshAddress.addWidget(self.__sshAddressLineEdit)
+        hLayoutVMname = QtGui.QHBoxLayout()
+        vEditLayoutR.addLayout(hLayoutVMname)
+        vmNameLabel = QtGui.QLabel("Name of machine (read only):")
+        hLayoutVMname.addWidget(vmNameLabel)
+        self.vmNameLineEdit = QtGui.QLineEdit()
+        self.vmNameLineEdit.setText(self.__vmData.name)
+        self.vmNameLineEdit.setReadOnly(True)
+        hLayoutVMname.addWidget(self.vmNameLineEdit)
 
         # owener 
-        hLayoutSshUser = QtGui.QHBoxLayout()
-        vSshLayout.addLayout(hLayoutSshUser)
-        sshUserLabel = QtGui.QLabel("ssh user:")
-        hLayoutSshUser.addWidget(sshUserLabel)
-        self.__sshUserLineEdit = QtGui.QLineEdit()
-        self.__sshUserLineEdit.setText(self.__vmData.owner)
-        hLayoutSshUser.addWidget(self.__sshUserLineEdit)
+        hLayoutOwner = QtGui.QHBoxLayout()
+        vEditLayoutR.addLayout(hLayoutOwner)
+        owenerLabel = QtGui.QLabel("Owner:")
+        hLayoutOwner.addWidget(owenerLabel)
+        self.__vmOwnerLineEdit = QtGui.QLineEdit()
+        self.__vmOwnerLineEdit.setText(self.__vmData.owner)
+        hLayoutOwner.addWidget(self.__vmOwnerLineEdit)
 
-
+        # life time
+        hLayoutLifeTime = QtGui.QHBoxLayout()
+        vEditLayoutR.addLayout(hLayoutLifeTime)
+        lifeTimeLabel = QtGui.QLabel("Life time:")
+        hLayoutLifeTime.addWidget(lifeTimeLabel)
+        self.lifeTimeSpinBox = QtGui.QSpinBox()
+        self.lifeTimeSpinBox.setSuffix(" days")
+        self.lifeTimeSpinBox.setRange(1, 10000) 
+        print "[self.__vmData.lifetimedays] : ", self.__vmData.lifetimedays
+        self.lifeTimeSpinBox.setValue(int(self.__vmData.lifetimedays))
+        hLayoutLifeTime.addWidget(self.lifeTimeSpinBox)
+        
+        # comment
+        hLayoutVMcomment = QtGui.QVBoxLayout()
+        vEditLayoutR.addLayout(hLayoutVMcomment)
+        commentNameLabel = QtGui.QLabel("Comment:")
+        hLayoutVMcomment.addWidget(commentNameLabel)
+        self.commentLineEdit = QtGui.QLineEdit()
+        self.commentLineEdit.setText(self.__vmData.comment)
+        hLayoutVMcomment.addWidget(self.commentLineEdit)
+        
+        # mail
+        hLayoutVMmail = QtGui.QHBoxLayout()
+        vEditLayoutR.addLayout(hLayoutVMmail)
+        mailLabel = QtGui.QLabel("Mail:")
+        hLayoutVMmail.addWidget(mailLabel)
+        self.mailLineEdit = QtGui.QLineEdit()
+        self.mailLineEdit.setText(self.__vmData.mail)
+        hLayoutVMmail.addWidget(self.mailLineEdit)
+        
+        # image_file (ReadOnly)
+        hLayoutVMimageFile = QtGui.QHBoxLayout()
+        vEditLayoutR.addLayout(hLayoutVMimageFile)
+        vmImageLabel = QtGui.QLabel("Image file (read only):")
+        hLayoutVMimageFile.addWidget(vmImageLabel)
+        self.vmImageLineEdit = QtGui.QLineEdit()
+        self.vmImageLineEdit.setText(self.__vmData.image_file)
+        self.vmImageLineEdit.setReadOnly(True)
+        hLayoutVMimageFile.addWidget(self.vmImageLineEdit)  
+        
         
         # ---------- Bottom area --------------------
 
@@ -122,7 +178,7 @@ class ConfigVMWindow(QtGui.QDialog):
         
 
         closePushButton = QtGui.QPushButton("Safe")
-        self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('safeConfig()'))
+        self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('reConfigureVM()'))
         hBottomLayout.addWidget(closePushButton)
 
         closePushButton = QtGui.QPushButton("Cancel")
@@ -131,13 +187,10 @@ class ConfigVMWindow(QtGui.QDialog):
 
 
 
-    ## Slot for safe config.
+    ## Slot for create new VM.
     @pyqtSlot()
-    def safeConfig(self):       
-        print "[safeConfig...]"
-        
-        return
-        
+    def reConfigureVM(self):       
+        print "[reConfigureVM...]"
         _result = ""
         _vmInfo = VMinfo()
         
@@ -146,7 +199,7 @@ class ConfigVMWindow(QtGui.QDialog):
         _lifeTime = str(self.lifeTimeSpinBox.value())
         _comment = unicode(self.commentLineEdit.text())
         
-        _vmName = unicode(self.__sshAddressLineEdit.text())
+        _vmName = unicode(self.vmNameLineEdit.text())
              
         _vmInfo.name = _vmName
         _vmInfo.lifetimedays = _lifeTime
@@ -164,4 +217,13 @@ class ConfigVMWindow(QtGui.QDialog):
         QtGui.QMessageBox.information(self, "OK",str(_infotext))
         self.close()
 
-         
+    ## it is action if owener Combo Box changes.
+    @pyqtSlot(QtCore.QString)
+    def owenerComboBoxChange(self, text):
+        pass
+ 
+
+    ## it is action if ISO Combo Box changes
+    @pyqtSlot(QtCore.QString)
+    def isoComboBoxChange(self, text):
+        pass           
