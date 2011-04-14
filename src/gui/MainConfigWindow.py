@@ -117,8 +117,8 @@ class MainConfigWindow(QtGui.QDialog):
         vMainLayout.addLayout(hBottomLayout)
         
 
-        closePushButton = QtGui.QPushButton("Safe")
-        self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('safeConfig()'))
+        closePushButton = QtGui.QPushButton("Save")
+        self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('saveConfig()'))
         hBottomLayout.addWidget(closePushButton)
 
         closePushButton = QtGui.QPushButton("Cancel")
@@ -142,12 +142,6 @@ class MainConfigWindow(QtGui.QDialog):
             infotext = "An error occurred:", e.args[0]
             QtGui.QMessageBox.critical(self, "Error",str(infotext))
 
-
-        print "[_isSsh]", _isSsh
-        print "[_sshAddress]", _sshAddress
-        print "[_sshUser]", _sshUser
-
-        
         if _isSsh == "True":
             self.__useSshCheckBox.setCheckState(QtCore.Qt.Checked)
         else:
@@ -158,9 +152,8 @@ class MainConfigWindow(QtGui.QDialog):
 
     ## Slot for safe config.
     @pyqtSlot()
-    def safeConfig(self):       
-        print "[safeConfig...]"
-        print "[self.__useSshCheckBox.checkState()]", self.__useSshCheckBox.checkState()
+    def saveConfig(self):       
+        print "[saveConfig...]"
         if self.__useSshCheckBox.checkState():
             _isSsh = "True"
         else:
@@ -168,10 +161,6 @@ class MainConfigWindow(QtGui.QDialog):
         _sshAddress = str(self.__sshAddressLineEdit.text())
         _sshUser = str(self.__sshUserLineEdit.text())
 
-
-        print "[2_isSsh]", _isSsh
-        print "[2_sshAddress]", _sshAddress
-        print "[2_sshUser]", _sshUser     
         try:
             self.__vmInfoDB.setConfiValue("ssh_conact", _isSsh)
             self.__vmInfoDB.setConfiValue("ssh_address", _sshAddress)
@@ -180,7 +169,7 @@ class MainConfigWindow(QtGui.QDialog):
             infotext = "An error occurred:", e.args[0]
             QtGui.QMessageBox.critical(self, "Error",str(infotext))
             return  
-        _infotext = "Ok, safted changes..."
+        _infotext = "Ok, savted changes..."
         QtGui.QMessageBox.information(self, "OK",str(_infotext))
         self.close()
 

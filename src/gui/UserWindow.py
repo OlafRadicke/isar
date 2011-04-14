@@ -156,9 +156,9 @@ class UserWindow(QtGui.QDialog):
         hSefeLayout = QtGui.QHBoxLayout()
         vEditLayoutR.addLayout(hSefeLayout)
         
-        safeButton = QtGui.QPushButton("Save Edits")
-        self.connect(safeButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('safeEdits()'))
-        hSefeLayout.addWidget(safeButton) 
+        saveButton = QtGui.QPushButton("Save Edits")
+        self.connect(saveButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('saveEdits()'))
+        hSefeLayout.addWidget(saveButton) 
         
         
         vEditLayoutR.insertStretch(10000, 0)
@@ -299,10 +299,10 @@ class UserWindow(QtGui.QDialog):
         self.mailLineEdit.setReadOnly(True)
         self.fullnameLineEdit.setReadOnly(True)        
 
-    ## Slot for safe edits
+    ## Slot for save edits
     @pyqtSlot()
-    def safeEdits(self):       
-        print "[safe edits...]"
+    def saveEdits(self):
+        print "[save edits...]"
         _nickname = ""
         _listIsEmpty = True
         for item in self.listview.selectedItems():
@@ -333,7 +333,7 @@ class UserWindow(QtGui.QDialog):
                 infotext = "An error occurred:", e.args[0]
                 QtGui.QMessageBox.critical(self, "Error",str(infotext))
                 return
-            infotext = "Ok, safed..."
+            infotext = "Ok, saved..."
             QtGui.QMessageBox.information(self, "OK",str(infotext))
 
     ## Slot with file dialog, for selct a dir.

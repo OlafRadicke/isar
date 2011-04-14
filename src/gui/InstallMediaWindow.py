@@ -56,7 +56,7 @@ class InstallMediaWindow(QtGui.QDialog):
     ## Button for select a path
     isoPathPushButton = ""
     
-    ## Safe information.
+    ## Save information.
     #vmInfoDB = VMinfoDB()
 
     ## Constructor
@@ -134,13 +134,13 @@ class InstallMediaWindow(QtGui.QDialog):
         hLayoutUserDir.addWidget(self.isoPathPushButton)        
         
 
-        # Safe buttom
+        # Save buttom
         hSefeLayout = QtGui.QHBoxLayout()
         vEditLayoutR.addLayout(hSefeLayout)
         
-        safeButton = QtGui.QPushButton("Safe Edits")
-        self.connect(safeButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('safeEdits()'))
-        hSefeLayout.addWidget(safeButton) 
+        saveButton = QtGui.QPushButton("Save Edits")
+        self.connect(saveButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('saveEdits()'))
+        hSefeLayout.addWidget(saveButton) 
         
         
         vEditLayoutR.insertStretch(10000, 0)
@@ -275,10 +275,10 @@ class InstallMediaWindow(QtGui.QDialog):
         # self.isoPathPushButton.setReadOnly(True)
 
 
-    ## Slot for safe edits
+    ## Slot for save edits
     @pyqtSlot()
-    def safeEdits(self):       
-        print "[safe edits...]"
+    def saveEdits(self):       
+        print "[save edits...]"
         _name = ""
         for item in self.listview.selectedItems():
             print  ".." , item.text(0)
@@ -294,7 +294,7 @@ class InstallMediaWindow(QtGui.QDialog):
             infotext = "An error occurred:", e.args[0]
             QtGui.QMessageBox.critical(self, "Error",str(infotext))
             return
-        infotext = "Ok, safed..."
+        infotext = "Ok, saved..."
         QtGui.QMessageBox.information(self, "OK",str(infotext))
 
     ## Slot with file dialog, for selct a dir.

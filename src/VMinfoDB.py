@@ -309,13 +309,7 @@ class VMinfoDB():
         rows = self.__conn.execute("UPDATE config SET \
             value='" + value + "' \
             WHERE key='" + key + "';")
-        for row in rows:
-            _found = True
-            _value = row[0]
-        if  _found == False:
-            return -1
-        else:
-            return _value               
+        self.__conn.commit() 
         
 
     ## @param nickname A nickname of a user.
