@@ -168,6 +168,7 @@ class CloneVMWindow(QtGui.QDialog):
         _comment = unicode(self.commentNameLineEdit.text())
         
         _vmName = unicode(self.vmNameLineEdit.text())
+        _vmName = _vmName.replace(unicode(" ", "utf-8"), "_")
         _vmName = _vmName.replace(unicode("ü", "utf-8"), "ue")
         _vmName = _vmName.replace(unicode("Ü", "utf-8"), "Ue")
         _vmName = _vmName.replace(unicode("ö", "utf-8"), "oe")
