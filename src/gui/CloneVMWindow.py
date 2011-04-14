@@ -184,7 +184,7 @@ class CloneVMWindow(QtGui.QDialog):
         try:
 
             _infotext = "...Cloneing..."
-            _dial = QtGui.QMessageBox.information(self,str(_infotext))
+            _dial = QtGui.QMessageBox.information(self,"start prozess", str(_infotext))
             _result = _kvmManager.cloneMachine()
             _dial.close()
 
