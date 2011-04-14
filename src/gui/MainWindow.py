@@ -420,6 +420,7 @@ class MainWindow(QtGui.QMainWindow):
     @pyqtSlot()
     def mainConfig(self):
         logging.debug("[mainConfig]")
+  
         print "[mainConfig]"
         try:
             _mcw = MainConfigWindow(self.__vmInfoDB)
@@ -429,5 +430,7 @@ class MainWindow(QtGui.QMainWindow):
         except sqlite3.Error, e:
             infotext = "An error occurred:", e.args[0]
             QtGui.QMessageBox.critical(self, "Error", str(infotext))
-            return    
-    
+            return
+
+
+            

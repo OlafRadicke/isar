@@ -34,6 +34,7 @@ from VMinfoDB import VMinfoDB
 from UserInfo import UserInfo
 from KVMManager import KVMManager
 from VMinfo import VMinfo
+from DetailInfoDialog import DetailInfoDialog
 
 
 ## @file CloneVMWindow.py
@@ -163,8 +164,8 @@ class CloneVMWindow(QtGui.QDialog):
         
         _owner = str(self.owenerComboBox.currentText())
         _userInfo = self.__vmInfoDB.getUser(_owner)
-        _lifeTime = str(self.lifeTimeSpinBox)
-        _comment = unicode(self.commentNameLineEdit.text)
+        _lifeTime = str(self.lifeTimeSpinBox.value())
+        _comment = unicode(self.commentNameLineEdit.text())
         
         _vmName = unicode(self.vmNameLineEdit.text())
         _vmName = _vmName.replace(unicode("ü", "utf-8"), "ue")
@@ -180,9 +181,18 @@ class CloneVMWindow(QtGui.QDialog):
         _kvmManager.setMachineName(_vmName) 
         _kvmManager.setOriginalVM(self.__originalVM) 
         
-        try:  
+        try:
+
+            _infotext = "...Cloneing..."
+            _dial = QtGui.QMessageBox.information(self,str(_infotext))
             _result = _kvmManager.cloneMachine()
-            QtGui.QMessageBox.information(self, "Result", _result) 
+            _dial.close()
+
+            mb = DetailInfoDialog()
+            mb.setText("Result:")
+            mb.setDetailedText(_result)
+            mb.exec_()
+            #QtGui.QMessageBox.information(self, "Result", _result) 
         except subprocess.CalledProcessError, e:
             infotext = "An error occurred:", (e.output.replace('\n',' ')).replace('\r',' ')
             QtGui.QMessageBox.critical(self, "Error",str(infotext))
@@ -201,7 +211,7 @@ class CloneVMWindow(QtGui.QDialog):
         _vmInfo.owner = _userInfo.fullname + "(" + _userInfo.nickname + ")"
         _vmInfo.OS = self._distName
      
-        try:     
+        try:
             self.__vmInfoDB.addVMinfo(_vmInfo)
         except sqlite3.Error, e:
             infotext = "An error occurred:", e.args[0]
