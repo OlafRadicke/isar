@@ -182,11 +182,7 @@ class CloneVMWindow(QtGui.QDialog):
         _kvmManager.setOriginalVM(self.__originalVM) 
         
         try:
-
-            _infotext = "...Cloneing..."
-            _dial = QtGui.QMessageBox.information(self,"start prozess", str(_infotext))
             _result = _kvmManager.cloneMachine()
-            _dial.close()
 
             mb = DetailInfoDialog()
             mb.setText("Result:")
