@@ -301,8 +301,8 @@ class MainWindow(QtGui.QMainWindow):
             infotext = "An error occurred:", e.args[0]
             QtGui.QMessageBox.critical(self, "Error", str(infotext))
             return
-        return            
-        self.refreshVMList()        
+        self.refreshVMList()
+        return        
 
     ## Function show info of vm
     @pyqtSlot()
