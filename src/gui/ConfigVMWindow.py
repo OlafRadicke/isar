@@ -177,7 +177,7 @@ class ConfigVMWindow(QtGui.QDialog):
         vMainLayout.addLayout(hBottomLayout)
         
 
-        closePushButton = QtGui.QPushButton("Safe")
+        closePushButton = QtGui.QPushButton("Save")
         self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('reConfigureVM()'))
         hBottomLayout.addWidget(closePushButton)
 

@@ -149,7 +149,7 @@ class NewVMWindow(QtGui.QDialog):
         # HD
         hLayoutHD = QtGui.QHBoxLayout()
         vEditLayoutR.addLayout(hLayoutHD)
-        hdLabel = QtGui.QLabel("Hart disc:")
+        hdLabel = QtGui.QLabel("Hard disc:")
         hLayoutHD.addWidget(hdLabel)
         self.hdSpinBox = QtGui.QSpinBox()
         self.hdSpinBox.setSuffix(" Gb")
@@ -184,7 +184,7 @@ class NewVMWindow(QtGui.QDialog):
         vMainLayout.addLayout(hBottomLayout)
         
 
-        closePushButton = QtGui.QPushButton("Safe")
+        closePushButton = QtGui.QPushButton("Save")
         self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('createNewVM()'))
         hBottomLayout.addWidget(closePushButton)
 
@@ -259,7 +259,7 @@ class NewVMWindow(QtGui.QDialog):
             QtGui.QMessageBox.critical(self, "Error",str(infotext))
             return  
         _infotext = "Ok, new virtual machine is created, \n \
-                    and meta data is safed..."
+                    and meta data is saved..."
         QtGui.QMessageBox.information(self, "OK",str(_infotext))
         self.close()
 

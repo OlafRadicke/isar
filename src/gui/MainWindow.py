@@ -50,7 +50,7 @@ class MainWindow(QtGui.QMainWindow):
     ## Simple List
     __listview = ""
 
-    ## Safe information about vitual machines
+    ## Save information about vitual machines
     __vmInfoDB = VMinfoDB()
 
     ## Constructor

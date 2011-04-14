@@ -59,7 +59,7 @@ class UserWindow(QtGui.QDialog):
     ## Home dir of user. Is a QLineEdit class.
     userDirLineEdit = ""
     
-    ## Safe information.
+    ## Save information.
     #vmInfoDB = VMinfoDB()
 
     ## Constructor
@@ -152,11 +152,11 @@ class UserWindow(QtGui.QDialog):
         hLayoutUserDir.addWidget(userDirPushButton)        
         
 
-        # Safe button
+        # Save button
         hSefeLayout = QtGui.QHBoxLayout()
         vEditLayoutR.addLayout(hSefeLayout)
         
-        safeButton = QtGui.QPushButton("Safe Edits")
+        safeButton = QtGui.QPushButton("Save Edits")
         self.connect(safeButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('safeEdits()'))
         hSefeLayout.addWidget(safeButton) 
         
