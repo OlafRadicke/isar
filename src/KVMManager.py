@@ -187,7 +187,7 @@ class KVMManager():
         if self.__isSSH:
             _out = self.__sshExe.do(_command)
         else:
-            print "[Command]:",_command
+            print "[doCommand]:",_command
             _f = subprocess.check_output(_command.split(),stderr=subprocess.STDOUT)
             _out = ""
             print "[_f]", _f

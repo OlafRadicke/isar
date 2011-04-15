@@ -29,6 +29,7 @@ from datetime import date
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot
 
+from KVMManager import KVMManager
 from VMinfoDB import VMinfoDB 
 from UserWindow import UserWindow
 from InstallMediaWindow import InstallMediaWindow
@@ -52,6 +53,9 @@ class MainWindow(QtGui.QMainWindow):
 
     ## Save information about vitual machines
     __vmInfoDB = VMinfoDB()
+
+    ## Managet KVM comands
+    __kvmManager = KVMManager()
 
     ## Constructor
     def __init__(self, *args): 
@@ -363,8 +367,7 @@ class MainWindow(QtGui.QMainWindow):
         else:
             print "[_vmName:]", _vmName
             try:
-                _kvmManager = KVMManager()
-                _kvmManager.startMachine(_vmName)
+                self.__kvmManager.startMachine(_vmName)
             except sqlite3.Error, e:
                 infotext = "An error occurred:", e.args[0]
                 QtGui.QMessageBox.critical(self, "Error", str(infotext))
@@ -385,8 +388,7 @@ class MainWindow(QtGui.QMainWindow):
         else:
             print "[_vmName:]", _vmName
             try:
-                _kvmManager = KVMManager()
-                _kvmManager.stopMachine(_vmName)
+                self.__kvmManager.stopMachine(_vmName)
             except sqlite3.Error, e:
                 infotext = "An error occurred:", e.args[0]
                 QtGui.QMessageBox.critical(self, "Error", str(infotext))
