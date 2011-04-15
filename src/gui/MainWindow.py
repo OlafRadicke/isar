@@ -25,6 +25,7 @@ import sys
 import logging
 import sqlite3
 import os.path
+import subprocess
 from datetime import date
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot
