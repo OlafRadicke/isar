@@ -170,12 +170,6 @@ class KVMManager():
         _command =  "virsh shutdown " + name
         self.doCommand(_command)
 
-    ## Start a machine.
-    # @param name Name of machine
-    def stopMachine(self, name):
-        _command =  "virsh stop " + name
-        self.doCommand(_command)
-
     ## Get the path of vm image.
     def getImagePath(self):
         return self.__imagePath
