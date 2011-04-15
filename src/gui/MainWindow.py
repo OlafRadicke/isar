@@ -369,8 +369,8 @@ class MainWindow(QtGui.QMainWindow):
             try:
                 _result = self.__kvmManager.startMachine(_vmName)
                 QtGui.QMessageBox.information(self, "Result", _result)
-            except sqlite3.Error, e:
-                infotext = "An error occurred:", e.args[0]
+            except subprocess.CalledProcessError, e:
+                infotext = "An error occurred:", (e.output.replace('\n',' ')).replace('\r',' ')
                 QtGui.QMessageBox.critical(self, "Error", str(infotext))
                 return
 
@@ -390,9 +390,9 @@ class MainWindow(QtGui.QMainWindow):
             print "[_vmName:]", _vmName
             try:
                 _result = self.__kvmManager.stopMachine(_vmName)
-                QtGui.QMessageBox.information(self, "Result", _result) 
-            except sqlite3.Error, e:
-                infotext = "An error occurred:", e.args[0]
+                QtGui.QMessageBox.information(self, "Result", _result)
+            except subprocess.CalledProcessError, e:
+                infotext = "An error occurred:", (e.output.replace('\n',' ')).replace('\r',' ')
                 QtGui.QMessageBox.critical(self, "Error", str(infotext))
                 return
 
