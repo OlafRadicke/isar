@@ -24,6 +24,7 @@
 
 import os
 import shlex, subprocess
+import sqlite3
 from BashSshExecution import BashSshExecution
 
 ## @file KVMManager.py
