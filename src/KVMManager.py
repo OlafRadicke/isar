@@ -62,8 +62,19 @@ class KVMManager():
     __isSSH = True
 
     def __init__(self):
-        self.__sshExe.address = ""
-        self.__sshExe.sshUser = "root"
+        _isSSH_string = ""
+        try:
+            _isSSH_string = self.__vmInfoDB.getConfiValue("ssh_conact")
+            self.__sshExe.address = self.__vmInfoDB.getConfiValue("ssh_address")
+            self.__sshExe.sshUser = self.__vmInfoDB.getConfiValue("ssh_user")
+        except sqlite3.Error, e:
+            infotext = "An error occurred:", e.args[0]
+            QtGui.QMessageBox.critical(self, "Error",str(infotext))
+        if _isSSH_string == "True":
+            self.__isSSH = True
+        else:
+            self.__isSSH = False
+        
         
     ## Set name of original virtual machine. For clone command.
     def setOriginalVM(self, name):

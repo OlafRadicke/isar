@@ -157,19 +157,23 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(toolRemove, QtCore.SIGNAL('triggered()'), QtCore.SLOT('deleteVM()'))
         self.toolbar.addAction(toolRemove)
 
-        # Tool button info of virtual machine
-        _icon = QtGui.QIcon(os.path.join(ICONDIR + 'info.png'))
-        toolInfo = QtGui.QAction(_icon, 'Info of virtual machine', self)
-        toolNew.setShortcut('Ctrl+X')
-        self.connect(toolInfo, QtCore.SIGNAL('triggered()'), QtCore.SLOT('infoVM()'))
-        self.toolbar.addAction(toolInfo)
-
         # Tool button clone a virtual machine
         _icon = QtGui.QIcon(os.path.join(ICONDIR + 'clone.png'))
         toolClone = QtGui.QAction(_icon, 'Clone a virtual machine', self)
         toolNew.setShortcut('Ctrl+X')
         self.connect(toolClone, QtCore.SIGNAL('triggered()'), QtCore.SLOT('cloneVMDialog()'))
         self.toolbar.addAction(toolClone)
+
+
+        # Separator
+        self.toolbar.addSeparator()
+
+        # Tool button info of virtual machine
+        _icon = QtGui.QIcon(os.path.join(ICONDIR + 'info.png'))
+        toolInfo = QtGui.QAction(_icon, 'Info of virtual machine', self)
+        toolNew.setShortcut('Ctrl+X')
+        self.connect(toolInfo, QtCore.SIGNAL('triggered()'), QtCore.SLOT('infoVM()'))
+        self.toolbar.addAction(toolInfo)
         
         # Separator
         self.toolbar.addSeparator()
