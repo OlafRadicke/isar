@@ -150,6 +150,42 @@ class KVMManager():
             for _line in _f:
                 _out = _out + _line
         return  _out
-        
+
+    ## Start a machine.
+    # @param name Name of machine
+    def startMachine(self, name):
+        _command =  "virsh start " + name
+        self.doCommand(_command)
+
+
+    ## Stop a machine.
+    # @param name Name of machine
+    def stopMachine(self, name):
+        _command =  "virsh shutdown " + name
+        self.doCommand(_command)
+
+    ## Start a machine.
+    # @param name Name of machine
+    def stopMachine(self, name):
+        _command =  "virsh stop " + name
+        self.doCommand(_command)
+
+    ## Get the path of vm image.
     def getImagePath(self):
         return self.__imagePath
+
+
+    # Execute command.
+    def doCommand(self, command):
+        _command = command
+        if self.__isSSH:
+            _out = self.__sshExe.do(_command)
+        else:
+            print "[Command]:",_command
+            _f = subprocess.check_output(_command.split(),stderr=subprocess.STDOUT)
+            _out = ""
+            print "[_f]", _f
+            for _line in _f:
+                _out = _out + _line
+        return  _out
+      

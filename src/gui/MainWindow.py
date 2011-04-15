@@ -174,6 +174,20 @@ class MainWindow(QtGui.QMainWindow):
         toolNew.setShortcut('Ctrl+X')
         self.connect(toolInfo, QtCore.SIGNAL('triggered()'), QtCore.SLOT('infoVM()'))
         self.toolbar.addAction(toolInfo)
+
+        # Tool button start virtual machine
+        _icon = QtGui.QIcon(os.path.join(ICONDIR + 'vmstart.png'))
+        toolVMstart = QtGui.QAction(_icon, 'Start a virtual machine', self)
+        toolNew.setShortcut('Ctrl+X')
+        self.connect(toolVMstart, QtCore.SIGNAL('triggered()'), QtCore.SLOT('startVM()'))
+        self.toolbar.addAction(toolVMstart)
+
+        # Tool button stop a virtual machine
+        _icon = QtGui.QIcon(os.path.join(ICONDIR + 'vmstop.png'))
+        toolVMstop = QtGui.QAction(_icon, 'Stop a virtual machine', self)
+        toolNew.setShortcut('Ctrl+X')
+        self.connect(toolVMstop, QtCore.SIGNAL('triggered()'), QtCore.SLOT('stopVM()'))
+        self.toolbar.addAction(toolVMstop)
         
         # Separator
         self.toolbar.addSeparator()
@@ -333,6 +347,51 @@ class MainWindow(QtGui.QMainWindow):
             return               
             
             self.refreshVMList()
+
+    ## Function start a virtual machine
+    @pyqtSlot()
+    def startVM(self):
+        logging.debug("[startVM] ...")
+        _vmName = ""
+        for item in self.__listview.selectedItems():
+            _vmName = str(item.text(1))
+
+        if( _vmName == "" ):
+            infotext = 'No virtual machine select...'
+            self.statusBar().showMessage(infotext)
+            QtGui.QMessageBox.critical(self, "Error", str(infotext))
+        else:
+            print "[_vmName:]", _vmName
+            try:
+                _kvmManager = KVMManager()
+                _kvmManager.startMachine(_vmName)
+            except sqlite3.Error, e:
+                infotext = "An error occurred:", e.args[0]
+                QtGui.QMessageBox.critical(self, "Error", str(infotext))
+                return
+
+    ## Function stop a virtual machine
+    @pyqtSlot()
+    def stopVM(self):
+        logging.debug("[stopVM] ...")
+        _vmName = ""
+        for item in self.__listview.selectedItems():
+            _vmName = str(item.text(1))
+
+        if( _vmName == "" ):
+            infotext = 'No virtual machine select...'
+            self.statusBar().showMessage(infotext)
+            QtGui.QMessageBox.critical(self, "Error", str(infotext))
+        else:
+            print "[_vmName:]", _vmName
+            try:
+                _kvmManager = KVMManager()
+                _kvmManager.stopMachine(_vmName)
+            except sqlite3.Error, e:
+                infotext = "An error occurred:", e.args[0]
+                QtGui.QMessageBox.critical(self, "Error", str(infotext))
+                return
+
 
     ## Function delete a vm
     @pyqtSlot()
