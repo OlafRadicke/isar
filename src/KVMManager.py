@@ -25,6 +25,8 @@
 import os
 import shlex, subprocess
 import sqlite3
+
+from VMinfoDB import VMinfoDB 
 from BashSshExecution import BashSshExecution
 
 ## @file KVMManager.py
@@ -61,6 +63,9 @@ class KVMManager():
 
     ## set ssh support on and off
     __isSSH = True
+
+    ## Save information about vitual machines
+    __vmInfoDB = VMinfoDB()
 
     def __init__(self):
         _isSSH_string = ""
