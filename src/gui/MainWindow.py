@@ -193,6 +193,13 @@ class MainWindow(QtGui.QMainWindow):
         toolNew.setShortcut('Ctrl+X')
         self.connect(toolVMstop, QtCore.SIGNAL('triggered()'), QtCore.SLOT('stopVM()'))
         self.toolbar.addAction(toolVMstop)
+
+        # Tool button view a running virtual machine.
+        _icon = QtGui.QIcon(os.path.join(ICONDIR + 'viewvm.png'))
+        toolViewVM = QtGui.QAction(_icon, 'View a running virtual machine', self)
+        toolNew.setShortcut('Ctrl+X')
+        self.connect(toolViewVM, QtCore.SIGNAL('triggered()'), QtCore.SLOT('infoVM()'))
+        self.toolbar.addAction(toolViewVM)        
         
         # Separator
         self.toolbar.addSeparator()
