@@ -1,7 +1,0 @@
- virt-install   --connect=qemu:///system \
-               --name ${2}_fedora64_14_${1}   \
-               --ram ${3}  \
-               --disk path=/srv/storage/testsystems/${2}/${2}_fedora64_14_${1}.img,size=${4},bus=virtio,cache=writeback  \
-               --cdrom /atix/cds/redhat-fedora/Fedora-14-x86_64-Live-Desktop.iso   \                                                                         
-               --accelerate    \                                                                                                                             
-               --network bridge=externqabr0   

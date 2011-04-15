@@ -32,6 +32,7 @@ dist: doxygen
 	mkdir $(OUTPUT_BUILD)
 	cp ./GPL3.txt  $(OUTPUT_BUILD)
 	cp ./README.txt  $(OUTPUT_BUILD)
+	cp ./Makefile  $(OUTPUT_BUILD)
 	mkdir $(OUTPUT_BUILD)/src
 	cp ./src/*.py  $(OUTPUT_BUILD)/src/
 	mkdir $(OUTPUT_BUILD)/src/gui
