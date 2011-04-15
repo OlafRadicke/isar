@@ -56,7 +56,7 @@ class MainWindow(QtGui.QMainWindow):
     __vmInfoDB = VMinfoDB()
 
     ## Managet KVM comands
-    __kvmManager = KVMManager()
+    #__kvmManager = KVMManager()
 
     ## Constructor
     def __init__(self, *args): 
@@ -170,7 +170,7 @@ class MainWindow(QtGui.QMainWindow):
         self.toolbar.addAction(toolClone)
 
 
-        # Separator
+        # Separator ----------------------------
         self.toolbar.addSeparator()
 
         # Tool button info of virtual machine
@@ -198,10 +198,10 @@ class MainWindow(QtGui.QMainWindow):
         _icon = QtGui.QIcon(os.path.join(ICONDIR + 'viewvm.png'))
         toolViewVM = QtGui.QAction(_icon, 'View a running virtual machine', self)
         toolNew.setShortcut('Ctrl+X')
-        self.connect(toolViewVM, QtCore.SIGNAL('triggered()'), QtCore.SLOT('infoVM()'))
+        self.connect(toolViewVM, QtCore.SIGNAL('triggered()'), QtCore.SLOT('viewVM()'))
         self.toolbar.addAction(toolViewVM)        
         
-        # Separator
+        # Separator -----------------------------------------
         self.toolbar.addSeparator()
 
         # Tool button Edit user
@@ -217,6 +217,17 @@ class MainWindow(QtGui.QMainWindow):
         toolISOs.setShortcut('Ctrl+X')
         self.connect(toolISOs, QtCore.SIGNAL('triggered()'), QtCore.SLOT('editISOs()'))
         self.toolbar.addAction(toolISOs)        
+        
+        
+        # Separator -----------------------------------------
+        self.toolbar.addSeparator()
+
+        # Tool button Edit user
+        _icon = QtGui.QIcon(os.path.join(ICONDIR + 'configure.png'))
+        toolConf = QtGui.QAction(_icon, 'Edit user', self)
+        toolNew.setShortcut('Ctrl+X')
+        self.connect(toolConf, QtCore.SIGNAL('triggered()'), QtCore.SLOT('mainConfig()'))
+        self.toolbar.addAction(toolConf)        
         
         # ----------- toolbar end ------------------------
 
@@ -375,7 +386,8 @@ class MainWindow(QtGui.QMainWindow):
         else:
             print "[_vmName:]", _vmName
             try:
-                _result = self.__kvmManager.startMachine(_vmName)
+                _kvmManager = KVMManager()
+                _result = _kvmManager.startMachine(_vmName)
                 QtGui.QMessageBox.information(self, "Result", _result)
             except subprocess.CalledProcessError, e:
                 infotext = "An error occurred:", (e.output.replace('\n',' ')).replace('\r',' ')
@@ -397,12 +409,38 @@ class MainWindow(QtGui.QMainWindow):
         else:
             print "[_vmName:]", _vmName
             try:
-                _result = self.__kvmManager.stopMachine(_vmName)
+                _kvmManager = KVMManager()
+                _result = _kvmManager.stopMachine(_vmName)
                 QtGui.QMessageBox.information(self, "Result", _result)
             except subprocess.CalledProcessError, e:
                 infotext = "An error occurred:", (e.output.replace('\n',' ')).replace('\r',' ')
                 QtGui.QMessageBox.critical(self, "Error", str(infotext))
                 return
+
+
+    ## Function view a virtual machine
+    @pyqtSlot()
+    def viewVM(self):
+        logging.debug("[viewVM] ...")
+        _vmName = ""
+        for item in self.__listview.selectedItems():
+            _vmName = str(item.text(1))
+
+        if( _vmName == "" ):
+            infotext = 'No virtual machine select...'
+            self.statusBar().showMessage(infotext)
+            QtGui.QMessageBox.critical(self, "Error", str(infotext))
+        else:
+            print "[_vmName:]", _vmName
+            try:
+                _kvmManager = KVMManager()
+                _result = _kvmManager.viewMachine(_vmName)
+                #QtGui.QMessageBox.information(self, "Result", _result)
+            except subprocess.CalledProcessError, e:
+                infotext = "An error occurred:", (e.output.replace('\n',' ')).replace('\r',' ')
+                QtGui.QMessageBox.critical(self, "Error", str(infotext))
+                return
+
 
 
     ## Function delete a vm

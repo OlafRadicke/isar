@@ -174,6 +174,11 @@ class KVMManager():
     def getImagePath(self):
         return self.__imagePath
 
+    ## View a machine.
+    # @param name Name of machine
+    def viewMachine(self, name):
+        _command =  "virt-viewer " + name
+        return self.doCommand(_command)
 
     # Execute command.
     def doCommand(self, command):
