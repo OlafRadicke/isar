@@ -364,7 +364,7 @@ class MainWindow(QtGui.QMainWindow):
     ## Function show info of vm
     @pyqtSlot()
     def infoVM(self):
-        logging.debug("[20110402201311] deleteVM")
+        logging.debug("[infoVM] ...")
         _vmName = ""
         for item in self.__listview.selectedItems():
             print  "[...]" , item.text(1)

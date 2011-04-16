@@ -236,12 +236,25 @@ class NewVMWindow(QtGui.QDialog):
             QtGui.QMessageBox.information(self, "Result", _result) 
         except subprocess.CalledProcessError, e:
             infotext = "An error occurred:", (e.output.replace('\n',' ')).replace('\r',' ')
-            QtGui.QMessageBox.critical(self, "Error",str(infotext))
-            return  
+            #QtGui.QMessageBox.critical(self, "Error",str(infotext))
+            ret = QtGui.QMessageBox.critical(self, \
+                                "Error", \
+                                str(infotext), \
+                                QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Ignore)
+
+            if (ret == QtGui.QMessageBox.Cancel):   
+                return  
         except OSError, e:
             infotext = "An error occurred:", e.args[0]
-            QtGui.QMessageBox.critical(self, "Error",str(infotext))
-            return  
+            #QtGui.QMessageBox.critical(self, "Error",str(infotext))
+            ret = QtGui.QMessageBox.critical(self, \
+                                "Error", \
+                                str(infotext), \
+                                QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Ignore)
+
+            if (ret == QtGui.QMessageBox.Cancel):   
+                return  
+            
             
         _vmInfo.name = _vmName
         _vmInfo.createdate = str(int(time.time()))
