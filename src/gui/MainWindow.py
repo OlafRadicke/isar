@@ -30,14 +30,15 @@ from datetime import date
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot
 
-from KVMManager import KVMManager
-from VMinfoDB import VMinfoDB 
-from UserWindow import UserWindow
-from InstallMediaWindow import InstallMediaWindow
-from NewVMWindow import NewVMWindow
 from CloneVMWindow import CloneVMWindow
-from MainConfigWindow import MainConfigWindow
 from ConfigVMWindow import ConfigVMWindow
+from DetailInfoDialog import DetailInfoDialog
+from InstallMediaWindow import InstallMediaWindow
+from KVMManager import KVMManager
+from MainConfigWindow import MainConfigWindow
+from NewVMWindow import NewVMWindow
+from UserWindow import UserWindow
+from VMinfoDB import VMinfoDB 
 from GLOBALS import BASEDIR, ICONDIR, FRAM_STYLE_SHEET
 
 ## @file MainWindow.py
@@ -135,6 +136,21 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(menuMachineDelete, QtCore.SIGNAL('triggered()'), QtCore.SLOT('deleteVM()'))
         menuMachine.addAction(menuMachineDelete)
 
+        # view all exist virtual machine
+        menuViewExist = QtGui.QAction( 'View all exist', self)
+        menuViewExist.setShortcut('Ctrl+V')
+        menuViewExist.setStatusTip('View all exist virtual machine')
+        self.connect(menuViewExist, QtCore.SIGNAL('triggered()'), QtCore.SLOT('viewAllExistVM()'))
+        menuMachine.addAction(menuViewExist)     
+        
+        
+        # import all exist virtual machine, where missing in Database.
+        menuImportExist = QtGui.QAction( 'Import exist machine', self)
+        menuImportExist.setShortcut('Ctrl+V')
+        menuImportExist.setStatusTip('Import all exist virtual machine, where missing in Database')
+        self.connect(menuImportExist, QtCore.SIGNAL('triggered()'), QtCore.SLOT('importAllExistVM()'))
+        menuMachine.addAction(menuImportExist)
+        
         # --------- info menu ---------------
 
         menuInfo = menubar.addMenu('&Info')        
@@ -309,15 +325,15 @@ class MainWindow(QtGui.QMainWindow):
     ## Refrash the list of tasks.
     @pyqtSlot()
     def refreshVMList(self):
-        userList = list()
+        _VMList = list()
         try:
-            userList = self.__vmInfoDB.getAllVMinfo()
+            _VMList = self.__vmInfoDB.getAllVMinfo()
         except sqlite3.Error, e:
             infotext = "An error occurred:", e.args[0]
             QtGui.QMessageBox.critical(self, "Error", str(infotext))
             return            
         self.__listview.clear()
-        for item in userList:
+        for item in _VMList:
             _date = d = date.fromtimestamp(int(item.createdate))
             qStringList = QtCore.QStringList([ \
                 str(item.owner),  \
@@ -561,5 +577,58 @@ class MainWindow(QtGui.QMainWindow):
             QtGui.QMessageBox.critical(self, "Error", str(infotext))
             return
 
+    ## Slot for open  window for eding main config.
+    @pyqtSlot()
+    def viewAllExistVM(self):
+        logging.debug("[viewAllExistVM]")
+        _kvmManager = KVMManager()    
+        _infotext = _kvmManager.getAllExistVM()
+                
+        _did = DetailInfoDialog()
+        _did.setText("Result:")
+        _did.setDetailedText(str(_infotext))
+        _did.exec_()        
+        self.close()
+        
 
+    ## Slot for open  window for eding main config.
+    @pyqtSlot()
+    def importAllExistVM(self):
+        logging.debug("[importAllExistVM]")
+        _kvmManager = KVMManager()    
+        _infotext = _kvmManager.getAllExistVM()
+        _importVMList = list()
+        _VMList = list()
+        try:
+            _VMList = self.__vmInfoDB.getAllVMinfo()
+        except sqlite3.Error, e:
+            infotext = "An error occurred:", e.args[0]
+            QtGui.QMessageBox.critical(self, "Error", str(infotext))
+            return    
             
+        print "_infotext", len(_infotext.split("\n"))
+        _lines = _infotext.split("\n")
+        # cute list header..
+        _netto = _lines[2:]
+        # if exist virtual machine...
+        for _line in _netto:
+            _columns = _line.split(" ")
+            # if exist virtual machine...
+            if len(_columns) > 3:
+                _existVMName = _columns[3]
+                # comparing data base list with list of exist machines.
+                _isFoundInDB = False
+                for _dbItem in _VMList:
+                    if str(_dbItem.name) == str(_existVMName):
+                        print "[ignore]:", str(_dbItem.name)
+                        _isFoundInDB = True
+                # disregard if name in database of isar
+                if _isFoundInDB == False:
+                    _importVMList.append(_existVMName)
+        
+        _did = DetailInfoDialog()
+        _did.setText("Import:")
+        _did.setDetailedText(str(_importVMList))
+        _did.exec_()        
+        self.close()        
+        

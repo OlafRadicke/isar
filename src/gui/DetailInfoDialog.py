@@ -42,21 +42,24 @@ class DetailInfoDialog(QtGui.QMessageBox):
     def __init__(self):
         QtGui.QMessageBox.__init__(self)
         self.setSizeGripEnabled(True)
+        textEdit = self.findChild(QtGui.QTextEdit)
+        if textEdit != None :
+            textEdit.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
 
     def event(self, e):
         result = QtGui.QMessageBox.event(self, e)
 
         self.setMinimumHeight(0)
         self.setMaximumHeight(16777215)
-        self.setMinimumWidth(0)
+        self.setMinimumWidth(300)
         self.setMaximumWidth(16777215)
         self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
 
         textEdit = self.findChild(QtGui.QTextEdit)
         if textEdit != None :
-            textEdit.setMinimumHeight(0)
+            textEdit.setMinimumHeight(400)
             textEdit.setMaximumHeight(16777215)
-            textEdit.setMinimumWidth(0)
+            textEdit.setMinimumWidth(400)
             textEdit.setMaximumWidth(16777215)
             textEdit.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
 

@@ -81,32 +81,26 @@ class KVMManager():
         else:
             self.__isSSH = False
         
+    ## Clone a virtual machine....
+    def cloneMachine(self):
+        _out = ""
+        self.__imagePath = self.__ownersHome + "/" + self.__vmName + ".img"
+        _command =  "virt-clone "
+        _command += " --force "
+        _command += " --original " + self.__originalVM
+        _command += " --name " + self.__vmName 
+        _command += " --file " + self.__imagePath
         
-    ## Set name of original virtual machine. For clone command.
-    def setOriginalVM(self, name):
-        self.__originalVM = name        
-        
-    ## Set home dir of owner.
-    def setOwnersHome(self, name):
-        name = name.replace(" ", "_")
-        self.__ownersHome = name        
-        
-    ## Set name of Machine
-    def setMachineName(self, name):
-        name = name.replace(" ", "_")
-        self.__vmName = name    
-        
-    ## Set RAM size.
-    def setRAM(self, size):
-        self.__ram = str(size)
-        
-    ## Set hard disc size.
-    def setHdSize(self, size):   
-        self.__hdSize = str(size)
-
-    ## Set the path of ISO.
-    def setIsoPath(self, path):        
-        self.__IsoPath = path
+        if self.__isSSH:
+            _out = self.__sshExe.do(_command)
+        else:        
+            print "[Command]:",_command
+            _f = subprocess.check_output(_command.split(),stderr=subprocess.STDOUT)
+            _out = ""
+            print "[_f]", _f
+            for _line in _f:
+                _out = _out + _line
+        return  _out
 
     ## Create a new virual machine.
     def createNewMachine(self):
@@ -135,50 +129,6 @@ class KVMManager():
             for _line in _f:
                 _out = _out + _line
         return  _out
-        
-    ## Clone a virtual machine....
-    def cloneMachine(self):
-        _out = ""
-        self.__imagePath = self.__ownersHome + "/" + self.__vmName + ".img"
-        _command =  "virt-clone "
-        _command += " --force "
-        _command += " --original " + self.__originalVM
-        _command += " --name " + self.__vmName 
-        _command += " --file " + self.__imagePath
-        
-        if self.__isSSH:
-            _out = self.__sshExe.do(_command)
-        else:        
-            print "[Command]:",_command
-            _f = subprocess.check_output(_command.split(),stderr=subprocess.STDOUT)
-            _out = ""
-            print "[_f]", _f
-            for _line in _f:
-                _out = _out + _line
-        return  _out
-
-    ## Start a machine.
-    # @param name Name of machine
-    def startMachine(self, name):
-        _command =  "virsh start " + name
-        return self.doCommand(_command)
-
-
-    ## Stop a machine.
-    # @param name Name of machine
-    def stopMachine(self, name):
-        _command =  "virsh shutdown " + name
-        return self.doCommand(_command)
-
-    ## Get the path of vm image.
-    def getImagePath(self):
-        return self.__imagePath
-
-    ## View a machine.
-    # @param name Name of machine
-    def viewMachine(self, name):
-        _command =  "virt-viewer " + name
-        return self.doCommand(_command)
 
     # Execute command.
     def doCommand(self, command):
@@ -193,4 +143,58 @@ class KVMManager():
             for _line in _f:
                 _out = _out + _line
         return  _out
+
+    ## Get the path of vm image.
+    def getImagePath(self):
+        return self.__imagePath
+        
+    def getAllExistVM(self):
+        _command =  "virsh list --all "
+        return self.doCommand(_command)
+        
+    ## Set hard disc size.
+    def setHdSize(self, size):   
+        self.__hdSize = str(size)
+
+    ## Set the path of ISO.
+    def setIsoPath(self, path):        
+        self.__IsoPath = path
+        
+    ## Set name of Machine
+    def setMachineName(self, name):
+        name = name.replace(" ", "_")
+        self.__vmName = name            
+        
+    ## Set name of original virtual machine. For clone command.
+    def setOriginalVM(self, name):
+        self.__originalVM = name        
+        
+    ## Set home dir of owner.
+    def setOwnersHome(self, name):
+        name = name.replace(" ", "_")
+        self.__ownersHome = name        
+        
+    ## Set RAM size.
+    def setRAM(self, size):
+        self.__ram = str(size)
+
+    ## Start a machine.
+    # @param name Name of machine
+    def startMachine(self, name):
+        _command =  "virsh start " + name
+        return self.doCommand(_command)
+
+    ## Stop a machine.
+    # @param name Name of machine
+    def stopMachine(self, name):
+        _command =  "virsh shutdown " + name
+        return self.doCommand(_command)
+
+    ## View a machine.
+    # @param name Name of machine
+    def viewMachine(self, name):
+        _command =  "virt-viewer " + name
+        return self.doCommand(_command)
+
+
       

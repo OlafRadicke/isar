@@ -186,7 +186,7 @@ class CloneVMWindow(QtGui.QDialog):
             _result = _kvmManager.cloneMachine()
 
             mb = DetailInfoDialog()
-            mb.setText("Result:")
+            mb.setText("Result detail:")
             mb.setDetailedText(_result)
             mb.exec_()
             #QtGui.QMessageBox.information(self, "Result", _result) 
