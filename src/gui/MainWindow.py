@@ -57,6 +57,9 @@ class MainWindow(QtGui.QMainWindow):
 
     ## Managet KVM comands
     #__kvmManager = KVMManager()
+    
+    ## order of VM list.
+    __listOrder = QtCore.Qt.DescendingOrder
 
     ## Constructor
     def __init__(self, *args): 
@@ -259,6 +262,7 @@ class MainWindow(QtGui.QMainWindow):
         # -------------- List --------------
 
         self.__listview = QtGui.QTreeWidget()
+        #self.__listview.setSortingEnabled(True)
         _haderList = ["owner","name","create","OS"]
         self.__listview.setColumnCount(len(_haderList))
         (self.__listview.header()).resizeSection(0, 130) 
@@ -272,6 +276,18 @@ class MainWindow(QtGui.QMainWindow):
         # Item-List
         self.refreshVMList()
 
+    ## A function with qt-slot. it's sorted the list of VMs.
+    #@pyqtSlot()
+    #def sortList(self):
+        #_index = self.__listview.currentColumn()
+        #print "[_index]: ", _index
+        #if self.__listOrder == QtCore.Qt.DescendingOrder:
+            #self.__listview.sortItems(_index, QtCore.Qt.AscendingOrder)
+            #self.__listOrder = QtCore.Qt.AscendingOrder
+        #else:
+            #self.__listview.sortItems(_index, QtCore.Qt.DescendingOrder)
+            #self.__listOrder = QtCore.Qt.DescendingOrder
+            
 
     ## A function with qt-slot. it's creade a new vm.
     @pyqtSlot()
