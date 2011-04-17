@@ -21,11 +21,13 @@
  #                                                                         #
  ###########################################################################
 
+import time
 import sys
 import logging
 import sqlite3
 import os.path
 import subprocess
+
 from datetime import date
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot
@@ -38,6 +40,7 @@ from KVMManager import KVMManager
 from MainConfigWindow import MainConfigWindow
 from NewVMWindow import NewVMWindow
 from UserWindow import UserWindow
+from VMinfo import VMinfo
 from VMinfoDB import VMinfoDB 
 from GLOBALS import BASEDIR, ICONDIR, FRAM_STYLE_SHEET
 
@@ -146,7 +149,7 @@ class MainWindow(QtGui.QMainWindow):
         
         # import all exist virtual machine, where missing in Database.
         menuImportExist = QtGui.QAction( 'Import exist machine', self)
-        menuImportExist.setShortcut('Ctrl+V')
+        menuImportExist.setShortcut('Ctrl+Y')
         menuImportExist.setStatusTip('Import all exist virtual machine, where missing in Database')
         self.connect(menuImportExist, QtCore.SIGNAL('triggered()'), QtCore.SLOT('importAllExistVM()'))
         menuMachine.addAction(menuImportExist)
@@ -377,7 +380,7 @@ class MainWindow(QtGui.QMainWindow):
         self.refreshVMList()
         return        
 
-    ## Function show info of vm
+    ## Function show or eding info of vm
     @pyqtSlot()
     def infoVM(self):
         logging.debug("[infoVM] ...")
@@ -398,10 +401,10 @@ class MainWindow(QtGui.QMainWindow):
             except sqlite3.Error, e: 
                 infotext = "An error occurred:", e.args[0]
                 QtGui.QMessageBox.critical(self, "Error", str(infotext))
-                return
-            return               
+                return          
             
             self.refreshVMList()
+            return     
 
     ## Function start a virtual machine
     @pyqtSlot()
@@ -597,6 +600,7 @@ class MainWindow(QtGui.QMainWindow):
         logging.debug("[importAllExistVM]")
         _kvmManager = KVMManager()    
         _infotext = _kvmManager.getAllExistVM()
+        _vmInfo = VMinfo()
         _importVMList = list()
         _VMList = list()
         try:
@@ -625,10 +629,28 @@ class MainWindow(QtGui.QMainWindow):
                 # disregard if name in database of isar
                 if _isFoundInDB == False:
                     _importVMList.append(_existVMName)
+        # Import...
+        for _vmName in _importVMList:
+            
+            _vmInfo.name = _vmName
+            _vmInfo.createdate = str(int(time.time()))
+            _vmInfo.lifetimedays = "60"
+            _vmInfo.comment = "Data import by isar." 
+            _vmInfo.mail = "root@localhost"
+            _vmInfo.image_file = ""
+            _vmInfo.owner = "no body"
+            _vmInfo.OS = "unknown"
         
+            try:
+                self.__vmInfoDB.addVMinfo(_vmInfo)
+            except sqlite3.Error, e:
+                infotext = "An error occurred:", e.args[0]
+                QtGui.QMessageBox.critical(self, "Error",str(infotext))
+                return              
+            
         _did = DetailInfoDialog()
         _did.setText("Import:")
-        _did.setDetailedText(str(_importVMList))
-        _did.exec_()        
-        self.close()        
+        _did.setDetailedText("\n".join(_importVMList))
+        _did.exec_()     
+        self.refreshVMList()    
         

@@ -28,13 +28,13 @@ import time
 import subprocess
 
 import GLOBALS
+from DetailInfoDialog import DetailInfoDialog
+from KVMManager import KVMManager
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import pyqtSlot
-from VMinfoDB import VMinfoDB 
 from UserInfo import UserInfo
-from KVMManager import KVMManager
+from VMinfoDB import VMinfoDB 
 from VMinfo import VMinfo
-from DetailInfoDialog import DetailInfoDialog
 
 
 ## @file CloneVMWindow.py

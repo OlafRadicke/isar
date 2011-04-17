@@ -177,11 +177,11 @@ class ConfigVMWindow(QtGui.QDialog):
         vMainLayout.addLayout(hBottomLayout)
         
 
-        closePushButton = QtGui.QPushButton("Save")
+        closePushButton = QtGui.QPushButton("Save/Close")
         self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('reConfigureVM()'))
         hBottomLayout.addWidget(closePushButton)
 
-        closePushButton = QtGui.QPushButton("Cancel")
+        closePushButton = QtGui.QPushButton("Cancel/Close")
         self.connect(closePushButton, QtCore.SIGNAL('clicked()'), QtCore.SLOT('close()'))
         hBottomLayout.addWidget(closePushButton)
 
@@ -193,19 +193,12 @@ class ConfigVMWindow(QtGui.QDialog):
         print "[reConfigureVM...]"
         _result = ""
         _vmInfo = VMinfo()
-        
-        _owner = str(self.owenerComboBox.currentText())
-        _userInfo = self.__vmInfoDB.getUser(_owner)
-        _lifeTime = str(self.lifeTimeSpinBox.value())
-        _comment = unicode(self.commentLineEdit.text())
-        
-        _vmName = unicode(self.vmNameLineEdit.text())
              
-        _vmInfo.name = _vmName
-        _vmInfo.lifetimedays = _lifeTime
-        _vmInfo.comment = _comment
-        _vmInfo.mail = _userInfo.mail
-        _vmInfo.owner = _userInfo.fullname + "(" + _userInfo.nickname + ")"
+        _vmInfo.name = str(self.vmNameLineEdit.text())
+        _vmInfo.lifetimedays = str(self.lifeTimeSpinBox.value())
+        _vmInfo.comment = unicode(self.commentLineEdit.text(), "utf-8")
+        _vmInfo.mail = str(self.mailLineEdit.text())
+        _vmInfo.owner = unicode(self.__vmOwnerLineEdit.text(), "utf-8")
      
         try:     
             self.__vmInfoDB.updateVMinfo(_vmInfo)
