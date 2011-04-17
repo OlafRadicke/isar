@@ -37,6 +37,8 @@ dist: doxygen
 	cp ./src/*.py  $(OUTPUT_BUILD)/src/
 	mkdir $(OUTPUT_BUILD)/src/gui
 	cp ./src/gui/*.py  $(OUTPUT_BUILD)/src/gui/
+	mkdir $(OUTPUT_BUILD)/src/cron
+	cp ./src/cron/*.sh  $(OUTPUT_BUILD)/src/cron/
 	mkdir ./$(OUTPUT_BUILD)/icons
 	cp ./icons/*  $(OUTPUT_BUILD)/icons/
 	mkdir $(OUTPUT_BUILD)/docs

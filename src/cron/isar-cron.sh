@@ -1,5 +1,5 @@
 #!/bin/bash
-DATABASEFILE='/tmp/isar.db';
+DATABASEFILE='/var/isar.db';
 TIMESTAMP=`date +%s`
 
 NAMES=(`sqlite3 $DATABASEFILE  "select name from vmachine"`)

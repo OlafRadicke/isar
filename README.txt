@@ -18,6 +18,10 @@ Beta
 5. init the database over window menu "file"->"Create Database".
 6. Configure contact typ over window menu "file"->"Settings".
 
+    install mail reminder:
+Edit the file /src/cron/isar-cron.sh and configure this as cron job.
+
+
     UNINSTALL
 
 make uninstall
