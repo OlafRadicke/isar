@@ -289,6 +289,9 @@ class MainWindow(QtGui.QMainWindow):
         (self.__listview.header()).resizeSection(2, 130) 
         (self.__listview.header()).resizeSection(3, 130) 
         self.__listview.setHeaderLabels(_haderList)
+        #self.connect(self.__listview,
+            QtCore.SIGNAL('doubleClicked(QModelIndex*,int)'), QtCore.SLOT('self.viewVM'))
+        self.connect(self.__listview, QtCore.SIGNAL('mouseDoubleClickEvent()'), QtCore.SLOT('viewVM()'))
         vListLayoutL.addWidget(self.__listview)
         # ---------- Statusbar ------------
         self.statusBar().showMessage('...Ready')
@@ -379,6 +382,12 @@ class MainWindow(QtGui.QMainWindow):
             return
         self.refreshVMList()
         return        
+
+    ## Function show or eding info of vm
+    @pyqtSlot()
+    def doubleClicked(self,item, column):
+        print "[doubleClicked]"
+        self.infoVM()
 
     ## Function show or eding info of vm
     @pyqtSlot()
