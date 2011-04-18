@@ -596,8 +596,7 @@ class MainWindow(QtGui.QMainWindow):
         _did = DetailInfoDialog()
         _did.setText("Result:")
         _did.setDetailedText(str(_infotext))
-        _did.exec_()        
-        self.close()
+        _did.exec_()
         
 
     ## Slot for open  window for eding main config.
@@ -652,7 +651,13 @@ class MainWindow(QtGui.QMainWindow):
             except sqlite3.Error, e:
                 infotext = "An error occurred:", e.args[0]
                 QtGui.QMessageBox.critical(self, "Error",str(infotext))
-                return              
+                ret = QtGui.QMessageBox.critical(self, \
+                    "Error", \
+                    str(infotext), \
+                    QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Ignore)
+                if (ret == QtGui.QMessageBox.Cancel):
+                    return
+          
             
         _did = DetailInfoDialog()
         _did.setText("Import:")
