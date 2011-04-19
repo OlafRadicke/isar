@@ -75,7 +75,9 @@ class ConfigVMWindow(QtGui.QDialog):
     ## Box for comment.
     commentNameLabel  = "" 
     
-
+    ## Combo box for select owner.
+    ownerComboBox = ""
+    
 
     ## Constructor
     # @param vmInfoDB a VMinfoDB class objekt.
@@ -167,7 +169,22 @@ class ConfigVMWindow(QtGui.QDialog):
         self.vmImageLineEdit = QtGui.QLineEdit()
         self.vmImageLineEdit.setText(self.__vmData.image_file)
         self.vmImageLineEdit.setReadOnly(True)
-        hLayoutVMimageFile.addWidget(self.vmImageLineEdit)  
+        hLayoutVMimageFile.addWidget(self.vmImageLineEdit)
+
+        # Selct owner
+        hLayoutOwner = QtGui.QHBoxLayout()
+        vEditLayoutR.addLayout(hLayoutOwner)
+        ownerLabel = QtGui.QLabel("Or select a user:")
+        hLayoutOwner.addWidget(ownerLabel)
+        self.ownerComboBox = QtGui.QComboBox("")
+        _allUser = self.__vmInfoDB.getAllUser()
+        self.ownerComboBox.addItem()
+        for _user in _allUser:
+            self.ownerComboBox.addItem(_user.nickname)
+        self.connect(self.ownerComboBox, QtCore.SIGNAL('textChanged(QString)'), QtCore.SLOT('ownerComboBoxChange(QString)'))
+        #self.connect(self.ownerComboBox, QtCore.SIGNAL('currentIndexChanged(QString)'), QtCore.SLOT('ownerComboBoxChange(QString)'))
+        hLayoutOwner.addWidget(self.ownerComboBox)
+        
         
         
         # ---------- Bottom area --------------------
@@ -213,10 +230,9 @@ class ConfigVMWindow(QtGui.QDialog):
     ## it is action if owener Combo Box changes.
     @pyqtSlot(QtCore.QString)
     def owenerComboBoxChange(self, text):
-        pass
+        print "[owenerComboBoxChange]:", text
+
+        _owner = str(text)
+        _userInfo = self.__vmInfoDB.getUser(_owner)
  
 
-    ## it is action if ISO Combo Box changes
-    @pyqtSlot(QtCore.QString)
-    def isoComboBoxChange(self, text):
-        pass           
