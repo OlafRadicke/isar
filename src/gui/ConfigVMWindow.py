@@ -120,16 +120,7 @@ class ConfigVMWindow(QtGui.QDialog):
         self.vmNameLineEdit = QtGui.QLineEdit()
         self.vmNameLineEdit.setText(self.__vmData.name)
         self.vmNameLineEdit.setReadOnly(True)
-        hLayoutVMname.addWidget(self.vmNameLineEdit)
-
-        # owener 
-        hLayoutOwner = QtGui.QHBoxLayout()
-        vEditLayoutR.addLayout(hLayoutOwner)
-        owenerLabel = QtGui.QLabel("Owner:")
-        hLayoutOwner.addWidget(owenerLabel)
-        self.__vmOwnerLineEdit = QtGui.QLineEdit()
-        self.__vmOwnerLineEdit.setText(self.__vmData.owner)
-        hLayoutOwner.addWidget(self.__vmOwnerLineEdit)
+        hLayoutVMname.addWidget(self.vmNameLineEdit)      
 
         # life time
         hLayoutLifeTime = QtGui.QHBoxLayout()
@@ -143,24 +134,6 @@ class ConfigVMWindow(QtGui.QDialog):
         self.lifeTimeSpinBox.setValue(int(self.__vmData.lifetimedays))
         hLayoutLifeTime.addWidget(self.lifeTimeSpinBox)
         
-        # comment
-        hLayoutVMcomment = QtGui.QVBoxLayout()
-        vEditLayoutR.addLayout(hLayoutVMcomment)
-        commentNameLabel = QtGui.QLabel("Comment:")
-        hLayoutVMcomment.addWidget(commentNameLabel)
-        self.commentLineEdit = QtGui.QLineEdit()
-        self.commentLineEdit.setText(self.__vmData.comment)
-        hLayoutVMcomment.addWidget(self.commentLineEdit)
-        
-        # mail
-        hLayoutVMmail = QtGui.QHBoxLayout()
-        vEditLayoutR.addLayout(hLayoutVMmail)
-        mailLabel = QtGui.QLabel("Mail:")
-        hLayoutVMmail.addWidget(mailLabel)
-        self.mailLineEdit = QtGui.QLineEdit()
-        self.mailLineEdit.setText(self.__vmData.mail)
-        hLayoutVMmail.addWidget(self.mailLineEdit)
-        
         # image_file (ReadOnly)
         hLayoutVMimageFile = QtGui.QHBoxLayout()
         vEditLayoutR.addLayout(hLayoutVMimageFile)
@@ -170,20 +143,54 @@ class ConfigVMWindow(QtGui.QDialog):
         self.vmImageLineEdit.setText(self.__vmData.image_file)
         self.vmImageLineEdit.setReadOnly(True)
         hLayoutVMimageFile.addWidget(self.vmImageLineEdit)
+        
+        # comment
+        hLayoutVMcomment = QtGui.QVBoxLayout()
+        vEditLayoutR.addLayout(hLayoutVMcomment)
+        commentNameLabel = QtGui.QLabel("Comment:")
+        hLayoutVMcomment.addWidget(commentNameLabel)
+        self.commentLineEdit = QtGui.QLineEdit()
+        self.commentLineEdit.setText(self.__vmData.comment)
+        hLayoutVMcomment.addWidget(self.commentLineEdit)
 
+        # VBox owner with GrouBox-frame
+        userBox = QtGui.QGroupBox("Data of owner")
+        userBox.setMaximumWidth(600)
+        vUserLayoutR = QtGui.QVBoxLayout()
+        userBox.setLayout(vUserLayoutR)
+        vMainLayout.addWidget(userBox)
+
+        # owener 
+        hLayoutOwner = QtGui.QHBoxLayout()
+        vUserLayoutR.addLayout(hLayoutOwner)
+        owenerLabel = QtGui.QLabel("Owner:")
+        hLayoutOwner.addWidget(owenerLabel)
+        self.__vmOwnerLineEdit = QtGui.QLineEdit()
+        self.__vmOwnerLineEdit.setText(self.__vmData.owner)
+        hLayoutOwner.addWidget(self.__vmOwnerLineEdit)
+        
+        # mail
+        hLayoutVMmail = QtGui.QHBoxLayout()
+        vUserLayoutR.addLayout(hLayoutVMmail)
+        mailLabel = QtGui.QLabel("Mail:")
+        hLayoutVMmail.addWidget(mailLabel)
+        self.mailLineEdit = QtGui.QLineEdit()
+        self.mailLineEdit.setText(self.__vmData.mail)
+        hLayoutVMmail.addWidget(self.mailLineEdit)
+        
         # Selct owner
         hLayoutOwner = QtGui.QHBoxLayout()
-        vEditLayoutR.addLayout(hLayoutOwner)
+        vUserLayoutR.addLayout(hLayoutOwner)
         ownerLabel = QtGui.QLabel("Or select a user:")
         hLayoutOwner.addWidget(ownerLabel)
-        self.ownerComboBox = QtGui.QComboBox("")
+        self.ownerComboBox = QtGui.QComboBox()
         _allUser = self.__vmInfoDB.getAllUser()
-        self.ownerComboBox.addItem()
+        self.ownerComboBox.addItem("")
         for _user in _allUser:
             self.ownerComboBox.addItem(_user.nickname)
-        self.connect(self.ownerComboBox, QtCore.SIGNAL('textChanged(QString)'), QtCore.SLOT('ownerComboBoxChange(QString)'))
-        #self.connect(self.ownerComboBox, QtCore.SIGNAL('currentIndexChanged(QString)'), QtCore.SLOT('ownerComboBoxChange(QString)'))
-        hLayoutOwner.addWidget(self.ownerComboBox)
+        #self.connect(self.ownerComboBox, QtCore.SIGNAL('textChanged(QString)'), QtCore.SLOT('ownerComboBoxChange(QString)'))
+        self.connect(self.ownerComboBox, QtCore.SIGNAL('currentIndexChanged(QString)'), QtCore.SLOT('ownerComboBoxChange(QString)'))
+        hLayoutOwner.addWidget(self.ownerComboBox)  
         
         
         
@@ -229,10 +236,12 @@ class ConfigVMWindow(QtGui.QDialog):
 
     ## it is action if owener Combo Box changes.
     @pyqtSlot(QtCore.QString)
-    def owenerComboBoxChange(self, text):
+    def ownerComboBoxChange(self, text):
         print "[owenerComboBoxChange]:", text
 
         _owner = str(text)
         _userInfo = self.__vmInfoDB.getUser(_owner)
- 
+        print "[owenerComboBoxChange]:", _userInfo.mail
+        self.mailLineEdit.setText(_userInfo.mail)
+        self.__vmOwnerLineEdit.setText(_userInfo.fullname + "(" + _userInfo.nickname + ")")
 
