@@ -153,6 +153,15 @@ class MainWindow(QtGui.QMainWindow):
         menuImportExist.setStatusTip('Import all exist virtual machine, where missing in Database')
         self.connect(menuImportExist, QtCore.SIGNAL('triggered()'), QtCore.SLOT('importAllExistVM()'))
         menuMachine.addAction(menuImportExist)
+
+        # --------- tools -------------------
+        menuTool = menubar.addMenu('Tools')
+
+        # Create a new virtual machine.
+        menuToolVirtManager = QtGui.QAction( 'Virt-Manager', self)
+        menuToolVirtManager.setStatusTip('Start the Virt-Manager.')
+        self.connect(menuToolVirtManager, QtCore.SIGNAL('triggered()'), QtCore.SLOT('startVirtManager()'))
+        menuTool.addAction(menuToolVirtManager)
         
         # --------- info menu ---------------
 
@@ -272,7 +281,7 @@ class MainWindow(QtGui.QMainWindow):
 
         # VBox left with GrouBox-frame
         listBox = QtGui.QGroupBox("VM list")
-        listBox.setMaximumWidth(800)
+        #listBox.setMaximumWidth(800)
         vListLayoutL = QtGui.QVBoxLayout()
         listBox.setLayout(vListLayoutL)
         hMainLayout.addWidget(listBox)
@@ -481,8 +490,18 @@ class MainWindow(QtGui.QMainWindow):
                 infotext = "An error occurred:", (e.output.replace('\n',' ')).replace('\r',' ')
                 QtGui.QMessageBox.critical(self, "Error", str(infotext))
                 return
-
-
+                
+    ## Function start the Virt-Msanager (remout).
+    @pyqtSlot()
+    def startVirtManager(self):
+        logging.debug("[startVirtManager] ...")
+        try:
+            _kvmManager = KVMManager()
+            _result = _kvmManager.startVirtManager()
+        except subprocess.CalledProcessError, e:
+            infotext = "An error occurred:", (e.output.replace('\n',' ')).replace('\r',' ')
+            QtGui.QMessageBox.critical(self, "Error", str(infotext))
+            return
 
     ## Function delete a vm
     @pyqtSlot()

@@ -197,4 +197,7 @@ class KVMManager():
         return self.doCommand(_command)
 
 
-      
+    ## Start Virt-Manager
+    def startVirtManager(self):
+        _command =  "virt-manager"
+        return self.doCommand(_command)
