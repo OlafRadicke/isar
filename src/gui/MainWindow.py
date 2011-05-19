@@ -547,6 +547,7 @@ class MainWindow(QtGui.QMainWindow):
         except sqlite3.Error, e:
             infotext = "An error occurred:", e.args[0]
             QtGui.QMessageBox.critical(self, "Error",str(infotext))
+            self.refreshVMList()
             return
 
         _infotext = "Now! Do you want to delete this machine PYSICAL? \n"
@@ -559,13 +560,13 @@ class MainWindow(QtGui.QMainWindow):
         if (ret == QtGui.QMessageBox.Cancel):
             self.refreshVMList()
             return
-            
-        
+
         try:
             _kvmManager.deleteVMConfigAndImage()
         except subprocess.CalledProcessError, e:
             infotext = "An error occurred:", "".join(e.args)
             QtGui.QMessageBox.critical(self, "Error",str(infotext))
+            self.refreshVMList()
             return
             
         self.refreshVMList()
