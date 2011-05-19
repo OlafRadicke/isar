@@ -539,7 +539,7 @@ class MainWindow(QtGui.QMainWindow):
         _kvmManager = KVMManager()
         _kvmManager.setMachineName(_vmInfo.name)
         _kvmManager.setIsoPath(_vmInfo.image_file)
-        _result = _kvmManager.deleteVMConfigAndImage()
+#        _result = _kvmManager.deleteVMConfigAndImage()
 
         
         try:              
@@ -559,8 +559,13 @@ class MainWindow(QtGui.QMainWindow):
         if (ret == QtGui.QMessageBox.Cancel):
             return
             
-        _result = _kvmManager.deleteVMConfigAndImage()
-
+        
+        try:
+            _kvmManager.deleteVMConfigAndImage()
+        except subprocess.CalledProcessError, e:
+            infotext = "An error occurred:", e.args[0]
+            QtGui.QMessageBox.critical(self, "Error",str(infotext))
+            return
             
         self.refreshVMList()
 
