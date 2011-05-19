@@ -563,7 +563,7 @@ class MainWindow(QtGui.QMainWindow):
         try:
             _kvmManager.deleteVMConfigAndImage()
         except subprocess.CalledProcessError, e:
-            infotext = "An error occurred:", e.args[0]
+            infotext = "An error occurred:", "".join(e.args)
             QtGui.QMessageBox.critical(self, "Error",str(infotext))
             return
             
