@@ -152,6 +152,13 @@ class KVMManager():
     def getAllExistVM(self):
         _command =  "virsh list --all "
         return self.doCommand(_command)
+
+    ## get all exist virtual machins
+    def deleteVMConfigAndImage(self):
+        _command = "rm  /etc/libvirt/qemu/" + self.__vmName + ".xml"
+        return self.doCommand(_command)
+        _command = "rm  " + self.__imagePath
+        return self.doCommand(_command)
         
     ## Set hard disc size.
     def setHdSize(self, size):   

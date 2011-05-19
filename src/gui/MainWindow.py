@@ -534,12 +534,34 @@ class MainWindow(QtGui.QMainWindow):
             return
         
         print "[_vmName]", _vmName
+        # prepare real pythsic remove...
+        _vmInfo = self.__vmInfoDB.getVMinfo(_vmName)
+        _kvmManager = KVMManager()
+        _kvmManager.setMachineName(_vmInfo.name)
+        _kvmManager.setIsoPath(_vmInfo.image_file)
+        _result = _kvmManager.deleteVMConfigAndImage()
+
+        
         try:              
             self.__vmInfoDB.deleteVMinfo(_vmName)
         except sqlite3.Error, e:
             infotext = "An error occurred:", e.args[0]
             QtGui.QMessageBox.critical(self, "Error",str(infotext))
-            return  
+            return
+
+        _infotext = "Now! Do you want to delete this machine PYSICAL? \n"
+        _infotext += "NOW, i like delete the config and the image file."
+        ret = QtGui.QMessageBox.warning(self, \
+                            "Warning", \
+                            _infotext, \
+                            QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Ok)
+
+        if (ret == QtGui.QMessageBox.Cancel):
+            return
+            
+        _result = _kvmManager.deleteVMConfigAndImage()
+
+            
         self.refreshVMList()
 
 
