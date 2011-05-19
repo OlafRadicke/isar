@@ -162,7 +162,13 @@ class MainWindow(QtGui.QMainWindow):
         menuToolVirtManager.setStatusTip('Start the Virt-Manager.')
         self.connect(menuToolVirtManager, QtCore.SIGNAL('triggered()'), QtCore.SLOT('startVirtManager()'))
         menuTool.addAction(menuToolVirtManager)
-        
+
+        # View a running virtual machine.
+        menuToolVirtViewer = QtGui.QAction( 'Virt-Viewer', self)
+        menuToolVirtViewer.setStatusTip('Start the Virt-Viewer.')
+        self.connect(menuToolVirtViewer, QtCore.SIGNAL('triggered()'), QtCore.SLOT('viewVM()'))
+        menuTool.addAction(menuToolVirtViewer)
+ 
         # --------- info menu ---------------
 
         menuInfo = menubar.addMenu('&Info')        

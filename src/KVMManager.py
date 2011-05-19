@@ -147,7 +147,8 @@ class KVMManager():
     ## Get the path of vm image.
     def getImagePath(self):
         return self.__imagePath
-        
+
+    ## get all exist virtual machins
     def getAllExistVM(self):
         _command =  "virsh list --all "
         return self.doCommand(_command)
@@ -199,5 +200,5 @@ class KVMManager():
 
     ## Start Virt-Manager
     def startVirtManager(self):
-        _command =  "virt-manager"
+        _command =  "virt-manager "
         return self.doCommand(_command)
