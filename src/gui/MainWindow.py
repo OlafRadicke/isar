@@ -557,6 +557,7 @@ class MainWindow(QtGui.QMainWindow):
                             QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Ok)
 
         if (ret == QtGui.QMessageBox.Cancel):
+            self.refreshVMList()
             return
             
         
