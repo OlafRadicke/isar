@@ -176,6 +176,7 @@ class CloneVMWindow(QtGui.QDialog):
         _vmName = _vmName.replace(unicode("ä", "utf-8"), "ae")
         _vmName = _vmName.replace(unicode("Ä", "utf-8"), "Ae")
         _vmName = _vmName.replace(unicode("ß", "utf-8"), "ss")
+        self._distName = self._distName.replace(unicode(" ", "utf-8"), "_")
         _vmName = _owner + "_" + self._distName + "_" + _vmName
         
         _kvmManager.setOwnersHome(_userInfo.homedir)   
