@@ -147,7 +147,8 @@ class VMinfoDB():
                 image_file, \
                 owner, \
                 os \
-                FROM vmachine;" \
+                FROM vmachine \
+                ORDER BY owner, createdate, name  ;" \
             )
         for _row in _rows:
             name, createdate, lifetimedays, comment, mail, image_file, owner, os = _row
