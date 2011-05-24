@@ -299,8 +299,8 @@ class MainWindow(QtGui.QMainWindow):
         #self.__listview.setSortingEnabled(True)
         _haderList = ["owner","name","create","OS"]
         self.__listview.setColumnCount(len(_haderList))
-        (self.__listview.header()).resizeSection(0, 130) 
-        (self.__listview.header()).resizeSection(1, 190) 
+        (self.__listview.header()).resizeSection(0, 160) 
+        (self.__listview.header()).resizeSection(1, 220) 
         (self.__listview.header()).resizeSection(2, 130) 
         (self.__listview.header()).resizeSection(3, 130) 
         self.__listview.setHeaderLabels(_haderList)
